@@ -4,11 +4,20 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"os"
 	"strconv"
 	"time"
 
 	"github.com/joho/godotenv"
 )
+
+func envPath() string {
+	if len(os.Args) == 1 {
+		return ".env"
+	} else {
+		return os.Args[1]
+	}
+}
 
 type IConfig interface {
 	App() IAppConfig
@@ -74,8 +83,8 @@ func (d *db) MaxOpenConns() int {
 	return d.maxConnections
 }
 
-func LoadConfig(path string) IConfig {
-	envMap, err := godotenv.Read(path)
+func LoadConfig() IConfig {
+	envMap, err := godotenv.Read(envPath())
 	if err != nil {
 		log.Fatalf("load dotenv failed: %v", err)
 	}
