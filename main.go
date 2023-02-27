@@ -2,9 +2,11 @@ package main
 
 import (
 	"github.com/Rayato159/kawaii-shop/config"
+	"github.com/Rayato159/kawaii-shop/modules/servers"
 )
 
 func main() {
 	cfg := config.LoadConfig()
-	_ = cfg
+
+	servers.NewServer(cfg.App()).Start()
 }
