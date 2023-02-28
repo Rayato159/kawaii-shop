@@ -6,7 +6,9 @@ import (
 )
 
 func main() {
+	// Setup config
 	cfg := config.LoadConfig()
 
+	// Server start
 	servers.NewServer(cfg.App()).Start()
 }
