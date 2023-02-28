@@ -13,7 +13,7 @@ type oauthHandler struct {
 	Usecase usecases.IOauthUsecase
 }
 
-func OauthModule(cfg config.IAppConfig, usecase usecases.IOauthUsecase) IOauthHandler {
+func OauthHandler(cfg config.IAppConfig, usecase usecases.IOauthUsecase) IOauthHandler {
 	return &oauthHandler{
 		Cfg:     cfg,
 		Usecase: usecase,

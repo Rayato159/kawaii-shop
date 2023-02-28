@@ -7,7 +7,6 @@ import (
 	"os/signal"
 
 	"github.com/Rayato159/kawaii-shop/config"
-	"github.com/Rayato159/kawaii-shop/modules"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jmoiron/sqlx"
 )
@@ -20,14 +19,25 @@ type server struct {
 
 type IServer interface {
 	Start()
+	Db() *sqlx.DB
+	Config() config.IAppConfig
 }
 
+func (s *server) Db() *sqlx.DB              { return s.db }
+func (s *server) Config() config.IAppConfig { return s.cfg }
+
 func (s *server) Start() {
+	// Init Middleware
+	middleware := InitMiddleware(s)
+	middleware.Cors(s.app)
+
+	// Init router
 	v1 := s.app.Group("v1")
 
 	// Import modules
-	modules.MonitorModule(v1, s.cfg)
-	modules.OauthModule(v1, s.cfg, s.db)
+	module := InitModule(v1, s, middleware)
+	module.MonitorModule()
+	module.OauthModule()
 
 	// Log when server has started
 	log.Printf("server is starting on %s", s.cfg.Url())
