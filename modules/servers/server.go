@@ -1,6 +1,10 @@
 package servers
 
 import (
+	"log"
+	"os"
+	"os/signal"
+
 	"github.com/Rayato159/kawaii-shop/config"
 	"github.com/Rayato159/kawaii-shop/modules"
 	"github.com/gofiber/fiber/v2"
@@ -18,8 +22,22 @@ type IServer interface {
 func (s *server) Start() {
 	v1 := s.app.Group("v1")
 
+	// Import modules
 	modules.Monitor(v1, s.cfg)
 
+	// Log when server has started
+	log.Printf("server is starting on %s", s.cfg.Url())
+
+	// Graceful shutdown
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		_ = <-c
+		log.Println("server is shutting down...")
+		_ = s.app.Shutdown()
+	}()
+
+	// Listen to host:port
 	s.app.Listen(s.cfg.Url())
 }
 
