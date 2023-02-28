@@ -9,10 +9,12 @@ import (
 	"github.com/Rayato159/kawaii-shop/config"
 	"github.com/Rayato159/kawaii-shop/modules"
 	"github.com/gofiber/fiber/v2"
+	"github.com/jmoiron/sqlx"
 )
 
 type server struct {
 	app *fiber.App
+	db  *sqlx.DB
 	cfg config.IAppConfig
 }
 
@@ -24,7 +26,8 @@ func (s *server) Start() {
 	v1 := s.app.Group("v1")
 
 	// Import modules
-	modules.Monitor(v1, s.cfg)
+	modules.MonitorModule(v1, s.cfg)
+	modules.OauthModule(v1, s.cfg, s.db)
 
 	// Log when server has started
 	log.Printf("server is starting on %s", s.cfg.Url())
@@ -42,7 +45,7 @@ func (s *server) Start() {
 	s.app.Listen(s.cfg.Url())
 }
 
-func NewServer(cfg config.IAppConfig) IServer {
+func NewServer(cfg config.IAppConfig, db *sqlx.DB) IServer {
 	return &server{
 		app: fiber.New(fiber.Config{
 			AppName:      cfg.Name(),
@@ -52,6 +55,7 @@ func NewServer(cfg config.IAppConfig) IServer {
 			JSONEncoder:  json.Marshal,
 			JSONDecoder:  json.Unmarshal,
 		}),
+		db:  db,
 		cfg: cfg,
 	}
 }

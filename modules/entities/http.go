@@ -11,7 +11,6 @@ type IResponse interface {
 func (r *Response) Success(code int, data any) IResponse {
 	r.StatusCode = code
 	r.Data = data
-	r.ResType = "success"
 	return r
 }
 
@@ -21,12 +20,12 @@ func (r *Response) Error(code int, traceId, msg string) IResponse {
 		TraceId: traceId,
 		Msg:     msg,
 	}
-	r.ResType = "error"
+	r.IsError = true
 	return r
 }
 
 func (r *Response) Res() error {
-	if r.ResType == "error" {
+	if r.IsError {
 		return r.Context.Status(r.StatusCode).JSON(&r.ErrorRes)
 	}
 	return r.Context.Status(r.StatusCode).JSON(&r.Data)
@@ -37,7 +36,7 @@ type Response struct {
 	Data       any
 	ErrorRes   *ErrorResponse
 	Context    *fiber.Ctx
-	ResType    string
+	IsError    bool
 }
 
 type ErrorResponse struct {
