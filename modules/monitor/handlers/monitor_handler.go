@@ -21,11 +21,9 @@ func MonitorHandler(cfg config.IAppConfig) IMonitorHandler {
 }
 
 func (h *monitorHandler) HealthCheck(c *fiber.Ctx) error {
-	return entities.NewResponse(c).Success(
-		fiber.StatusOK,
-		&entities.Monitor{
-			Name:    h.Cfg.Name(),
-			Version: h.Cfg.Version(),
-		},
-	).Res()
+	res := &entities.Monitor{
+		Name:    h.Cfg.Name(),
+		Version: h.Cfg.Version(),
+	}
+	return entities.NewResponse(c).Success(fiber.StatusOK, res).Res()
 }

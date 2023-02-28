@@ -29,7 +29,7 @@ func (s *server) Config() config.IAppConfig { return s.cfg }
 func (s *server) Start() {
 	// Init Middleware
 	middleware := InitMiddleware(s)
-	middleware.Cors(s.app)
+	s.app.Use(middleware.Cors())
 
 	// Init router
 	v1 := s.app.Group("v1")
@@ -39,8 +39,8 @@ func (s *server) Start() {
 	module.MonitorModule()
 	module.OauthModule()
 
-	// Log when server has started
-	log.Printf("server is starting on %s", s.cfg.Url())
+	// If router not found
+	s.app.Use(middleware.RouterCheck())
 
 	// Graceful shutdown
 	c := make(chan os.Signal, 1)
@@ -52,6 +52,7 @@ func (s *server) Start() {
 	}()
 
 	// Listen to host:port
+	log.Printf("server is starting on %s", s.cfg.Url())
 	s.app.Listen(s.cfg.Url())
 }
 
