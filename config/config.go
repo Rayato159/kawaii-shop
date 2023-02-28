@@ -36,9 +36,9 @@ type app struct {
 	port         uint
 	name         string
 	version      string
-	readTimeout  time.Duration
-	writeTimeout time.Duration
-	bodyLimit    int
+	readTimeout  time.Duration // Second
+	writeTimeout time.Duration // Second
+	bodyLimit    int           // Byte
 }
 
 type db struct {
@@ -62,29 +62,25 @@ type IAppConfig interface {
 	Url() string
 	Version() string
 	Name() string
+	BodyLimit() int
+	ReadTimeout() time.Duration
+	WriteTimeout() time.Duration
 }
 
-func (c *config) App() IAppConfig {
-	return c.app
-}
-func (a *app) Url() string {
-	return fmt.Sprintf("%s:%d", a.host, a.port)
-}
-func (a *app) Version() string {
-	return a.version
-}
-func (a *app) Name() string {
-	return a.name
-}
+func (c *config) App() IAppConfig          { return c.app }
+func (a *app) Url() string                 { return fmt.Sprintf("%s:%d", a.host, a.port) }
+func (a *app) Version() string             { return a.version }
+func (a *app) Name() string                { return a.name }
+func (a *app) BodyLimit() int              { return a.bodyLimit }
+func (a *app) ReadTimeout() time.Duration  { return a.readTimeout }
+func (a *app) WriteTimeout() time.Duration { return a.writeTimeout }
 
 type IDbConfig interface {
 	Url() string
 	MaxOpenConns() int
 }
 
-func (c *config) Db() IDbConfig {
-	return c.db
-}
+func (c *config) Db() IDbConfig { return c.db }
 func (d *db) Url() string {
 	return fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
@@ -96,16 +92,11 @@ func (d *db) Url() string {
 		d.sslMode,
 	)
 }
-func (d *db) MaxOpenConns() int {
-	return d.maxConnections
-}
+func (d *db) MaxOpenConns() int { return d.maxConnections }
 
-type IJwtConfig interface {
-}
+type IJwtConfig interface{}
 
-func (c *config) Jwt() IJwtConfig {
-	return c.jwt
-}
+func (c *config) Jwt() IJwtConfig { return c.jwt }
 
 func LoadConfig() IConfig {
 	envMap, err := godotenv.Read(envPath())

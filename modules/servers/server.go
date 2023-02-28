@@ -1,6 +1,7 @@
 package servers
 
 import (
+	"encoding/json"
 	"log"
 	"os"
 	"os/signal"
@@ -43,7 +44,14 @@ func (s *server) Start() {
 
 func NewServer(cfg config.IAppConfig) IServer {
 	return &server{
-		app: fiber.New(fiber.Config{}),
+		app: fiber.New(fiber.Config{
+			AppName:      cfg.Name(),
+			BodyLimit:    cfg.BodyLimit(),
+			ReadTimeout:  cfg.ReadTimeout(),
+			WriteTimeout: cfg.WriteTimeout(),
+			JSONEncoder:  json.Marshal,
+			JSONDecoder:  json.Unmarshal,
+		}),
 		cfg: cfg,
 	}
 }
