@@ -22,16 +22,19 @@ func envPath() string {
 type IConfig interface {
 	App() IAppConfig
 	Db() IDbConfig
+	Jwt() IJwtConfig
 }
 
 type config struct {
 	app *app
 	db  *db
+	jwt *jwt
 }
 
 type app struct {
 	host         string
 	port         uint
+	name         string
 	version      string
 	readTimeout  time.Duration
 	writeTimeout time.Duration
@@ -49,8 +52,16 @@ type db struct {
 	maxConnections int
 }
 
+type jwt struct {
+	secretKey        string
+	accessExpiresAt  int // Second
+	refreshExpiresAt int // Second
+}
+
 type IAppConfig interface {
 	Url() string
+	Version() string
+	Name() string
 }
 
 func (c *config) App() IAppConfig {
@@ -58,6 +69,12 @@ func (c *config) App() IAppConfig {
 }
 func (a *app) Url() string {
 	return fmt.Sprintf("%s:%d", a.host, a.port)
+}
+func (a *app) Version() string {
+	return a.version
+}
+func (a *app) Name() string {
+	return a.name
 }
 
 type IDbConfig interface {
@@ -83,12 +100,20 @@ func (d *db) MaxOpenConns() int {
 	return d.maxConnections
 }
 
+type IJwtConfig interface {
+}
+
+func (c *config) Jwt() IJwtConfig {
+	return c.jwt
+}
+
 func LoadConfig() IConfig {
 	envMap, err := godotenv.Read(envPath())
 	if err != nil {
 		log.Fatalf("load dotenv failed: %v", err)
 	}
 	return &config{
+		// App
 		app: &app{
 			host: envMap["APP_HOST"],
 			port: func() uint {
@@ -98,6 +123,7 @@ func LoadConfig() IConfig {
 				}
 				return uint(p)
 			}(),
+			name:    envMap["APP_NAME"],
 			version: envMap["APP_VERSION"],
 			bodyLimit: func() int {
 				s, err := strconv.Atoi(envMap["APP_BODY_LIMIT"])
@@ -121,6 +147,7 @@ func LoadConfig() IConfig {
 				return time.Duration(int64(t) * int64(math.Pow10(9)))
 			}(),
 		},
+		// Db
 		db: &db{
 			host: envMap["DB_HOST"],
 			port: func() uint {
@@ -141,6 +168,24 @@ func LoadConfig() IConfig {
 					log.Fatalf("db max connections is required")
 				}
 				return m
+			}(),
+		},
+		// Jwt
+		jwt: &jwt{
+			secretKey: envMap["JWT_SECRET_KEY"],
+			accessExpiresAt: func() int {
+				exp, err := strconv.Atoi(envMap["JWT_ACCESS_EXPIRES"])
+				if err != nil {
+					log.Fatalf("access expires is required")
+				}
+				return exp
+			}(),
+			refreshExpiresAt: func() int {
+				exp, err := strconv.Atoi(envMap["JWT_REFRESH_EXPIRES"])
+				if err != nil {
+					log.Fatalf("refresh expires is required")
+				}
+				return exp
 			}(),
 		},
 	}

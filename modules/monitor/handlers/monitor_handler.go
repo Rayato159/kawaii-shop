@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/Rayato159/kawaii-shop/config"
+	"github.com/Rayato159/kawaii-shop/modules/entities"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -20,5 +21,11 @@ func MonitorHandler(cfg config.IAppConfig) IMonitorHandler {
 }
 
 func (h *monitorHandler) HealthCheck(c *fiber.Ctx) error {
-	return c.SendString("100%")
+	return entities.NewResponse(c).Success(
+		fiber.StatusOK,
+		&entities.Monitor{
+			Name:    h.Cfg.Name(),
+			Version: h.Cfg.Version(),
+		},
+	).Res()
 }
