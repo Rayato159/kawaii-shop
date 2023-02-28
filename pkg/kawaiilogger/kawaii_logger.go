@@ -20,21 +20,23 @@ type IKawaiiLogger interface {
 }
 
 type kawaiiLogger struct {
-	Time     string `json:"time"`
-	Ip       string `json:"ip"`
-	Method   string `json:"method"`
-	Path     string `json:"path"`
-	Query    any    `json:"query"`
-	Body     any    `json:"body"`
-	Response any    `json:"response"`
+	Time       string `json:"time"`
+	Ip         string `json:"ip"`
+	Method     string `json:"method"`
+	StatusCode int    `json:"status_code"`
+	Path       string `json:"path"`
+	Query      any    `json:"query"`
+	Body       any    `json:"body"`
+	Response   any    `json:"response"`
 }
 
 func InitKawaiiLogger(c *fiber.Ctx, res any) IKawaiiLogger {
 	log := &kawaiiLogger{
-		Time:   time.Now().Local().Format("2006-01-02 15:04:05"),
-		Ip:     c.IP(),
-		Method: c.Method(),
-		Path:   c.Path(),
+		Time:       time.Now().Local().Format("2006-01-02 15:04:05"),
+		Ip:         c.IP(),
+		Method:     c.Method(),
+		Path:       c.Path(),
+		StatusCode: c.Response().StatusCode(),
 	}
 	log.SetQuery(c)
 	log.SetBody(c)
