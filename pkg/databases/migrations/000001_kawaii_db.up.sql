@@ -1,13 +1,20 @@
 BEGIN;
 
+--Set timezone
 SET TIME ZONE 'Asia/Bangkok';
 
+--Install uuid extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE SEQUENCE users_id_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE products_id_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE orders_id_seq START WITH 1 INCREMENT BY 1;
 
+--Create token
+CREATE SEQUENCE products_token_id_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE orders_token_id_seq START WITH 1 INCREMENT BY 1;
+
+--Creat auto timestamp function
 CREATE OR REPLACE FUNCTION set_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -16,6 +23,7 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+--Create enum
 CREATE TYPE "order_status" AS ENUM (
     'waiting',
     'shipping',
@@ -23,11 +31,11 @@ CREATE TYPE "order_status" AS ENUM (
     'canceled'
 );
 
+--Create table
 CREATE TABLE "users" (
   "id" VARCHAR(7) PRIMARY KEY DEFAULT CONCAT('U', LPAD(NEXTVAL('users_id_seq')::TEXT, 6, '0')),
   "username" VARCHAR UNIQUE,
   "email" VARCHAR UNIQUE,
-  "token" VARCHAR,
   "role_id" INT,
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP NOT NULL DEFAULT now()
@@ -50,7 +58,7 @@ CREATE TABLE "products" (
   "id" VARCHAR(7) PRIMARY KEY DEFAULT CONCAT('P', LPAD(NEXTVAL('products_id_seq')::TEXT, 6, '0')),
   "title" VARCHAR,
   "description" VARCHAR,
-  "token" VARCHAR,
+  "token" VARCHAR UNIQUE NOT NULL DEFAULT (NEXTVAL('products_token_id_seq')),
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP NOT NULL DEFAULT now()
 );
@@ -82,7 +90,7 @@ CREATE TABLE "orders" (
   "address" VARCHAR,
   "transfer_slip" jsonb,
   "status" VARCHAR,
-  "token" VARCHAR,
+  "token" VARCHAR UNIQUE NOT NULL DEFAULT (NEXTVAL('orders_token_id_seq')),
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP NOT NULL DEFAULT now()
 );
@@ -95,6 +103,7 @@ CREATE TABLE "products_orders" (
   "price" DOUBLE PRECISION
 );
 
+--Set foreign key
 ALTER TABLE "users" ADD FOREIGN KEY ("role_id") REFERENCES "roles" ("id") ON DELETE CASCADE;
 ALTER TABLE "oauth" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
 ALTER TABLE "images" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id") ON DELETE CASCADE;
@@ -103,6 +112,7 @@ ALTER TABLE "products_orders" ADD FOREIGN KEY ("order_id") REFERENCES "orders" (
 ALTER TABLE "products_categories" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id") ON DELETE CASCADE;
 ALTER TABLE "products_categories" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE CASCADE;
 
+--Set auto update timestamp for each table
 CREATE TRIGGER set_updated_at_timestamp_users_table BEFORE UPDATE ON "users" FOR EACH ROW EXECUTE PROCEDURE set_updated_at_column();
 CREATE TRIGGER set_updated_at_timestamp_oauth_table BEFORE UPDATE ON "oauth" FOR EACH ROW EXECUTE PROCEDURE set_updated_at_column();
 CREATE TRIGGER set_updated_at_timestamp_products_table BEFORE UPDATE ON "products" FOR EACH ROW EXECUTE PROCEDURE set_updated_at_column();

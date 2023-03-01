@@ -21,6 +21,8 @@ DROP TABLE IF EXISTS "products_orders" CASCADE;
 DROP SEQUENCE IF EXISTS users_id_seq;
 DROP SEQUENCE IF EXISTS products_id_seq;
 DROP SEQUENCE IF EXISTS orders_id_seq;
+DROP SEQUENCE IF EXISTS products_token_id_seq;
+DROP SEQUENCE IF EXISTS orders_token_id_seq;
 
 DROP TYPE IF EXISTS "order_status";
 
