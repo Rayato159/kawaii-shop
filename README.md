@@ -19,8 +19,8 @@ CREATE DATABASE kawaii_db_test;
 
 ```bash
 # Migrate up
-migrate -database 'postgres://kawaii:123456@0.0.0.0:5432/kawaii_dev_db?sslmode=disable' -source file://D:/path-to-migrate -verbose up
+migrate -database 'postgres://kawaii:123456@0.0.0.0:5432/kawaii_db_test?sslmode=disable' -source file://D:/path-to-migrate -verbose up
 
 # Migrate down
-migrate -database 'postgres://kawaii:123456@0.0.0.0:5432/kawaii_dev_db?sslmode=disable' -source file://D:/path-to-migrate -verbose down
+migrate -database 'postgres://kawaii:123456@0.0.0.0:5432/kawaii_db_test?sslmode=disable' -source file://D:/path-to-migrate -verbose down
 ```
