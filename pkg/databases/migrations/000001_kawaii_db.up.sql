@@ -59,7 +59,7 @@ CREATE TABLE "products" (
   "id" VARCHAR(7) PRIMARY KEY DEFAULT CONCAT('P', LPAD(NEXTVAL('products_id_seq')::TEXT, 6, '0')),
   "title" VARCHAR,
   "description" VARCHAR,
-  "token" VARCHAR UNIQUE NOT NULL DEFAULT (NEXTVAL('products_token_id_seq')),
+  "token" VARCHAR(7) UNIQUE NOT NULL DEFAULT CONCAT('T', LPAD(NEXTVAL('products_token_id_seq')::TEXT, 6, '0')),
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP NOT NULL DEFAULT now()
 );
@@ -91,7 +91,7 @@ CREATE TABLE "orders" (
   "address" VARCHAR,
   "transfer_slip" jsonb,
   "status" VARCHAR,
-  "token" VARCHAR UNIQUE NOT NULL DEFAULT (NEXTVAL('orders_token_id_seq')),
+  "token" VARCHAR(7) UNIQUE NOT NULL DEFAULT CONCAT('T', LPAD(NEXTVAL('orders_token_id_seq')::TEXT, 6, '0')),
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP NOT NULL DEFAULT now()
 );
