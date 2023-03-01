@@ -35,6 +35,7 @@ CREATE TYPE "order_status" AS ENUM (
 CREATE TABLE "users" (
   "id" VARCHAR(7) PRIMARY KEY DEFAULT CONCAT('U', LPAD(NEXTVAL('users_id_seq')::TEXT, 6, '0')),
   "username" VARCHAR UNIQUE,
+  "password" VARCHAR NOT NULL,
   "email" VARCHAR UNIQUE,
   "role_id" INT,
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
@@ -64,12 +65,12 @@ CREATE TABLE "products" (
 );
 
 CREATE TABLE "categories" (
-  "id" INT NOT NULL PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "title" VARCHAR NOT NULL
 );
 
 CREATE TABLE "products_categories" (
-  "id" INT NOT NULL PRIMARY KEY,
+  "id" uuid NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
   "product_id" VARCHAR NOT NULL,
   "category_id" INT NOT NULL
 );
@@ -84,7 +85,7 @@ CREATE TABLE "images" (
 );
 
 CREATE TABLE "orders" (
-  "id" VARCHAR(7) PRIMARY KEY DEFAULT CONCAT('O', LPAD(NEXTVAL('users_id_seq')::TEXT, 6, '0')),
+  "id" VARCHAR(7) PRIMARY KEY DEFAULT CONCAT('O', LPAD(NEXTVAL('orders_id_seq')::TEXT, 6, '0')),
   "user_id" VARCHAR,
   "contact" VARCHAR,
   "address" VARCHAR,
@@ -97,7 +98,7 @@ CREATE TABLE "orders" (
 
 CREATE TABLE "products_orders" (
   "id" uuid NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
-  "order_id" VARCHAR,
+  "order_id" VARCHAR NOT NULL,
   "product" jsonb,
   "qty" INT,
   "price" DOUBLE PRECISION
