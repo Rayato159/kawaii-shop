@@ -1,3 +1,5 @@
+BEGIN;
+
 TRUNCATE TABLE "users" CASCADE;
 TRUNCATE TABLE "oauth" CASCADE;
 TRUNCATE TABLE "roles" CASCADE;
@@ -13,3 +15,5 @@ SELECT SETVAL (
     (SELECT (MAX("id") + 1) FROM "roles"),
     FALSE
 );
+
+COMMIT;
