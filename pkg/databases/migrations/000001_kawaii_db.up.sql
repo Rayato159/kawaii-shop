@@ -42,7 +42,7 @@ CREATE TABLE "oauth" (
 );
 
 CREATE TABLE "roles" (
-  "id" INT PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "title" VARCHAR
 );
 
