@@ -50,5 +50,7 @@ func (f *ModuleFactory) OauthModule() {
 	repository := _oauthRepositories.OauthRepository(f.server.Db())
 	usecase := _oauthUsecases.OauthUsecase(repository)
 	handler := _oauthHandlers.OauthHandler(f.server.Config(), usecase)
-	_ = handler
+
+	router := f.router.Group("/oauth")
+	router.Post("/signup", handler.SignUpCustomer)
 }

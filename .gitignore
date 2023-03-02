@@ -35,3 +35,4 @@ vendor
 *.env*
 .air*
 /tmp
+*.pem

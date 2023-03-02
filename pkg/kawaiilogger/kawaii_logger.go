@@ -56,7 +56,14 @@ func (l *kawaiiLogger) SetBody(c *fiber.Ctx) {
 	if err := c.BodyParser(&body); err != nil {
 		log.Printf("body parser error: %v", err)
 	}
-	l.Body = body
+
+	// Check were path is sensitive
+	switch l.Path {
+	case "/v1/oauth/signup":
+		l.Body = "never gonna give you up"
+	default:
+		l.Body = body
+	}
 }
 func (l *kawaiiLogger) SetResponse(res any) {
 	l.Response = res

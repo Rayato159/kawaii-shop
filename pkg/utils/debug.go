@@ -10,6 +10,11 @@ func Debug(obj any) {
 	fmt.Println(string(bytes))
 }
 
+func DebugCompact(obj any) {
+	bytes, _ := json.Marshal(obj)
+	fmt.Println(string(bytes))
+}
+
 func Output(obj any) []byte {
 	bytes, _ := json.Marshal(obj)
 	return bytes

@@ -40,6 +40,7 @@ type app struct {
 	writeTimeout time.Duration // Second
 	bodyLimit    int           // Byte
 	apiKey       string
+	adminKey     string
 }
 
 type db struct {
@@ -64,6 +65,7 @@ type IAppConfig interface {
 	Version() string
 	Name() string
 	ApiKey() string
+	AdminKey() string
 	BodyLimit() int
 	ReadTimeout() time.Duration
 	WriteTimeout() time.Duration
@@ -77,6 +79,7 @@ func (a *app) BodyLimit() int              { return a.bodyLimit }
 func (a *app) ReadTimeout() time.Duration  { return a.readTimeout }
 func (a *app) WriteTimeout() time.Duration { return a.writeTimeout }
 func (a *app) ApiKey() string              { return a.apiKey }
+func (a *app) AdminKey() string            { return a.adminKey }
 
 type IDbConfig interface {
 	Url() string
@@ -117,9 +120,10 @@ func LoadConfig() IConfig {
 				}
 				return uint(p)
 			}(),
-			name:    envMap["APP_NAME"],
-			version: envMap["APP_VERSION"],
-			apiKey:  envMap["APP_API_KEY"],
+			name:     envMap["APP_NAME"],
+			version:  envMap["APP_VERSION"],
+			apiKey:   envMap["APP_API_KEY"],
+			adminKey: envMap["APP_ADMIN_KEY"],
 			bodyLimit: func() int {
 				s, err := strconv.Atoi(envMap["APP_BODY_LIMIT"])
 				if err != nil {

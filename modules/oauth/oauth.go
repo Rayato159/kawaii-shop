@@ -1,8 +1,14 @@
 package oauth
 
+import (
+	"fmt"
+
+	"golang.org/x/crypto/bcrypt"
+)
+
 type UserCredential struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" form:"email"`
+	Password string `json:"password" form:"password"`
 }
 
 type UserPassport struct {
@@ -19,21 +25,21 @@ type User struct {
 	Id       string `db:"id" json:"id"`
 	Email    string `db:"email" json:"email"`
 	Username string `db:"username" json:"username"`
-	Token    string `db:"token" json:"token"`
 	Role     string `db:"role" json:"role"`
 }
 
 type UserRegisterReq struct {
-	Email    string `db:"email" json:"email"`
-	Username string `db:"username" json:"username"`
-	Password string `db:"password" json:"password"`
-	Token    string `db:"token" json:"token"`
+	Email    string  `db:"email" json:"email" form:"email"`
+	Username string  `db:"username" json:"username" form:"username"`
+	Password string  `db:"password" json:"password" form:"password"`
+	Token    *string `json:"token"`
 }
 
-type AdminRegisterReq struct {
-	Email      string `db:"email" json:"email"`
-	Username   string `db:"username" json:"username"`
-	Password   string `db:"password" json:"password"`
-	Token      string `db:"token" json:"token"`
-	AdminToken string `db:"admin_token" json:"admin_token"`
+func (obj *UserRegisterReq) BcryptHashing() error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(obj.Password), 10)
+	if err != nil {
+		return fmt.Errorf("hashed password failed: %v", err)
+	}
+	obj.Password = string(hashedPassword)
+	return nil
 }

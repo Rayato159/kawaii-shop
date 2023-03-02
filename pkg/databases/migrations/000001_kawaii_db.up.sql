@@ -10,10 +10,6 @@ CREATE SEQUENCE users_id_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE products_id_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE orders_id_seq START WITH 1 INCREMENT BY 1;
 
---Create token
-CREATE SEQUENCE products_token_id_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE orders_token_id_seq START WITH 1 INCREMENT BY 1;
-
 --Creat auto timestamp function
 CREATE OR REPLACE FUNCTION set_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -59,7 +55,6 @@ CREATE TABLE "products" (
   "id" VARCHAR(7) PRIMARY KEY DEFAULT CONCAT('P', LPAD(NEXTVAL('products_id_seq')::TEXT, 6, '0')),
   "title" VARCHAR,
   "description" VARCHAR,
-  "token" VARCHAR(7) UNIQUE NOT NULL DEFAULT CONCAT('T', LPAD(NEXTVAL('products_token_id_seq')::TEXT, 6, '0')),
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP NOT NULL DEFAULT now()
 );
@@ -91,7 +86,6 @@ CREATE TABLE "orders" (
   "address" VARCHAR,
   "transfer_slip" jsonb,
   "status" VARCHAR,
-  "token" VARCHAR(7) UNIQUE NOT NULL DEFAULT CONCAT('T', LPAD(NEXTVAL('orders_token_id_seq')::TEXT, 6, '0')),
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP NOT NULL DEFAULT now()
 );

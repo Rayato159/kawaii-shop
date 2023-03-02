@@ -12,9 +12,7 @@ import (
 func DbConnect(cfg config.IDbConfig) *sqlx.DB {
 	// Connect
 	db, err := sqlx.Connect("pgx", cfg.Url())
-	defer db.Close()
 	if err != nil {
-		db.Close()
 		log.Fatalf("connect to database failed: %v\n", err)
 	}
 	db.DB.SetMaxOpenConns(cfg.MaxOpenConns())

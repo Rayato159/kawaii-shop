@@ -4,8 +4,8 @@ INSERT INTO "roles" (
     "title"
 )
 VALUES
-    ('admin'),
-    ('customer');
+    ('customer'),
+    ('admin');
 
 INSERT INTO "users" (
     "username",
@@ -14,8 +14,8 @@ INSERT INTO "users" (
     "role_id"
 )
 VALUES
-    ('admin001', 'admin001@kawaii.com', '$2a$10$3qqNPE.TJpNGYCohjTgw9.v1z0ckovx95AmiEtUXcixGAgfW7.wCi', 1),
-    ('customer001', 'customer001@kawaii.com', '$2a$10$8KzaNdKIMyOkASCH4QvSKuEMIY7Jc3vcHDuSJvXLii1rvBNgz60a6', 2);
+    ('customer001', 'customer001@kawaii.com', '$2a$10$8KzaNdKIMyOkASCH4QvSKuEMIY7Jc3vcHDuSJvXLii1rvBNgz60a6', 1),
+    ('admin001', 'admin001@kawaii.com', '$2a$10$3qqNPE.TJpNGYCohjTgw9.v1z0ckovx95AmiEtUXcixGAgfW7.wCi', 2);
 
 
 INSERT INTO "categories"

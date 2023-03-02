@@ -29,6 +29,7 @@ func (s *server) Config() config.IAppConfig { return s.cfg }
 func (s *server) Start() {
 	// Init Middleware
 	middleware := InitMiddleware(s)
+	s.app.Use(middleware.Logger())
 	s.app.Use(middleware.Cors())
 
 	// Init router

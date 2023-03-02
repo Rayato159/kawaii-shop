@@ -12,7 +12,5 @@ TRUNCATE TABLE "products_orders" CASCADE;
 
 SELECT SETVAL ((SELECT PG_GET_SERIAL_SEQUENCE('"roles"', 'id')), 1, FALSE);
 SELECT SETVAL ((SELECT PG_GET_SERIAL_SEQUENCE('"categories"', 'id')), 1, FALSE);
-SELECT SETVAL ('products_token_id_seq', 1, FALSE);
-SELECT SETVAL ( 'orders_token_id_seq', 1, FALSE);
 
 COMMIT;
