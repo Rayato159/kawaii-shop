@@ -1,4 +1,4 @@
-package entities
+package oauth
 
 type UserCredential struct {
 	Email    string `json:"email"`

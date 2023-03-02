@@ -1,4 +1,4 @@
-package entities
+package monitor
 
 type Monitor struct {
 	Name    string `json:"name"`
