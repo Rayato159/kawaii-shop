@@ -100,9 +100,16 @@ func (d *db) Url() string {
 }
 func (d *db) MaxOpenConns() int { return d.maxConnections }
 
-type IJwtConfig interface{}
+type IJwtConfig interface {
+	SecretKey() string
+	AccessTokenExpires() int
+	RefreshTokenExpires() int
+}
 
-func (c *config) Jwt() IJwtConfig { return c.jwt }
+func (c *config) Jwt() IJwtConfig       { return c.jwt }
+func (j *jwt) SecretKey() string        { return j.secretKey }
+func (j *jwt) AccessTokenExpires() int  { return j.accessExpiresAt }
+func (j *jwt) RefreshTokenExpires() int { return j.refreshExpiresAt }
 
 func LoadConfig(path string) IConfig {
 	envMap, err := godotenv.Read(path)

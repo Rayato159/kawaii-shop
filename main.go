@@ -25,5 +25,5 @@ func main() {
 	defer db.Close()
 
 	// Server start
-	servers.NewServer(cfg.App(), db).Start()
+	servers.NewServer(cfg, db).Start()
 }
