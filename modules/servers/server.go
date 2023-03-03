@@ -14,7 +14,7 @@ import (
 type server struct {
 	app *fiber.App
 	db  *sqlx.DB
-	cfg config.IAppConfig
+	cfg config.IConfig
 }
 
 type IServer interface {
@@ -24,7 +24,7 @@ type IServer interface {
 }
 
 func (s *server) Db() *sqlx.DB              { return s.db }
-func (s *server) Config() config.IAppConfig { return s.cfg }
+func (s *server) Config() config.IAppConfig { return s.cfg.App() }
 
 func (s *server) Start() {
 	// Init Middleware
@@ -53,17 +53,17 @@ func (s *server) Start() {
 	}()
 
 	// Listen to host:port
-	log.Printf("server is starting on %s", s.cfg.Url())
-	s.app.Listen(s.cfg.Url())
+	log.Printf("server is starting on %s", s.cfg.App().Url())
+	s.app.Listen(s.cfg.App().Url())
 }
 
-func NewServer(cfg config.IAppConfig, db *sqlx.DB) IServer {
+func NewServer(cfg config.IConfig, db *sqlx.DB) IServer {
 	return &server{
 		app: fiber.New(fiber.Config{
-			AppName:      cfg.Name(),
-			BodyLimit:    cfg.BodyLimit(),
-			ReadTimeout:  cfg.ReadTimeout(),
-			WriteTimeout: cfg.WriteTimeout(),
+			AppName:      cfg.App().Name(),
+			BodyLimit:    cfg.App().BodyLimit(),
+			ReadTimeout:  cfg.App().ReadTimeout(),
+			WriteTimeout: cfg.App().WriteTimeout(),
 			JSONEncoder:  json.Marshal,
 			JSONDecoder:  json.Unmarshal,
 		}),

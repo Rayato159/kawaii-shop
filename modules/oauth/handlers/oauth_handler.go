@@ -16,17 +16,26 @@ const (
 	bodyParserErr     oauthHandlerErrCode = "oauth-001"
 	signUpCustomerErr oauthHandlerErrCode = "oauth-002"
 	getProfileErr     oauthHandlerErrCode = "oauth-003"
+	signInErr         oauthHandlerErrCode = "oauth-004"
+	refreshTokenErr   oauthHandlerErrCode = "oauth-005"
+	signOutErr        oauthHandlerErrCode = "oauth-006"
 )
 
 var oauthHandlerErrMsg = map[oauthHandlerErrCode]string{
 	bodyParserErr:     "body parser failed",
 	signUpCustomerErr: "insert customer error",
 	getProfileErr:     "get profile error",
+	signInErr:         "sign in error",
+	refreshTokenErr:   "refresh token error",
+	signOutErr:        "sign out error",
 }
 
 type IOauthHandler interface {
 	SignUpCustomer(c *fiber.Ctx) error
 	GetProfile(c *fiber.Ctx) error
+	SignIn(c *fiber.Ctx) error
+	RefreshToken(c *fiber.Ctx) error
+	SignOut(c *fiber.Ctx) error
 }
 
 type oauthHandler struct {
@@ -86,6 +95,18 @@ func (h *oauthHandler) SignUpCustomer(c *fiber.Ctx) error {
 		}
 	}
 	return entities.NewResponse(c).Success(fiber.StatusCreated, result).Res()
+}
+
+func (h *oauthHandler) SignIn(c *fiber.Ctx) error {
+	return entities.NewResponse(c).Success(fiber.StatusOK, nil).Res()
+}
+
+func (h *oauthHandler) RefreshToken(c *fiber.Ctx) error {
+	return entities.NewResponse(c).Success(fiber.StatusOK, nil).Res()
+}
+
+func (h *oauthHandler) SignOut(c *fiber.Ctx) error {
+	return entities.NewResponse(c).Success(fiber.StatusOK, nil).Res()
 }
 
 func (h *oauthHandler) GetProfile(c *fiber.Ctx) error {

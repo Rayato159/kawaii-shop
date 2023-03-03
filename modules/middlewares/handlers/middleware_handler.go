@@ -17,11 +17,11 @@ type IMiddlewareHandler interface {
 }
 
 type middlewareHandler struct {
-	Cfg               config.IAppConfig
+	Cfg               config.IConfig
 	MiddlewareUsecase usecases.IMiddlewareUsecase
 }
 
-func MiddlewareHandler(cfg config.IAppConfig, usecase usecases.IMiddlewareUsecase) IMiddlewareHandler {
+func MiddlewareHandler(cfg config.IConfig, usecase usecases.IMiddlewareUsecase) IMiddlewareHandler {
 	return &middlewareHandler{
 		Cfg:               cfg,
 		MiddlewareUsecase: usecase,
