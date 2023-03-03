@@ -7,6 +7,7 @@ import (
 
 type IOauthUsecase interface {
 	InsertCustomer(req *oauth.UserRegisterReq) (*oauth.UserPassport, error)
+	GetProfile(userId string) (*oauth.User, error)
 }
 
 type oauthUsecase struct {
@@ -31,4 +32,12 @@ func (u *oauthUsecase) InsertCustomer(req *oauth.UserRegisterReq) (*oauth.UserPa
 		return nil, err
 	}
 	return result, nil
+}
+
+func (u *oauthUsecase) GetProfile(userId string) (*oauth.User, error) {
+	profile, err := u.OauthRepository.GetProfile(userId)
+	if err != nil {
+		return nil, err
+	}
+	return profile, nil
 }

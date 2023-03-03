@@ -1,6 +1,7 @@
 package oauth
 
 import (
+	"encoding/json"
 	"fmt"
 	"regexp"
 
@@ -27,6 +28,11 @@ type User struct {
 	Email    string `db:"email" json:"email"`
 	Username string `db:"username" json:"username"`
 	Role     string `db:"role" json:"role"`
+}
+
+func (obj *User) ToJsonStringtify() string {
+	bytes, _ := json.Marshal(obj)
+	return string(bytes)
 }
 
 type UserRegisterReq struct {

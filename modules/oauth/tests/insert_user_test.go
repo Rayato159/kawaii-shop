@@ -3,14 +3,12 @@ package oauth_tests
 import (
 	"testing"
 
-	"github.com/Rayato159/kawaii-shop/config"
 	"github.com/Rayato159/kawaii-shop/modules/entities"
 	"github.com/Rayato159/kawaii-shop/modules/oauth"
 	"github.com/Rayato159/kawaii-shop/modules/oauth/repositories/patterns"
-	"github.com/Rayato159/kawaii-shop/pkg/databases"
 	"github.com/Rayato159/kawaii-shop/pkg/utils"
+	kawaiitests "github.com/Rayato159/kawaii-shop/tests"
 	"github.com/go-resty/resty/v2"
-	"github.com/jmoiron/sqlx"
 )
 
 type testSignUpCustomer struct {
@@ -28,25 +26,6 @@ type testSignUpHandlerError struct {
 	url    string
 	req    *oauth.UserRegisterReq
 	expect int
-}
-
-type testOauthConfig struct {
-	cfg config.IConfig
-}
-
-type ITestOauthConfig interface {
-	getDb() *sqlx.DB
-}
-
-func setup() ITestOauthConfig {
-	cfg := config.LoadConfig("../../../.env.test")
-	return &testOauthConfig{
-		cfg: cfg,
-	}
-}
-
-func (cfg *testOauthConfig) getDb() *sqlx.DB {
-	return databases.DbConnect(cfg.cfg.Db())
 }
 
 func TestSignUpStruct(t *testing.T) {
@@ -81,7 +60,7 @@ func TestHashing(t *testing.T) {
 }
 
 func TestSignUpCustomer(t *testing.T) {
-	db := setup().getDb()
+	db := kawaiitests.Setup().GetDb()
 	defer db.Close()
 
 	tests := []testSignUpCustomer{

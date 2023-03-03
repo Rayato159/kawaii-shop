@@ -53,4 +53,5 @@ func (f *ModuleFactory) OauthModule() {
 
 	router := f.router.Group("/oauth")
 	router.Post("/signup", handler.SignUpCustomer)
+	router.Get("/:user_id", handler.GetProfile)
 }
