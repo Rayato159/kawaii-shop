@@ -104,8 +104,8 @@ type IJwtConfig interface{}
 
 func (c *config) Jwt() IJwtConfig { return c.jwt }
 
-func LoadConfig() IConfig {
-	envMap, err := godotenv.Read(envPath())
+func LoadConfig(path string) IConfig {
+	envMap, err := godotenv.Read(path)
 	if err != nil {
 		log.Fatalf("load dotenv failed: %v", err)
 	}

@@ -2,6 +2,7 @@ package oauth
 
 import (
 	"fmt"
+	"regexp"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -42,4 +43,12 @@ func (obj *UserRegisterReq) BcryptHashing() error {
 	}
 	obj.Password = string(hashedPassword)
 	return nil
+}
+
+func (obj *UserRegisterReq) IsEmail() bool {
+	match, err := regexp.MatchString(`^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$`, obj.Email)
+	if err != nil {
+		return false
+	}
+	return match
 }

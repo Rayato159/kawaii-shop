@@ -47,10 +47,25 @@ func (h *oauthHandler) SignUpCustomer(c *fiber.Ctx) error {
 		).Res()
 	}
 
+	// Email validatio
+	if !req.IsEmail() {
+		return entities.NewResponse(c).Error(
+			fiber.ErrBadRequest.Code,
+			string(bodyParserErr),
+			"email pattern is invalid",
+		).Res()
+	}
+
 	// Insert
 	result, err := h.OauthUsecase.InsertCustomer(req)
 	if err != nil {
 		switch err.Error() {
+		case "username have been used":
+			return entities.NewResponse(c).Error(
+				fiber.ErrBadRequest.Code,
+				string(signUpCustomerErr),
+				err.Error(),
+			).Res()
 		case "email have been used":
 			return entities.NewResponse(c).Error(
 				fiber.ErrBadRequest.Code,
@@ -65,5 +80,5 @@ func (h *oauthHandler) SignUpCustomer(c *fiber.Ctx) error {
 			).Res()
 		}
 	}
-	return entities.NewResponse(c).Success(fiber.StatusOK, result).Res()
+	return entities.NewResponse(c).Success(fiber.StatusCreated, result).Res()
 }
