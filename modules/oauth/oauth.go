@@ -30,6 +30,10 @@ type User struct {
 	Role     string `db:"role" json:"role"`
 }
 
+type UserClaims struct {
+	Id string `db:"id" json:"id"`
+}
+
 func (obj *User) ToJsonStringtify() string {
 	bytes, _ := json.Marshal(obj)
 	return string(bytes)

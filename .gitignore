@@ -36,3 +36,4 @@ vendor
 .air*
 /tmp
 *.pem
+*.json

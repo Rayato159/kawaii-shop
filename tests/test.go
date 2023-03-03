@@ -12,6 +12,9 @@ type testConfig struct {
 
 type ITestConfig interface {
 	GetDb() *sqlx.DB
+	GetJwtConfig() config.IJwtConfig
+	SetJwtAccessExpires(t int)
+	SetJwtRefreshExpires(t int)
 }
 
 func Setup() ITestConfig {
@@ -23,4 +26,13 @@ func Setup() ITestConfig {
 
 func (cfg *testConfig) GetDb() *sqlx.DB {
 	return databases.DbConnect(cfg.cfg.Db())
+}
+func (cfg *testConfig) GetJwtConfig() config.IJwtConfig {
+	return cfg.cfg.Jwt()
+}
+func (cfg *testConfig) SetJwtAccessExpires(t int) {
+	cfg.cfg.Jwt().SetJwtAccessExpires(t)
+}
+func (cfg *testConfig) SetJwtRefreshExpires(t int) {
+	cfg.cfg.Jwt().SetJwtRefreshExpires(t)
 }
