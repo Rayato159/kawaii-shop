@@ -1,4 +1,4 @@
-package utils
+package kawaiiauth
 
 import (
 	"errors"
@@ -71,22 +71,23 @@ func ParseToken(cfg config.IJwtConfig, tokenString string) (*kawaiiMapClaims, er
 	}
 }
 
-// func RepeatToken(claims any, exp int64) string {
-// 	obj := &kawaiiAuth{
-// 		mapClaims: &kawaiiMapClaims{
-// 			claims: claims,
-// 			registeredClaims: jwt.RegisteredClaims{
-// 				Issuer:    "kawaiishop-api",
-// 				Subject:   "access-token",
-// 				Audience:  []string{"customer", "admin"},
-// 				ExpiresAt: jwtTimeRepeatAdapter(exp),
-// 				NotBefore: jwt.NewNumericDate(time.Now()),
-// 				IssuedAt:  jwt.NewNumericDate(time.Now()),
-// 			},
-// 		},
-// 	}
-// 	return ""
-// }
+func RepeatToken(cfg config.IJwtConfig, claims any, exp int64) string {
+	obj := &kawaiiAuth{
+		cfg: cfg,
+		mapClaims: &kawaiiMapClaims{
+			Claims: claims,
+			RegisteredClaims: jwt.RegisteredClaims{
+				Issuer:    "kawaiishop-api",
+				Subject:   "refresh-token",
+				Audience:  []string{"customer", "admin"},
+				ExpiresAt: jwtTimeRepeatAdapter(exp),
+				NotBefore: jwt.NewNumericDate(time.Now()),
+				IssuedAt:  jwt.NewNumericDate(time.Now()),
+			},
+		},
+	}
+	return obj.SignToken()
+}
 
 func NewKawaiiAuth(tokenType TokenType, cfg config.IJwtConfig, claims any) (IKawaiiAuth, error) {
 	switch tokenType {

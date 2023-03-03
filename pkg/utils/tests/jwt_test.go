@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/Rayato159/kawaii-shop/modules/oauth"
-	"github.com/Rayato159/kawaii-shop/pkg/utils"
+	"github.com/Rayato159/kawaii-shop/pkg/kawaiiauth"
 	kawaiitests "github.com/Rayato159/kawaii-shop/tests"
 )
 
@@ -26,7 +26,7 @@ func TestSignAccessToken(t *testing.T) {
 
 	// Expires
 	config.SetJwtAccessExpires(0)
-	token, err := utils.NewKawaiiAuth(utils.Access, config, &oauth.UserClaims{
+	token, err := kawaiiauth.NewKawaiiAuth(kawaiiauth.Access, config, &oauth.UserClaims{
 		Id: "U000001",
 	})
 	if err != nil {
@@ -42,7 +42,7 @@ func TestSignAccessToken(t *testing.T) {
 
 	// Alive
 	config.SetJwtAccessExpires(99999999)
-	token, err = utils.NewKawaiiAuth(utils.Access, config, &oauth.UserClaims{
+	token, err = kawaiiauth.NewKawaiiAuth(kawaiiauth.Access, config, &oauth.UserClaims{
 		Id: "U000001",
 	})
 	if err != nil {
@@ -75,7 +75,7 @@ func TestRefreshToken(t *testing.T) {
 
 	// Expires
 	config.SetJwtRefreshExpires(0)
-	token, err := utils.NewKawaiiAuth(utils.Refresh, config, &oauth.UserClaims{
+	token, err := kawaiiauth.NewKawaiiAuth(kawaiiauth.Refresh, config, &oauth.UserClaims{
 		Id: "U000001",
 	})
 	if err != nil {
@@ -91,7 +91,7 @@ func TestRefreshToken(t *testing.T) {
 
 	// Alive
 	config.SetJwtRefreshExpires(99999999)
-	token, err = utils.NewKawaiiAuth(utils.Refresh, config, &oauth.UserClaims{
+	token, err = kawaiiauth.NewKawaiiAuth(kawaiiauth.Refresh, config, &oauth.UserClaims{
 		Id: "U000001",
 	})
 	if err != nil {
@@ -145,7 +145,7 @@ func TestParseAccessToken(t *testing.T) {
 
 	for _, req := range tests {
 		if req.isErr {
-			_, err := utils.ParseToken(cfg.GetJwtConfig(), req.token)
+			_, err := kawaiiauth.ParseToken(cfg.GetJwtConfig(), req.token)
 			if err == nil {
 				fmt.Println(req.token)
 				t.Errorf("expect: %v, got: %v", "err", err)
@@ -154,7 +154,7 @@ func TestParseAccessToken(t *testing.T) {
 				t.Errorf("expect: %v, got: %v", req.expect, err)
 			}
 		} else {
-			_, err := utils.ParseToken(cfg.GetJwtConfig(), req.token)
+			_, err := kawaiiauth.ParseToken(cfg.GetJwtConfig(), req.token)
 			if err != nil {
 				t.Errorf("expect: %v, got: %v", nil, err)
 			}
@@ -191,7 +191,7 @@ func TestParseRefreshToken(t *testing.T) {
 
 	for _, req := range tests {
 		if req.isErr {
-			_, err := utils.ParseToken(cfg.GetJwtConfig(), req.token)
+			_, err := kawaiiauth.ParseToken(cfg.GetJwtConfig(), req.token)
 			if err == nil {
 				fmt.Println(req.token)
 				t.Errorf("expect: %v, got: %v", "err", err)
@@ -200,10 +200,25 @@ func TestParseRefreshToken(t *testing.T) {
 				t.Errorf("expect: %v, got: %v", req.expect, err)
 			}
 		} else {
-			_, err := utils.ParseToken(cfg.GetJwtConfig(), req.token)
+			_, err := kawaiiauth.ParseToken(cfg.GetJwtConfig(), req.token)
 			if err != nil {
 				t.Errorf("expect: %v, got: %v", nil, err)
 			}
 		}
 	}
+}
+
+func TestRepeatToken(t *testing.T) {
+	cfg := kawaiitests.Setup()
+	token := kawaiiauth.RepeatToken(
+		cfg.GetJwtConfig(),
+		&oauth.UserClaims{
+			Id: "U000001",
+		},
+		1777875301,
+	)
+	if token == "" {
+		t.Errorf("expect: %v, got: %v", "xxxxxxxxxx", "")
+	}
+	fmt.Println(token)
 }
