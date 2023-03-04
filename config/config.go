@@ -55,6 +55,7 @@ type db struct {
 }
 
 type jwt struct {
+	adminKey         string
 	secretKey        string
 	accessExpiresAt  int // Second
 	refreshExpiresAt int // Second
@@ -102,6 +103,7 @@ func (d *db) MaxOpenConns() int { return d.maxConnections }
 
 type IJwtConfig interface {
 	SecretKey() []byte
+	AdminKey() []byte
 	AccessTokenExpires() int
 	RefreshTokenExpires() int
 	SetJwtAccessExpires(t int)
@@ -110,6 +112,7 @@ type IJwtConfig interface {
 
 func (c *config) Jwt() IJwtConfig         { return c.jwt }
 func (j *jwt) SecretKey() []byte          { return []byte(j.secretKey) }
+func (j *jwt) AdminKey() []byte           { return []byte(j.adminKey) }
 func (j *jwt) AccessTokenExpires() int    { return j.accessExpiresAt }
 func (j *jwt) RefreshTokenExpires() int   { return j.refreshExpiresAt }
 func (j *jwt) SetJwtAccessExpires(t int)  { j.accessExpiresAt = t }
@@ -182,6 +185,7 @@ func LoadConfig(path string) IConfig {
 		},
 		// Jwt
 		jwt: &jwt{
+			adminKey:  envMap["APP_ADMIN_KEY"],
 			secretKey: envMap["JWT_SECRET_KEY"],
 			accessExpiresAt: func() int {
 				exp, err := strconv.Atoi(envMap["JWT_ACCESS_EXPIRES"])

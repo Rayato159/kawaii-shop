@@ -113,6 +113,34 @@ func TestRefreshToken(t *testing.T) {
 	}
 }
 
+func TestAdminToken(t *testing.T) {
+	cfg := kawaiitests.Setup()
+
+	tokenStack := make([]string, 0)
+	tokenStack = append(tokenStack, "helloadmin")
+
+	token, err := kawaiiauth.NewKawaiiAuth(kawaiiauth.Admin, cfg.GetConfig().Jwt(), nil)
+	if err != nil {
+		t.Errorf("expect: %v, got: %v", nil, err)
+	}
+	if token == nil {
+		t.Errorf("expect: %v, got: %v", "obj", token)
+	}
+	if token.SignToken() == "" {
+		t.Errorf("expect: %v, got: %v", "xxxxxxxxx", token.SignToken())
+	}
+	tokenStack = append(tokenStack, token.SignToken())
+
+	// Write file
+	tokenJsonBytes, err := json.MarshalIndent(&tokenStack, "", "\t")
+	if err != nil {
+		t.Errorf("marshal indent token failed: %v", err)
+	}
+	if err := os.WriteFile("./admin_token.json", tokenJsonBytes, 0777); err != nil {
+		t.Errorf("export token failed: %v", err)
+	}
+}
+
 func TestParseAccessToken(t *testing.T) {
 	cfg := kawaiitests.Setup()
 	tests := make([]testParseToken, 0)
@@ -199,6 +227,48 @@ func TestParseRefreshToken(t *testing.T) {
 			}
 		} else {
 			_, err := kawaiiauth.ParseToken(cfg.GetConfig().Jwt(), req.token)
+			if err != nil {
+				t.Errorf("expect: %v, got: %v", nil, err)
+			}
+		}
+	}
+}
+
+func TestParseAdminToken(t *testing.T) {
+	cfg := kawaiitests.Setup()
+	tests := make([]testParseToken, 0)
+
+	adminTokenJsonBytes, err := os.ReadFile("./admin_token.json")
+	if err != nil {
+		t.Errorf("read file failed: %v", err)
+	}
+	adminToken := make([]string, 0)
+	if err := json.Unmarshal(adminTokenJsonBytes, &adminToken); err != nil {
+		t.Errorf("unmarshal refresh_token failed: %v", err)
+	}
+	tests = append(tests, testParseToken{
+		token:  adminToken[0],
+		isErr:  true,
+		expect: "token format is invalid",
+	})
+	tests = append(tests, testParseToken{
+		token:  adminToken[1],
+		isErr:  false,
+		expect: "",
+	})
+
+	for _, req := range tests {
+		if req.isErr {
+			_, err := kawaiiauth.ParseAdminToken(cfg.GetConfig().Jwt(), req.token)
+			if err == nil {
+				fmt.Println(req.token)
+				t.Errorf("expect: %v, got: %v", "err", err)
+			}
+			if err != nil && err.Error() != req.expect {
+				t.Errorf("expect: %v, got: %v", req.expect, err)
+			}
+		} else {
+			_, err := kawaiiauth.ParseAdminToken(cfg.GetConfig().Jwt(), req.token)
 			if err != nil {
 				t.Errorf("expect: %v, got: %v", nil, err)
 			}
