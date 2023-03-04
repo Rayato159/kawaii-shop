@@ -24,15 +24,24 @@ type UserRemoveCredential struct {
 	Code string `json:"code" form:"code"`
 }
 
+type UserRefreshCredential struct {
+	RefreshToken string `json:"refresh_token" form:"refresh_token"`
+}
+
+type Oauth struct {
+	Id     string `db:"id" json:"id" form:"id"`
+	UserId string `db:"user_id"`
+}
+
 type UserPassport struct {
 	User  *User      `json:"user"`
 	Token *UserToken `json:"token"`
 }
 
 type UserToken struct {
-	Code         string `json:"code"`
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
+	Id           string `db:"id" json:"id"`
+	AccessToken  string `db:"access_token" json:"access_token"`
+	RefreshToken string `db:"refresh_token" json:"refresh_token"`
 }
 
 type User struct {

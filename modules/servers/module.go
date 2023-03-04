@@ -55,5 +55,6 @@ func (f *ModuleFactory) UsersModule() {
 	router.Post("/signup", handler.SignUpCustomer)
 	router.Post("/signin", handler.SignIn)
 	router.Post("/signout", handler.SignOut)
+	router.Post("/refresh", handler.RefreshPassport)
 	router.Get("/:user_id", handler.GetProfile)
 }

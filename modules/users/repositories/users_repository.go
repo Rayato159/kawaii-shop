@@ -17,6 +17,8 @@ type IUsersRepository interface {
 	FindOneUserByEmail(email string) (*users.UserCredentialCheck, error)
 	InsertOauth(req *users.UserPassport) error
 	DeleteOauth(code string) error
+	FindOneOauth(refreshToken string) (*users.Oauth, error)
+	UpdateOauth(req *users.UserToken) error
 }
 
 type usersRepository struct {
@@ -95,7 +97,7 @@ func (r *usersRepository) InsertOauth(req *users.UserPassport) error {
 		"access_token"
 	)
 	VALUES ($1, $2, $3)
-		RETURNING "id" AS "code";`
+		RETURNING "id";`
 
 	if err := r.Db.QueryRowxContext(
 		context.Background(),
@@ -103,7 +105,7 @@ func (r *usersRepository) InsertOauth(req *users.UserPassport) error {
 		req.User.Id,
 		req.Token.RefreshToken,
 		req.Token.AccessToken,
-	).Scan(&req.Token.Code); err != nil {
+	).Scan(&req.Token.Id); err != nil {
 		return fmt.Errorf("insert oauth failed: %v", err)
 	}
 	return nil
@@ -116,6 +118,34 @@ func (r *usersRepository) DeleteOauth(code string) error {
 
 	if _, err := r.Db.ExecContext(context.Background(), query, code); err != nil {
 		return fmt.Errorf("oauth not found")
+	}
+	return nil
+}
+
+func (r *usersRepository) FindOneOauth(refreshToken string) (*users.Oauth, error) {
+	query := `
+	SELECT
+		"id",
+		"user_id"
+	FROM "oauth"
+	WHERE "refresh_token" = $1;`
+
+	oauth := new(users.Oauth)
+	if err := r.Db.Get(oauth, query, refreshToken); err != nil {
+		return nil, fmt.Errorf("oauth not found")
+	}
+	return oauth, nil
+}
+
+func (r *usersRepository) UpdateOauth(req *users.UserToken) error {
+	query := `
+	UPDATE "oauth" SET
+		"access_token" = :access_token,
+		"refresh_token" = :refresh_token
+	WHERE "id" = :id;`
+
+	if _, err := r.Db.NamedExecContext(context.Background(), query, req); err != nil {
+		return fmt.Errorf("update oauth failed: %v", err)
 	}
 	return nil
 }

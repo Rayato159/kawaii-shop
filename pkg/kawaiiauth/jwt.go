@@ -124,7 +124,7 @@ func newRefreshToken(cfg config.IJwtConfig, claims any) IKawaiiAuth {
 			Claims: claims,
 			RegisteredClaims: jwt.RegisteredClaims{
 				Issuer:    "kawaiishop-api",
-				Subject:   "access-token",
+				Subject:   "refresh-token",
 				Audience:  []string{"customer", "admin"},
 				ExpiresAt: jwtTimeDurationCal(cfg.RefreshTokenExpires()),
 				NotBefore: jwt.NewNumericDate(time.Now()),

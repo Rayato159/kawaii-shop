@@ -15,6 +15,7 @@ type IUsersUsecase interface {
 	GetProfile(userId string) (*users.User, error)
 	GetPassport(req *users.UserCredential) (*users.UserPassport, error)
 	DeleteOauth(code string) error
+	RefreshPassport(req *users.UserRefreshCredential) (*users.UserPassport, error)
 }
 
 type usersUsecase struct {
@@ -104,4 +105,59 @@ func (u *usersUsecase) DeleteOauth(code string) error {
 		return err
 	}
 	return nil
+}
+
+func (u *usersUsecase) RefreshPassport(req *users.UserRefreshCredential) (*users.UserPassport, error) {
+	// Parse token
+	claims, err := kawaiiauth.ParseToken(u.cfg.Jwt(), req.RefreshToken)
+	if err != nil {
+		return nil, err
+	}
+
+	// Find data and set claims
+	oauth, err := u.UsersRepository.FindOneOauth(req.RefreshToken)
+	if err != nil {
+		return nil, err
+	}
+
+	profile, err := u.UsersRepository.GetProfile(oauth.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	// Generate new token
+	newClaims := &users.UserClaims{
+		Id: profile.Id,
+	}
+	accessToken, err := kawaiiauth.NewKawaiiAuth(
+		kawaiiauth.Access,
+		u.cfg.Jwt(),
+		newClaims,
+	)
+	if err != nil {
+		return nil, err
+	}
+	refreshToken := kawaiiauth.RepeatToken(
+		u.cfg.Jwt(),
+		newClaims,
+		claims.ExpiresAt.Unix(),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	// Set passport
+	passport := &users.UserPassport{
+		User: profile,
+		Token: &users.UserToken{
+			Id:           oauth.Id,
+			AccessToken:  accessToken.SignToken(),
+			RefreshToken: refreshToken,
+		},
+	}
+
+	if err := u.UsersRepository.UpdateOauth(passport.Token); err != nil {
+		return nil, err
+	}
+	return passport, nil
 }

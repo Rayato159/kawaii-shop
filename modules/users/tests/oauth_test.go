@@ -131,3 +131,35 @@ func TestSignOut(t *testing.T) {
 		t.Errorf("expect: %v, got: %v", nil, err)
 	}
 }
+
+func TestFindOauth(t *testing.T) {
+	db := kawaiitests.Setup().GetDb()
+	refreshToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOnsiaWQiOiJVMDAwMDAxIn0sImlzcyI6Imthd2FpaXNob3AtYXBpIiwic3ViIjoiYWNjZXNzLXRva2VuIiwiYXVkIjpbImN1c3RvbWVyIiwiYWRtaW4iXSwiZXhwIjoxNjc4NTM1NjI2LCJuYmYiOjE2Nzc5MzA4MjYsImlhdCI6MTY3NzkzMDgyNn0.E2kbmBHSD1aMIu1sQlSrviSXlXShTDl7bIWBOV29YXM"
+
+	usersRepo := repositories.UsersRepository(db)
+
+	_, err := usersRepo.FindOneOauth("xxxxxxxxxx")
+	if err == nil {
+		t.Errorf("expect: %v, got: %v", "oauth not found", err)
+	}
+
+	oauth, err := usersRepo.FindOneOauth(refreshToken)
+	if err != nil {
+		t.Errorf("expect: %v, got: %v", nil, err)
+	}
+	utils.Debug(oauth)
+}
+
+func TestRefreshPassport(t *testing.T) {
+	init := kawaiitests.Setup()
+	usersRepo := repositories.UsersRepository(init.GetDb())
+	userUC := usecases.UsersUsecase(usersRepo, init.GetConfig())
+
+	passport, err := userUC.RefreshPassport(&users.UserRefreshCredential{
+		RefreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOnsiaWQiOiJVMDAwMDAxIn0sImlzcyI6Imthd2FpaXNob3AtYXBpIiwic3ViIjoiYWNjZXNzLXRva2VuIiwiYXVkIjpbImN1c3RvbWVyIiwiYWRtaW4iXSwiZXhwIjoxNjc4NTM1NjI2LCJuYmYiOjE2Nzc5MzA4MjYsImlhdCI6MTY3NzkzMDgyNn0.E2kbmBHSD1aMIu1sQlSrviSXlXShTDl7bIWBOV29YXM",
+	})
+	if err != nil {
+		t.Errorf("expect: %v, got: %v", nil, err)
+	}
+	utils.Debug(passport)
+}

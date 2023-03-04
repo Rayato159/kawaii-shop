@@ -13,28 +13,28 @@ import (
 type usersHandlerErrCode string
 
 const (
-	bodyParserErr     usersHandlerErrCode = "users-001"
-	signUpCustomerErr usersHandlerErrCode = "users-002"
-	getProfileErr     usersHandlerErrCode = "users-003"
-	signInErr         usersHandlerErrCode = "users-004"
-	refreshTokenErr   usersHandlerErrCode = "users-005"
-	signOutErr        usersHandlerErrCode = "users-006"
+	bodyParserErr      usersHandlerErrCode = "users-001"
+	signUpCustomerErr  usersHandlerErrCode = "users-002"
+	getProfileErr      usersHandlerErrCode = "users-003"
+	signInErr          usersHandlerErrCode = "users-004"
+	refreshPassportErr usersHandlerErrCode = "users-005"
+	signOutErr         usersHandlerErrCode = "users-006"
 )
 
 var usersHandlerErrMsg = map[usersHandlerErrCode]string{
-	bodyParserErr:     "body parser failed",
-	signUpCustomerErr: "insert customer error",
-	getProfileErr:     "get profile error",
-	signInErr:         "sign in error",
-	refreshTokenErr:   "refresh token error",
-	signOutErr:        "sign out error",
+	bodyParserErr:      "body parser failed",
+	signUpCustomerErr:  "insert customer error",
+	getProfileErr:      "get profile error",
+	signInErr:          "sign in error",
+	refreshPassportErr: "refresh token error",
+	signOutErr:         "sign out error",
 }
 
 type IUsersHandler interface {
 	SignUpCustomer(c *fiber.Ctx) error
 	GetProfile(c *fiber.Ctx) error
 	SignIn(c *fiber.Ctx) error
-	RefreshToken(c *fiber.Ctx) error
+	RefreshPassport(c *fiber.Ctx) error
 	SignOut(c *fiber.Ctx) error
 }
 
@@ -119,8 +119,25 @@ func (h *usersHandler) SignIn(c *fiber.Ctx) error {
 	return entities.NewResponse(c).Success(fiber.StatusOK, passport).Res()
 }
 
-func (h *usersHandler) RefreshToken(c *fiber.Ctx) error {
-	return entities.NewResponse(c).Success(fiber.StatusOK, nil).Res()
+func (h *usersHandler) RefreshPassport(c *fiber.Ctx) error {
+	req := new(users.UserRefreshCredential)
+	if err := c.BodyParser(req); err != nil {
+		return entities.NewResponse(c).Error(
+			fiber.ErrBadRequest.Code,
+			string(bodyParserErr),
+			usersHandlerErrMsg[bodyParserErr],
+		).Res()
+	}
+
+	passport, err := h.UsersUsecase.RefreshPassport(req)
+	if err != nil {
+		return entities.NewResponse(c).Error(
+			fiber.ErrBadRequest.Code,
+			string(refreshPassportErr),
+			err.Error(),
+		).Res()
+	}
+	return entities.NewResponse(c).Success(fiber.StatusOK, passport).Res()
 }
 
 func (h *usersHandler) SignOut(c *fiber.Ctx) error {
