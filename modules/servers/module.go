@@ -74,4 +74,5 @@ func (f *ModuleFactory) AppinfoModule() {
 
 	router := f.router.Group("/appinfo")
 	router.Get("/category", handler.FindCategory)
+	router.Get("/apikey", f.middleware.JwtAuth(), f.middleware.Authorize(2), handler.GenerateApiKey)
 }
