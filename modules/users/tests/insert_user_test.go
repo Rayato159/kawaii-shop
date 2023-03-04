@@ -117,6 +117,64 @@ func TestSignUpCustomer(t *testing.T) {
 	}
 }
 
+func TestSignUpAdmin(t *testing.T) {
+	db := kawaiitests.Setup().GetDb()
+	defer db.Close()
+
+	tests := []testSignUpCustomer{
+		{
+			req: &users.UserRegisterReq{
+				Email:    "customer001@kawaii.com",
+				Username: "testcustomer001",
+				Password: "123456",
+			},
+			isErr: true,
+		},
+		{
+			req: &users.UserRegisterReq{
+				Email:    "testcustomer001@kawaii.com",
+				Username: "customer001",
+				Password: "123456",
+			},
+			isErr: true,
+		},
+		{
+			req: &users.UserRegisterReq{
+				Email:    "cusotomer002@kawaii.com",
+				Username: "customer002",
+				Password: "123456",
+			},
+			isErr: false,
+		},
+	}
+
+	for _, test := range tests {
+		// Hashing password
+		test.req.BcryptHashing()
+
+		if test.isErr {
+			_, err := patterns.InsertUser(db, test.req, true).Admin()
+			if err == nil {
+				t.Errorf("expect: %v, got: %v", "err", err)
+			}
+		} else {
+			result, err := patterns.InsertUser(db, test.req, true).Admin()
+			if err != nil {
+				t.Errorf("expect: %v, got: %v", result, err)
+			}
+
+			user, err := result.Result()
+			if err != nil {
+				t.Errorf("expect: %v, got: %v", user, err)
+			}
+			if user == nil {
+				t.Errorf("expect: %v, got: %v", "user", user)
+			}
+			utils.Debug(user)
+		}
+	}
+}
+
 func TestSignUpHandler(t *testing.T) {
 	testsError := []testSignUpHandlerError{
 		{
@@ -180,6 +238,83 @@ func TestSignUpHandler(t *testing.T) {
 	for _, req := range testsSuccess {
 		resp, err := client.R().
 			SetHeader("Content-Type", "application/json").
+			SetBody(req.req).
+			SetResult(&users.UserPassport{}).
+			Post(req.url)
+		if err != nil {
+			t.Errorf("expect: %v, got: %v", nil, err)
+		}
+		if resp.StatusCode() != req.expect {
+			t.Errorf("expect: %v, got: %v", 201, resp.StatusCode())
+		}
+	}
+}
+
+func TestSignUpAdminHandler(t *testing.T) {
+	testsError := []testSignUpHandlerError{
+		{
+			url: "http://localhost:3000/v1/users/admin",
+			req: &users.UserRegisterReq{
+				Email:    "rainbowkawaii.com",
+				Username: "rainbow",
+				Password: "123456",
+			},
+			expect: 400,
+		},
+		{
+			url: "http://localhost:3000/v1/users/admin",
+			req: &users.UserRegisterReq{
+				Email:    "rainbow@kawaii.com",
+				Username: "customer001",
+				Password: "123456",
+			},
+			expect: 400,
+		},
+		{
+			url: "http://localhost:3000/v1/users/admin",
+			req: &users.UserRegisterReq{
+				Email:    "customer001@kawaii.com",
+				Username: "rainbow",
+				Password: "123456",
+			},
+			expect: 400,
+		},
+	}
+
+	testsSuccess := []testSignUpHandlerSuccess{
+		{
+			url: "http://localhost:3000/v1/users/admin",
+			req: &users.UserRegisterReq{
+				Email:    "rainbow@kawaii.com",
+				Username: "rainbow",
+				Password: "123456",
+			},
+			expect: 201,
+		},
+	}
+
+	// Init client
+	client := resty.New()
+
+	for _, req := range testsError {
+		resp, err := client.R().
+			SetHeader("Content-Type", "application/json").
+			SetAuthToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOnsiaWQiOiJVMDAwMDAyIiwicm9sZSI6Mn0sImlzcyI6Imthd2FpaXNob3AtYXBpIiwic3ViIjoiYWNjZXNzLXRva2VuIiwiYXVkIjpbImN1c3RvbWVyIiwiYWRtaW4iXSwiZXhwIjoxNjc4MDQ4MDA4LCJuYmYiOjE2Nzc5NjE2MDgsImlhdCI6MTY3Nzk2MTYwOH0.HCtrqNb9SeCq-QgibROuVZ3DyjrEEyC5jgGhD3DKY-k").
+			SetBody(req.req).
+			SetResult(&entities.ErrorResponse{}).
+			Post(req.url)
+		if err != nil {
+			t.Errorf("expect: %v, got: %v", nil, err)
+		}
+		if resp.StatusCode() != req.expect {
+			t.Errorf("expect: %v, got: %v", req.expect, resp.StatusCode())
+		}
+	}
+
+	for _, req := range testsSuccess {
+		resp, err := client.R().
+			SetHeader("Content-Type", "application/json").
+			SetAuthToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOnsiaWQiOiJVMDAwMDAyIiwicm9sZSI6Mn0sImlzcyI6Imthd2FpaXNob3AtYXBpIiwic3ViIjoiYWNjZXNzLXRva2VuIiwiYXVkIjpbImN1c3RvbWVyIiwiYWRtaW4iXSwiZXhwIjoxNjc4MDQ4MDA4LCJuYmYiOjE2Nzc5NjE2MDgsImlhdCI6MTY3Nzk2MTYwOH0.HCtrqNb9SeCq-QgibROuVZ3DyjrEEyC5jgGhD3DKY-k").
 			SetBody(req.req).
 			SetResult(&users.UserPassport{}).
 			Post(req.url)

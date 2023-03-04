@@ -12,7 +12,7 @@ import (
 
 type IUsersRepository interface {
 	GetTransaction() (*sqlx.Tx, error)
-	InsertCustomer(req *users.UserRegisterReq) (*users.UserPassport, error)
+	InsertUser(req *users.UserRegisterReq, isAdmin bool) (*users.UserPassport, error)
 	GetProfile(userId string) (*users.User, error)
 	FindOneUserByEmail(email string) (*users.UserCredentialCheck, error)
 	InsertOauth(req *users.UserPassport) error
@@ -37,11 +37,22 @@ func (r *usersRepository) GetTransaction() (*sqlx.Tx, error) {
 	return tx, nil
 }
 
-func (r *usersRepository) InsertCustomer(req *users.UserRegisterReq) (*users.UserPassport, error) {
+func (r *usersRepository) InsertUser(req *users.UserRegisterReq, isAdmin bool) (*users.UserPassport, error) {
 	// Inserting
-	result, err := patterns.InsertUser(r.db, req, false).Customer()
-	if err != nil {
-		return nil, err
+
+	result := patterns.InsertUser(r.db, req, isAdmin)
+
+	var err error
+	if isAdmin {
+		result, err = result.Admin()
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		result, err = result.Customer()
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// Get result from inserting

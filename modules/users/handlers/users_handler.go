@@ -21,6 +21,7 @@ const (
 	refreshPassportErr    usersHandlerErrCode = "users-005"
 	signOutErr            usersHandlerErrCode = "users-006"
 	generateAdminTokenErr usersHandlerErrCode = "users-007"
+	addAdminErr           usersHandlerErrCode = "users-009"
 )
 
 var usersHandlerErrMsg = map[usersHandlerErrCode]string{
@@ -31,6 +32,7 @@ var usersHandlerErrMsg = map[usersHandlerErrCode]string{
 	refreshPassportErr:    "refresh token error",
 	signOutErr:            "sign out error",
 	generateAdminTokenErr: "generate admin token error",
+	addAdminErr:           "generate admin token error",
 }
 
 type IUsersHandler interface {
@@ -40,6 +42,7 @@ type IUsersHandler interface {
 	RefreshPassport(c *fiber.Ctx) error
 	SignOut(c *fiber.Ctx) error
 	GenerateAdminToken(c *fiber.Ctx) error
+	AddAdmin(c *fiber.Ctx) error
 }
 
 type usersHandler struct {
@@ -94,6 +97,53 @@ func (h *usersHandler) SignUpCustomer(c *fiber.Ctx) error {
 			return entities.NewResponse(c).Error(
 				fiber.ErrInternalServerError.Code,
 				string(signUpCustomerErr),
+				err.Error(),
+			).Res()
+		}
+	}
+	return entities.NewResponse(c).Success(fiber.StatusCreated, result).Res()
+}
+
+func (h *usersHandler) AddAdmin(c *fiber.Ctx) error {
+	// Request body parser
+	req := new(users.UserRegisterReq)
+	if err := c.BodyParser(req); err != nil {
+		return entities.NewResponse(c).Error(
+			fiber.ErrBadRequest.Code,
+			string(bodyParserErr),
+			usersHandlerErrMsg[bodyParserErr],
+		).Res()
+	}
+
+	// Email validatio
+	if !req.IsEmail() {
+		return entities.NewResponse(c).Error(
+			fiber.ErrBadRequest.Code,
+			string(bodyParserErr),
+			"email pattern is invalid",
+		).Res()
+	}
+
+	// Insert
+	result, err := h.usersUsecases.InsertAdmin(req)
+	if err != nil {
+		switch err.Error() {
+		case "username have been used":
+			return entities.NewResponse(c).Error(
+				fiber.ErrBadRequest.Code,
+				string(addAdminErr),
+				err.Error(),
+			).Res()
+		case "email have been used":
+			return entities.NewResponse(c).Error(
+				fiber.ErrBadRequest.Code,
+				string(addAdminErr),
+				err.Error(),
+			).Res()
+		default:
+			return entities.NewResponse(c).Error(
+				fiber.ErrInternalServerError.Code,
+				string(addAdminErr),
 				err.Error(),
 			).Res()
 		}
