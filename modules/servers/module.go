@@ -59,5 +59,5 @@ func (f *ModuleFactory) UsersModule() {
 	router.Post("/refresh", handler.RefreshPassport)
 
 	router.Get("/secret", handler.GenerateAdminToken)
-	router.Get("/:user_id", handler.GetProfile)
+	router.Get("/:user_id", f.middleware.JwtAuth(), handler.GetProfile)
 }

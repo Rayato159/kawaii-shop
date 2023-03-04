@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Rayato159/kawaii-shop/config"
+	"github.com/Rayato159/kawaii-shop/modules/users"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -37,7 +38,7 @@ type kawaiiAdmin struct {
 }
 
 type kawaiiMapClaims struct {
-	Claims any `json:"claims"`
+	Claims *users.UserClaims `json:"claims"`
 	jwt.RegisteredClaims
 }
 
@@ -113,7 +114,7 @@ func ParseAdminToken(cfg config.IJwtConfig, tokenString string) (*kawaiiMapClaim
 	}
 }
 
-func RepeatToken(cfg config.IJwtConfig, claims any, exp int64) string {
+func RepeatToken(cfg config.IJwtConfig, claims *users.UserClaims, exp int64) string {
 	obj := &kawaiiAuth{
 		cfg: cfg,
 		mapClaims: &kawaiiMapClaims{
@@ -131,7 +132,7 @@ func RepeatToken(cfg config.IJwtConfig, claims any, exp int64) string {
 	return obj.SignToken()
 }
 
-func NewKawaiiAuth(tokenType TokenType, cfg config.IJwtConfig, claims any) (IKawaiiAuth, error) {
+func NewKawaiiAuth(tokenType TokenType, cfg config.IJwtConfig, claims *users.UserClaims) (IKawaiiAuth, error) {
 	switch tokenType {
 	case Access:
 		return newAccessToken(cfg, claims), nil
@@ -144,7 +145,7 @@ func NewKawaiiAuth(tokenType TokenType, cfg config.IJwtConfig, claims any) (IKaw
 	}
 }
 
-func newAccessToken(cfg config.IJwtConfig, claims any) IKawaiiAuth {
+func newAccessToken(cfg config.IJwtConfig, claims *users.UserClaims) IKawaiiAuth {
 	return &kawaiiAuth{
 		cfg: cfg,
 		mapClaims: &kawaiiMapClaims{
@@ -161,7 +162,7 @@ func newAccessToken(cfg config.IJwtConfig, claims any) IKawaiiAuth {
 	}
 }
 
-func newRefreshToken(cfg config.IJwtConfig, claims any) IKawaiiAuth {
+func newRefreshToken(cfg config.IJwtConfig, claims *users.UserClaims) IKawaiiAuth {
 	return &kawaiiAuth{
 		cfg: cfg,
 		mapClaims: &kawaiiMapClaims{
@@ -182,9 +183,7 @@ func newAdminToken(cfg config.IJwtConfig, claims any) IKawaiiAdmin {
 	return &kawaiiAdmin{
 		cfg: cfg,
 		mapClaims: &kawaiiMapClaims{
-			Claims: &struct {
-				Msg string `json:"msg"`
-			}{Msg: "admin-token"},
+			Claims: nil,
 			RegisteredClaims: jwt.RegisteredClaims{
 				Issuer:    "kawaiishop-api",
 				Subject:   "admin-token",
