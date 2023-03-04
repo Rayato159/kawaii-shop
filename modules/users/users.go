@@ -56,10 +56,9 @@ type UserClaims struct {
 }
 
 type UserRegisterReq struct {
-	Email    string  `db:"email" json:"email" form:"email"`
-	Username string  `db:"username" json:"username" form:"username"`
-	Password string  `db:"password" json:"password" form:"password"`
-	Token    *string `json:"token"`
+	Email    string `db:"email" json:"email" form:"email"`
+	Username string `db:"username" json:"username" form:"username"`
+	Password string `db:"password" json:"password" form:"password"`
 }
 
 func (obj *UserRegisterReq) BcryptHashing() error {

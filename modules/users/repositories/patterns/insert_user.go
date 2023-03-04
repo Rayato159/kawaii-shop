@@ -11,16 +11,9 @@ import (
 )
 
 type IInsertUser interface {
-	tokenDecode() int
 	Customer() (IInsertUser, error)
 	Admin() (IInsertUser, error)
 	Result() (*users.UserPassport, error)
-}
-
-func (f *userReq) tokenDecode() int {
-	token := f.req.Token
-	_ = token
-	return -1
 }
 
 func (f *userReq) Customer() (IInsertUser, error) {
@@ -134,15 +127,10 @@ type admin struct {
 	*userReq
 }
 
-func InsertUser(db *sqlx.DB, req *users.UserRegisterReq) IInsertUser {
-	token := req.Token
-	_ = token
-	roleId := 0
-
-	switch roleId {
-	case 2:
+func InsertUser(db *sqlx.DB, req *users.UserRegisterReq, isAdmin bool) IInsertUser {
+	if isAdmin {
 		return newAdmin(db, req)
-	default:
+	} else {
 		return newCustomer(db, req)
 	}
 }

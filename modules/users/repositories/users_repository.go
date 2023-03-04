@@ -39,7 +39,7 @@ func (r *usersRepository) GetTransaction() (*sqlx.Tx, error) {
 
 func (r *usersRepository) InsertCustomer(req *users.UserRegisterReq) (*users.UserPassport, error) {
 	// Inserting
-	result, err := patterns.InsertUser(r.Db, req).Customer()
+	result, err := patterns.InsertUser(r.Db, req, false).Customer()
 	if err != nil {
 		return nil, err
 	}

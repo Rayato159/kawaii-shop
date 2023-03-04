@@ -95,12 +95,12 @@ func TestSignUpCustomer(t *testing.T) {
 		test.req.BcryptHashing()
 
 		if test.isErr {
-			_, err := patterns.InsertUser(db, test.req).Customer()
+			_, err := patterns.InsertUser(db, test.req, false).Customer()
 			if err == nil {
 				t.Errorf("expect: %v, got: %v", "err", err)
 			}
 		} else {
-			result, err := patterns.InsertUser(db, test.req).Customer()
+			result, err := patterns.InsertUser(db, test.req, false).Customer()
 			if err != nil {
 				t.Errorf("expect: %v, got: %v", result, err)
 			}
