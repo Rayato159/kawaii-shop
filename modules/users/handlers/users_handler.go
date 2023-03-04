@@ -7,27 +7,30 @@ import (
 	"github.com/Rayato159/kawaii-shop/modules/entities"
 	"github.com/Rayato159/kawaii-shop/modules/users"
 	"github.com/Rayato159/kawaii-shop/modules/users/usecases"
+	"github.com/Rayato159/kawaii-shop/pkg/kawaiiauth"
 	"github.com/gofiber/fiber/v2"
 )
 
 type usersHandlerErrCode string
 
 const (
-	bodyParserErr      usersHandlerErrCode = "users-001"
-	signUpCustomerErr  usersHandlerErrCode = "users-002"
-	getProfileErr      usersHandlerErrCode = "users-003"
-	signInErr          usersHandlerErrCode = "users-004"
-	refreshPassportErr usersHandlerErrCode = "users-005"
-	signOutErr         usersHandlerErrCode = "users-006"
+	bodyParserErr         usersHandlerErrCode = "users-001"
+	signUpCustomerErr     usersHandlerErrCode = "users-002"
+	getProfileErr         usersHandlerErrCode = "users-003"
+	signInErr             usersHandlerErrCode = "users-004"
+	refreshPassportErr    usersHandlerErrCode = "users-005"
+	signOutErr            usersHandlerErrCode = "users-006"
+	generateAdminTokenErr usersHandlerErrCode = "users-007"
 )
 
 var usersHandlerErrMsg = map[usersHandlerErrCode]string{
-	bodyParserErr:      "body parser failed",
-	signUpCustomerErr:  "insert customer error",
-	getProfileErr:      "get profile error",
-	signInErr:          "sign in error",
-	refreshPassportErr: "refresh token error",
-	signOutErr:         "sign out error",
+	bodyParserErr:         "body parser failed",
+	signUpCustomerErr:     "insert customer error",
+	getProfileErr:         "get profile error",
+	signInErr:             "sign in error",
+	refreshPassportErr:    "refresh token error",
+	signOutErr:            "sign out error",
+	generateAdminTokenErr: "generate admin token error",
 }
 
 type IUsersHandler interface {
@@ -36,14 +39,15 @@ type IUsersHandler interface {
 	SignIn(c *fiber.Ctx) error
 	RefreshPassport(c *fiber.Ctx) error
 	SignOut(c *fiber.Ctx) error
+	GenerateAdminToken(c *fiber.Ctx) error
 }
 
 type usersHandler struct {
-	Cfg          config.IAppConfig
+	Cfg          config.IConfig
 	UsersUsecase usecases.IUsersUsecase
 }
 
-func UsersHandler(cfg config.IAppConfig, usecase usecases.IUsersUsecase) IUsersHandler {
+func UsersHandler(cfg config.IConfig, usecase usecases.IUsersUsecase) IUsersHandler {
 	return &usersHandler{
 		Cfg:          cfg,
 		UsersUsecase: usecase,
@@ -183,4 +187,25 @@ func (h *usersHandler) GetProfile(c *fiber.Ctx) error {
 		}
 	}
 	return entities.NewResponse(c).Success(fiber.StatusOK, result).Res()
+}
+
+func (h *usersHandler) GenerateAdminToken(c *fiber.Ctx) error {
+	adminToken, err := kawaiiauth.NewKawaiiAuth(
+		kawaiiauth.Admin,
+		h.Cfg.Jwt(),
+		nil,
+	)
+	if err != nil {
+		return entities.NewResponse(c).Error(
+			fiber.ErrInternalServerError.Code,
+			string(generateAdminTokenErr),
+			err.Error(),
+		).Res()
+	}
+	return entities.NewResponse(c).Success(fiber.StatusOK, &struct {
+		Token string `json:"token"`
+	}{
+		Token: adminToken.SignToken(),
+	},
+	).Res()
 }

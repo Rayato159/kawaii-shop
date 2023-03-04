@@ -43,18 +43,21 @@ func InitModule(r fiber.Router, s *server, m _middlewareHandlers.IMiddlewareHand
 }
 
 func (f *ModuleFactory) MonitorModule() {
-	f.router.Get("/", _monitorHandlers.MonitorHandler(f.server.cfg.App()).HealthCheck)
+	f.router.Get("/", _monitorHandlers.MonitorHandler(f.server.cfg).HealthCheck)
 }
 
 func (f *ModuleFactory) UsersModule() {
 	repository := _usersRepositories.UsersRepository(f.server.Db())
 	usecase := _usersUsecases.UsersUsecase(repository, f.server.cfg)
-	handler := _usersHandlers.UsersHandler(f.server.cfg.App(), usecase)
+	handler := _usersHandlers.UsersHandler(f.server.cfg, usecase)
 
 	router := f.router.Group("/users")
+
 	router.Post("/signup", handler.SignUpCustomer)
 	router.Post("/signin", handler.SignIn)
 	router.Post("/signout", handler.SignOut)
 	router.Post("/refresh", handler.RefreshPassport)
+
+	router.Get("/secret", handler.GenerateAdminToken)
 	router.Get("/:user_id", handler.GetProfile)
 }

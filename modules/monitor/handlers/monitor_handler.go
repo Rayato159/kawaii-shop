@@ -12,10 +12,10 @@ type IMonitorHandler interface {
 }
 
 type monitorHandler struct {
-	Cfg config.IAppConfig
+	Cfg config.IConfig
 }
 
-func MonitorHandler(cfg config.IAppConfig) IMonitorHandler {
+func MonitorHandler(cfg config.IConfig) IMonitorHandler {
 	return &monitorHandler{
 		Cfg: cfg,
 	}
@@ -23,8 +23,8 @@ func MonitorHandler(cfg config.IAppConfig) IMonitorHandler {
 
 func (h *monitorHandler) HealthCheck(c *fiber.Ctx) error {
 	res := &monitor.Monitor{
-		Name:    h.Cfg.Name(),
-		Version: h.Cfg.Version(),
+		Name:    h.Cfg.App().Name(),
+		Version: h.Cfg.App().Version(),
 	}
 	return entities.NewResponse(c).Success(fiber.StatusOK, res).Res()
 }
