@@ -19,14 +19,13 @@ type testParseToken struct {
 
 func TestSignAccessToken(t *testing.T) {
 	cfg := kawaiitests.Setup()
-	config := cfg.GetJwtConfig()
 
 	tokenStack := make([]string, 0)
 	tokenStack = append(tokenStack, "helloaccess")
 
 	// Expires
-	config.SetJwtAccessExpires(0)
-	token, err := kawaiiauth.NewKawaiiAuth(kawaiiauth.Access, config, &users.UserClaims{
+	cfg.SetJwtAccessExpires(0)
+	token, err := kawaiiauth.NewKawaiiAuth(kawaiiauth.Access, cfg.GetConfig().Jwt(), &users.UserClaims{
 		Id: "U000001",
 	})
 	if err != nil {
@@ -41,8 +40,8 @@ func TestSignAccessToken(t *testing.T) {
 	tokenStack = append(tokenStack, token.SignToken())
 
 	// Alive
-	config.SetJwtAccessExpires(99999999)
-	token, err = kawaiiauth.NewKawaiiAuth(kawaiiauth.Access, config, &users.UserClaims{
+	cfg.SetJwtAccessExpires(99999999)
+	token, err = kawaiiauth.NewKawaiiAuth(kawaiiauth.Access, cfg.GetConfig().Jwt(), &users.UserClaims{
 		Id: "U000001",
 	})
 	if err != nil {
@@ -68,14 +67,13 @@ func TestSignAccessToken(t *testing.T) {
 
 func TestRefreshToken(t *testing.T) {
 	cfg := kawaiitests.Setup()
-	config := cfg.GetJwtConfig()
 
 	tokenStack := make([]string, 0)
 	tokenStack = append(tokenStack, "hellorefresh")
 
 	// Expires
-	config.SetJwtRefreshExpires(0)
-	token, err := kawaiiauth.NewKawaiiAuth(kawaiiauth.Refresh, config, &users.UserClaims{
+	cfg.SetJwtRefreshExpires(0)
+	token, err := kawaiiauth.NewKawaiiAuth(kawaiiauth.Refresh, cfg.GetConfig().Jwt(), &users.UserClaims{
 		Id: "U000001",
 	})
 	if err != nil {
@@ -90,8 +88,8 @@ func TestRefreshToken(t *testing.T) {
 	tokenStack = append(tokenStack, token.SignToken())
 
 	// Alive
-	config.SetJwtRefreshExpires(99999999)
-	token, err = kawaiiauth.NewKawaiiAuth(kawaiiauth.Refresh, config, &users.UserClaims{
+	cfg.SetJwtRefreshExpires(99999999)
+	token, err = kawaiiauth.NewKawaiiAuth(kawaiiauth.Refresh, cfg.GetConfig().Jwt(), &users.UserClaims{
 		Id: "U000001",
 	})
 	if err != nil {
@@ -145,7 +143,7 @@ func TestParseAccessToken(t *testing.T) {
 
 	for _, req := range tests {
 		if req.isErr {
-			_, err := kawaiiauth.ParseToken(cfg.GetJwtConfig(), req.token)
+			_, err := kawaiiauth.ParseToken(cfg.GetConfig().Jwt(), req.token)
 			if err == nil {
 				fmt.Println(req.token)
 				t.Errorf("expect: %v, got: %v", "err", err)
@@ -154,7 +152,7 @@ func TestParseAccessToken(t *testing.T) {
 				t.Errorf("expect: %v, got: %v", req.expect, err)
 			}
 		} else {
-			_, err := kawaiiauth.ParseToken(cfg.GetJwtConfig(), req.token)
+			_, err := kawaiiauth.ParseToken(cfg.GetConfig().Jwt(), req.token)
 			if err != nil {
 				t.Errorf("expect: %v, got: %v", nil, err)
 			}
@@ -191,7 +189,7 @@ func TestParseRefreshToken(t *testing.T) {
 
 	for _, req := range tests {
 		if req.isErr {
-			_, err := kawaiiauth.ParseToken(cfg.GetJwtConfig(), req.token)
+			_, err := kawaiiauth.ParseToken(cfg.GetConfig().Jwt(), req.token)
 			if err == nil {
 				fmt.Println(req.token)
 				t.Errorf("expect: %v, got: %v", "err", err)
@@ -200,7 +198,7 @@ func TestParseRefreshToken(t *testing.T) {
 				t.Errorf("expect: %v, got: %v", req.expect, err)
 			}
 		} else {
-			_, err := kawaiiauth.ParseToken(cfg.GetJwtConfig(), req.token)
+			_, err := kawaiiauth.ParseToken(cfg.GetConfig().Jwt(), req.token)
 			if err != nil {
 				t.Errorf("expect: %v, got: %v", nil, err)
 			}
@@ -211,7 +209,7 @@ func TestParseRefreshToken(t *testing.T) {
 func TestRepeatToken(t *testing.T) {
 	cfg := kawaiitests.Setup()
 	token := kawaiiauth.RepeatToken(
-		cfg.GetJwtConfig(),
+		cfg.GetConfig().Jwt(),
 		&users.UserClaims{
 			Id: "U000001",
 		},

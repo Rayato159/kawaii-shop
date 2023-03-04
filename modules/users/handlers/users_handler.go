@@ -98,7 +98,25 @@ func (h *usersHandler) SignUpCustomer(c *fiber.Ctx) error {
 }
 
 func (h *usersHandler) SignIn(c *fiber.Ctx) error {
-	return entities.NewResponse(c).Success(fiber.StatusOK, nil).Res()
+	req := new(users.UserCredential)
+	if err := c.BodyParser(req); err != nil {
+		return entities.NewResponse(c).Error(
+			fiber.ErrBadRequest.Code,
+			string(bodyParserErr),
+			usersHandlerErrMsg[bodyParserErr],
+		).Res()
+	}
+
+	passport, err := h.UsersUsecase.GetPassport(req)
+	if err != nil {
+		return entities.NewResponse(c).Error(
+			fiber.ErrBadRequest.Code,
+			string(signInErr),
+			err.Error(),
+		).Res()
+	}
+
+	return entities.NewResponse(c).Success(fiber.StatusOK, passport).Res()
 }
 
 func (h *usersHandler) RefreshToken(c *fiber.Ctx) error {

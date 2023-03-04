@@ -1,7 +1,6 @@
 package users
 
 import (
-	"encoding/json"
 	"fmt"
 	"regexp"
 
@@ -11,6 +10,14 @@ import (
 type UserCredential struct {
 	Email    string `json:"email" form:"email"`
 	Password string `json:"password" form:"password"`
+}
+
+type UserCredentialCheck struct {
+	Id       string `db:"id"`
+	Email    string `db:"email"`
+	Password string `db:"password"`
+	Username string `db:"username"`
+	Role     string `db:"role"`
 }
 
 type UserPassport struct {
@@ -32,11 +39,6 @@ type User struct {
 
 type UserClaims struct {
 	Id string `db:"id" json:"id"`
-}
-
-func (obj *User) ToJsonStringtify() string {
-	bytes, _ := json.Marshal(obj)
-	return string(bytes)
 }
 
 type UserRegisterReq struct {

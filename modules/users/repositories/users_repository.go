@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/Rayato159/kawaii-shop/modules/users"
@@ -10,8 +11,11 @@ import (
 )
 
 type IUsersRepository interface {
+	GetTransaction() (*sqlx.Tx, error)
 	InsertCustomer(req *users.UserRegisterReq) (*users.UserPassport, error)
 	GetProfile(userId string) (*users.User, error)
+	FindOneUserByEmail(email string) (*users.UserCredentialCheck, error)
+	InsertOauth(req *users.UserPassport) error
 }
 
 type usersRepository struct {
@@ -20,6 +24,14 @@ type usersRepository struct {
 
 func UsersRepository(db *sqlx.DB) IUsersRepository {
 	return &usersRepository{Db: db}
+}
+
+func (r *usersRepository) GetTransaction() (*sqlx.Tx, error) {
+	tx, err := r.Db.BeginTxx(context.Background(), nil)
+	if err != nil {
+		return nil, err
+	}
+	return tx, nil
 }
 
 func (r *usersRepository) InsertCustomer(req *users.UserRegisterReq) (*users.UserPassport, error) {
@@ -53,4 +65,42 @@ func (r *usersRepository) GetProfile(userId string) (*users.User, error) {
 		return nil, fmt.Errorf("get user profile failed: %v", err)
 	}
 	return profile, nil
+}
+
+func (r *usersRepository) FindOneUserByEmail(email string) (*users.UserCredentialCheck, error) {
+	query := `
+	SELECT
+		"u"."id",
+		"u"."email",
+		"u"."password",
+		"u"."username",
+		"r"."title" AS "role"
+	FROM "users" "u"
+		LEFT JOIN "roles" "r" ON "r"."id" = "u"."role_id"
+	WHERE "u"."email" = $1;`
+
+	user := new(users.UserCredentialCheck)
+	if err := r.Db.Get(user, query, email); err != nil {
+		return nil, fmt.Errorf("user not found")
+	}
+	return user, nil
+}
+
+func (r *usersRepository) InsertOauth(req *users.UserPassport) error {
+	query := `
+	INSERT INTO "oauth" (
+		"user_id",
+		"refresh_token"
+	)
+	VALUES ($1, $2);`
+
+	if _, err := r.Db.ExecContext(
+		context.Background(),
+		query,
+		req.User.Id,
+		req.Token.RefreshToken,
+	); err != nil {
+		return fmt.Errorf("insert oauth failed: %v", err)
+	}
+	return nil
 }

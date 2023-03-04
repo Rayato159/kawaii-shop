@@ -20,11 +20,9 @@ type server struct {
 type IServer interface {
 	Start()
 	Db() *sqlx.DB
-	Config() config.IAppConfig
 }
 
-func (s *server) Db() *sqlx.DB              { return s.db }
-func (s *server) Config() config.IAppConfig { return s.cfg.App() }
+func (s *server) Db() *sqlx.DB { return s.db }
 
 func (s *server) Start() {
 	// Init Middleware

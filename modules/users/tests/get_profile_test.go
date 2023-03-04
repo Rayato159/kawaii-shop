@@ -33,7 +33,7 @@ func TestGetProfile(t *testing.T) {
 				Username: "customer001",
 				Role:     "customer",
 			}
-			return profile.ToJsonStringtify()
+			return kawaiitests.ToJsonStringtify(profile)
 		}(),
 	}
 
@@ -41,8 +41,8 @@ func TestGetProfile(t *testing.T) {
 	if err != nil {
 		t.Errorf("expect: %v, got: %v", nil, err)
 	}
-	if profile.ToJsonStringtify() != testsSuccess.expect {
-		t.Errorf("expect: %v, got: %v", testsSuccess.expect, profile.ToJsonStringtify())
+	if kawaiitests.ToJsonStringtify(profile) != testsSuccess.expect {
+		t.Errorf("expect: %v, got: %v", testsSuccess.expect, kawaiitests.ToJsonStringtify(profile))
 	}
 	utils.Debug(profile)
 
