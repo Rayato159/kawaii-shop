@@ -23,7 +23,7 @@ $$ language 'plpgsql';
 CREATE TYPE "order_status" AS ENUM (
     'waiting',
     'shipping',
-    'success',
+    'completed',
     'canceled'
 );
 
@@ -33,15 +33,16 @@ CREATE TABLE "users" (
   "username" VARCHAR UNIQUE,
   "password" VARCHAR NOT NULL,
   "email" VARCHAR UNIQUE,
-  "role_id" INT,
+  "role_id" INT NOT NULL,
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP NOT NULL DEFAULT now()
 );
 
 CREATE TABLE "oauth" (
   "id" uuid NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
-  "user_id" VARCHAR,
-  "refresh_token" VARCHAR,
+  "user_id" VARCHAR NOT NULL,
+  "refresh_token" VARCHAR NOT NULL,
+  "access_token" VARCHAR NOT NULL,
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP NOT NULL DEFAULT now()
 );
@@ -53,8 +54,8 @@ CREATE TABLE "roles" (
 
 CREATE TABLE "products" (
   "id" VARCHAR(7) PRIMARY KEY DEFAULT CONCAT('P', LPAD(NEXTVAL('products_id_seq')::TEXT, 6, '0')),
-  "title" VARCHAR,
-  "description" VARCHAR,
+  "title" VARCHAR NOT NULL,
+  "description" VARCHAR NOT NULL DEFAULT '',
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP NOT NULL DEFAULT now()
 );
@@ -72,8 +73,8 @@ CREATE TABLE "products_categories" (
 
 CREATE TABLE "images" (
   "id" uuid NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
-  "filename" VARCHAR,
-  "url" VARCHAR,
+  "filename" VARCHAR NOT NULL,
+  "url" VARCHAR NOT NULL,
   "product_id" VARCHAR,
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP NOT NULL DEFAULT now()
@@ -81,11 +82,11 @@ CREATE TABLE "images" (
 
 CREATE TABLE "orders" (
   "id" VARCHAR(7) PRIMARY KEY DEFAULT CONCAT('O', LPAD(NEXTVAL('orders_id_seq')::TEXT, 6, '0')),
-  "user_id" VARCHAR,
-  "contact" VARCHAR,
-  "address" VARCHAR,
+  "user_id" VARCHAR NOT NULL,
+  "contact" VARCHAR NOT NULL,
+  "address" VARCHAR NOT NULL,
   "transfer_slip" jsonb,
-  "status" VARCHAR,
+  "status" order_status NOT NULL,
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP NOT NULL DEFAULT now()
 );
@@ -94,7 +95,7 @@ CREATE TABLE "products_orders" (
   "id" uuid NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
   "order_id" VARCHAR NOT NULL,
   "product" jsonb,
-  "qty" INT,
+  "qty" INT NOT NULL DEFAULT 1,
   "price" DOUBLE PRECISION
 );
 

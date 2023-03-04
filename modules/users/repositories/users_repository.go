@@ -16,6 +16,7 @@ type IUsersRepository interface {
 	GetProfile(userId string) (*users.User, error)
 	FindOneUserByEmail(email string) (*users.UserCredentialCheck, error)
 	InsertOauth(req *users.UserPassport) error
+	DeleteOauth(refreshToken string) error
 }
 
 type usersRepository struct {
@@ -90,17 +91,31 @@ func (r *usersRepository) InsertOauth(req *users.UserPassport) error {
 	query := `
 	INSERT INTO "oauth" (
 		"user_id",
-		"refresh_token"
+		"refresh_token",
+		"access_token"
 	)
-	VALUES ($1, $2);`
+	VALUES ($1, $2, $3)
+		RETURNING "id" AS "code";`
 
-	if _, err := r.Db.ExecContext(
+	if err := r.Db.QueryRowxContext(
 		context.Background(),
 		query,
 		req.User.Id,
 		req.Token.RefreshToken,
-	); err != nil {
+		req.Token.AccessToken,
+	).Scan(&req.Token.Code); err != nil {
 		return fmt.Errorf("insert oauth failed: %v", err)
+	}
+	return nil
+}
+
+func (r *usersRepository) DeleteOauth(refreshToken string) error {
+	query := `
+	DELETE FROM "oauth"
+		WHERE "refresh_token" = $1;`
+
+	if _, err := r.Db.ExecContext(context.Background(), query, refreshToken); err != nil {
+		return fmt.Errorf("refresh_token not found")
 	}
 	return nil
 }
