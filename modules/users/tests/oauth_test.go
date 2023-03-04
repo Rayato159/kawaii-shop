@@ -37,7 +37,7 @@ func TestGetUserCredentialCheck(t *testing.T) {
 				Email:    "customer001@kawaii.com",
 				Password: "$2a$10$8KzaNdKIMyOkASCH4QvSKuEMIY7Jc3vcHDuSJvXLii1rvBNgz60a6",
 				Username: "customer001",
-				Role:     "customer",
+				RoleId:   1,
 			}),
 			isErr: false,
 		},

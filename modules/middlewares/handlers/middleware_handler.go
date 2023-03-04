@@ -27,6 +27,7 @@ type IMiddlewareHandler interface {
 	JwtAuth() fiber.Handler
 	ApiKeyAuth() fiber.Handler
 	ParamsCheck() fiber.Handler
+	Authorization(roleId ...int) fiber.Handler
 }
 
 type middlewareHandler struct {
@@ -106,6 +107,13 @@ func (h *middlewareHandler) ApiKeyAuth() fiber.Handler {
 			).Res()
 		}
 		return c.Next()
+	}
+}
+
+func (h *middlewareHandler) Authorization(roleId ...int) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+
+		return nil
 	}
 }
 

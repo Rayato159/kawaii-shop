@@ -55,13 +55,12 @@ func (r *usersRepository) InsertCustomer(req *users.UserRegisterReq) (*users.Use
 func (r *usersRepository) GetProfile(userId string) (*users.User, error) {
 	query := `
 	SELECT
-		"u"."id",
-		"u"."email",
-		"u"."username",
-		"r"."title" AS "role"
-	FROM "users" "u"
-		LEFT JOIN "roles" "r" ON "r"."id" = "u"."role_id"
-	WHERE "u"."id" = $1;`
+		"id",
+		"email",
+		"username",
+		"role_id"
+	FROM "users"
+	WHERE "id" = $1;`
 
 	profile := new(users.User)
 	if err := r.Db.Get(profile, query, userId); err != nil {
@@ -73,14 +72,13 @@ func (r *usersRepository) GetProfile(userId string) (*users.User, error) {
 func (r *usersRepository) FindOneUserByEmail(email string) (*users.UserCredentialCheck, error) {
 	query := `
 	SELECT
-		"u"."id",
-		"u"."email",
-		"u"."password",
-		"u"."username",
-		"r"."title" AS "role"
-	FROM "users" "u"
-		LEFT JOIN "roles" "r" ON "r"."id" = "u"."role_id"
-	WHERE "u"."email" = $1;`
+		"id",
+		"email",
+		"password",
+		"username",
+		"role_id"
+	FROM "users"
+	WHERE "email" = $1;`
 
 	user := new(users.UserCredentialCheck)
 	if err := r.Db.Get(user, query, email); err != nil {

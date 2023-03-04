@@ -31,7 +31,7 @@ func TestGetProfile(t *testing.T) {
 				Id:       "U000001",
 				Email:    "customer001@kawaii.com",
 				Username: "customer001",
-				Role:     "customer",
+				RoleId:   1,
 			}
 			return kawaiitests.ToJsonStringtify(profile)
 		}(),

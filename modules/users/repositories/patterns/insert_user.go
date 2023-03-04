@@ -95,9 +95,8 @@ func (f *userReq) Result() (*users.UserPassport, error) {
 				"u"."id",
 				"u"."email",
 				"u"."username",
-				"r"."title" AS "role"
+				"u"."role_id"
 			FROM "users" "u"
-			LEFT JOIN "roles" "r" ON "r"."id" = "u"."role_id"
 			WHERE "u"."id" = $1
 	) AS "t";`
 

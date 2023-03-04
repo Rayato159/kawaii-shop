@@ -66,14 +66,16 @@ func (u *usersUsecase) GetPassport(req *users.UserCredential) (*users.UserPasspo
 
 	// Generate token
 	accessToken, err := kawaiiauth.NewKawaiiAuth(kawaiiauth.Access, u.cfg.Jwt(), &users.UserClaims{
-		Id: user.Id,
+		Id:     user.Id,
+		RoleId: user.RoleId,
 	})
 	if err != nil {
 		return nil, err
 	}
 
 	refreshToken, err := kawaiiauth.NewKawaiiAuth(kawaiiauth.Refresh, u.cfg.Jwt(), &users.UserClaims{
-		Id: user.Id,
+		Id:     user.Id,
+		RoleId: user.RoleId,
 	})
 	if err != nil {
 		return nil, err
@@ -85,7 +87,7 @@ func (u *usersUsecase) GetPassport(req *users.UserCredential) (*users.UserPasspo
 			Id:       user.Id,
 			Email:    user.Email,
 			Username: user.Username,
-			Role:     user.Role,
+			RoleId:   user.RoleId,
 		},
 		Token: &users.UserToken{
 			AccessToken:  accessToken.SignToken(),
@@ -127,7 +129,8 @@ func (u *usersUsecase) RefreshPassport(req *users.UserRefreshCredential) (*users
 
 	// Generate new token
 	newClaims := &users.UserClaims{
-		Id: profile.Id,
+		Id:     profile.Id,
+		RoleId: profile.RoleId,
 	}
 	accessToken, err := kawaiiauth.NewKawaiiAuth(
 		kawaiiauth.Access,

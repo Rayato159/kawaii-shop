@@ -17,7 +17,7 @@ type UserCredentialCheck struct {
 	Email    string `db:"email"`
 	Password string `db:"password"`
 	Username string `db:"username"`
-	Role     string `db:"role"`
+	RoleId   int    `db:"role_id"`
 }
 
 type UserRemoveCredential struct {
@@ -48,11 +48,12 @@ type User struct {
 	Id       string `db:"id" json:"id"`
 	Email    string `db:"email" json:"email"`
 	Username string `db:"username" json:"username"`
-	Role     string `db:"role" json:"role"`
+	RoleId   int    `db:"role_id" json:"role_id"`
 }
 
 type UserClaims struct {
-	Id string `db:"id" json:"id"`
+	Id     string `db:"id" json:"id"`
+	RoleId int    `db:"role" json:"role"`
 }
 
 type UserRegisterReq struct {
