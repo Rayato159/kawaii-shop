@@ -59,7 +59,7 @@ func (l *kawaiiLogger) SetBody(c *fiber.Ctx) {
 
 	// Check were path is sensitive
 	switch l.Path {
-	case "/v1/oauth/signup":
+	case "/v1/users/signup":
 		l.Body = "never gonna give you up"
 	default:
 		l.Body = body

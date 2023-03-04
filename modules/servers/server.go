@@ -38,7 +38,7 @@ func (s *server) Start() {
 	// Import modules
 	module := InitModule(v1, s, middleware)
 	module.MonitorModule()
-	module.OauthModule()
+	module.UsersModule()
 
 	// If router not found
 	s.app.Use(middleware.RouterCheck())

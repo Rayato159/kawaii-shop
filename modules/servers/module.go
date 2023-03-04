@@ -7,9 +7,9 @@ import (
 
 	_monitorHandlers "github.com/Rayato159/kawaii-shop/modules/monitor/handlers"
 
-	_oauthHandlers "github.com/Rayato159/kawaii-shop/modules/oauth/handlers"
-	_oauthRepositories "github.com/Rayato159/kawaii-shop/modules/oauth/repositories"
-	_oauthUsecases "github.com/Rayato159/kawaii-shop/modules/oauth/usecases"
+	_usersHandlers "github.com/Rayato159/kawaii-shop/modules/users/handlers"
+	_usersRepositories "github.com/Rayato159/kawaii-shop/modules/users/repositories"
+	_usersUsecases "github.com/Rayato159/kawaii-shop/modules/users/usecases"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -25,7 +25,7 @@ func InitMiddleware(s *server) _middlewareHandlers.IMiddlewareHandler {
 // Module
 type IModuleFactory interface {
 	MonitorModule()
-	OauthModule()
+	UsersModule()
 }
 
 type ModuleFactory struct {
@@ -46,12 +46,12 @@ func (f *ModuleFactory) MonitorModule() {
 	f.router.Get("/", _monitorHandlers.MonitorHandler(f.server.Config()).HealthCheck)
 }
 
-func (f *ModuleFactory) OauthModule() {
-	repository := _oauthRepositories.OauthRepository(f.server.Db())
-	usecase := _oauthUsecases.OauthUsecase(repository)
-	handler := _oauthHandlers.OauthHandler(f.server.Config(), usecase)
+func (f *ModuleFactory) UsersModule() {
+	repository := _usersRepositories.UsersRepository(f.server.Db())
+	usecase := _usersUsecases.UsersUsecase(repository)
+	handler := _usersHandlers.UsersHandler(f.server.Config(), usecase)
 
-	router := f.router.Group("/oauth")
+	router := f.router.Group("/users")
 	router.Post("/signup", handler.SignUpCustomer)
 	router.Get("/:user_id", handler.GetProfile)
 }

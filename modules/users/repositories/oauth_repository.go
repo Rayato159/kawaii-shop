@@ -3,26 +3,26 @@ package repositories
 import (
 	"fmt"
 
-	"github.com/Rayato159/kawaii-shop/modules/oauth"
-	"github.com/Rayato159/kawaii-shop/modules/oauth/repositories/patterns"
+	"github.com/Rayato159/kawaii-shop/modules/users"
+	"github.com/Rayato159/kawaii-shop/modules/users/repositories/patterns"
 
 	"github.com/jmoiron/sqlx"
 )
 
-type IOauthRepository interface {
-	InsertCustomer(req *oauth.UserRegisterReq) (*oauth.UserPassport, error)
-	GetProfile(userId string) (*oauth.User, error)
+type IUsersRepository interface {
+	InsertCustomer(req *users.UserRegisterReq) (*users.UserPassport, error)
+	GetProfile(userId string) (*users.User, error)
 }
 
-type oauthRepository struct {
+type usersRepository struct {
 	Db *sqlx.DB
 }
 
-func OauthRepository(db *sqlx.DB) IOauthRepository {
-	return &oauthRepository{Db: db}
+func UsersRepository(db *sqlx.DB) IUsersRepository {
+	return &usersRepository{Db: db}
 }
 
-func (r *oauthRepository) InsertCustomer(req *oauth.UserRegisterReq) (*oauth.UserPassport, error) {
+func (r *usersRepository) InsertCustomer(req *users.UserRegisterReq) (*users.UserPassport, error) {
 	// Inserting
 	result, err := patterns.InsertUser(r.Db, req).Customer()
 	if err != nil {
@@ -37,7 +37,7 @@ func (r *oauthRepository) InsertCustomer(req *oauth.UserRegisterReq) (*oauth.Use
 	return user, nil
 }
 
-func (r *oauthRepository) GetProfile(userId string) (*oauth.User, error) {
+func (r *usersRepository) GetProfile(userId string) (*users.User, error) {
 	query := `
 	SELECT
 		"u"."id",
@@ -48,7 +48,7 @@ func (r *oauthRepository) GetProfile(userId string) (*oauth.User, error) {
 		LEFT JOIN "roles" "r" ON "r"."id" = "u"."role_id"
 	WHERE "u"."id" = $1;`
 
-	profile := new(oauth.User)
+	profile := new(users.User)
 	if err := r.Db.Get(profile, query, userId); err != nil {
 		return nil, fmt.Errorf("get user profile failed: %v", err)
 	}

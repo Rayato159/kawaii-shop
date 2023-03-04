@@ -5,23 +5,23 @@ import (
 
 	"github.com/Rayato159/kawaii-shop/config"
 	"github.com/Rayato159/kawaii-shop/modules/entities"
-	"github.com/Rayato159/kawaii-shop/modules/oauth"
-	"github.com/Rayato159/kawaii-shop/modules/oauth/usecases"
+	"github.com/Rayato159/kawaii-shop/modules/users"
+	"github.com/Rayato159/kawaii-shop/modules/users/usecases"
 	"github.com/gofiber/fiber/v2"
 )
 
-type oauthHandlerErrCode string
+type usersHandlerErrCode string
 
 const (
-	bodyParserErr     oauthHandlerErrCode = "oauth-001"
-	signUpCustomerErr oauthHandlerErrCode = "oauth-002"
-	getProfileErr     oauthHandlerErrCode = "oauth-003"
-	signInErr         oauthHandlerErrCode = "oauth-004"
-	refreshTokenErr   oauthHandlerErrCode = "oauth-005"
-	signOutErr        oauthHandlerErrCode = "oauth-006"
+	bodyParserErr     usersHandlerErrCode = "users-001"
+	signUpCustomerErr usersHandlerErrCode = "users-002"
+	getProfileErr     usersHandlerErrCode = "users-003"
+	signInErr         usersHandlerErrCode = "users-004"
+	refreshTokenErr   usersHandlerErrCode = "users-005"
+	signOutErr        usersHandlerErrCode = "users-006"
 )
 
-var oauthHandlerErrMsg = map[oauthHandlerErrCode]string{
+var usersHandlerErrMsg = map[usersHandlerErrCode]string{
 	bodyParserErr:     "body parser failed",
 	signUpCustomerErr: "insert customer error",
 	getProfileErr:     "get profile error",
@@ -30,7 +30,7 @@ var oauthHandlerErrMsg = map[oauthHandlerErrCode]string{
 	signOutErr:        "sign out error",
 }
 
-type IOauthHandler interface {
+type IUsersHandler interface {
 	SignUpCustomer(c *fiber.Ctx) error
 	GetProfile(c *fiber.Ctx) error
 	SignIn(c *fiber.Ctx) error
@@ -38,26 +38,26 @@ type IOauthHandler interface {
 	SignOut(c *fiber.Ctx) error
 }
 
-type oauthHandler struct {
+type usersHandler struct {
 	Cfg          config.IAppConfig
-	OauthUsecase usecases.IOauthUsecase
+	UsersUsecase usecases.IUsersUsecase
 }
 
-func OauthHandler(cfg config.IAppConfig, usecase usecases.IOauthUsecase) IOauthHandler {
-	return &oauthHandler{
+func UsersHandler(cfg config.IAppConfig, usecase usecases.IUsersUsecase) IUsersHandler {
+	return &usersHandler{
 		Cfg:          cfg,
-		OauthUsecase: usecase,
+		UsersUsecase: usecase,
 	}
 }
 
-func (h *oauthHandler) SignUpCustomer(c *fiber.Ctx) error {
+func (h *usersHandler) SignUpCustomer(c *fiber.Ctx) error {
 	// Request body parser
-	req := new(oauth.UserRegisterReq)
+	req := new(users.UserRegisterReq)
 	if err := c.BodyParser(req); err != nil {
 		return entities.NewResponse(c).Error(
 			fiber.ErrBadRequest.Code,
 			string(bodyParserErr),
-			oauthHandlerErrMsg[bodyParserErr],
+			usersHandlerErrMsg[bodyParserErr],
 		).Res()
 	}
 
@@ -71,7 +71,7 @@ func (h *oauthHandler) SignUpCustomer(c *fiber.Ctx) error {
 	}
 
 	// Insert
-	result, err := h.OauthUsecase.InsertCustomer(req)
+	result, err := h.UsersUsecase.InsertCustomer(req)
 	if err != nil {
 		switch err.Error() {
 		case "username have been used":
@@ -97,24 +97,24 @@ func (h *oauthHandler) SignUpCustomer(c *fiber.Ctx) error {
 	return entities.NewResponse(c).Success(fiber.StatusCreated, result).Res()
 }
 
-func (h *oauthHandler) SignIn(c *fiber.Ctx) error {
+func (h *usersHandler) SignIn(c *fiber.Ctx) error {
 	return entities.NewResponse(c).Success(fiber.StatusOK, nil).Res()
 }
 
-func (h *oauthHandler) RefreshToken(c *fiber.Ctx) error {
+func (h *usersHandler) RefreshToken(c *fiber.Ctx) error {
 	return entities.NewResponse(c).Success(fiber.StatusOK, nil).Res()
 }
 
-func (h *oauthHandler) SignOut(c *fiber.Ctx) error {
+func (h *usersHandler) SignOut(c *fiber.Ctx) error {
 	return entities.NewResponse(c).Success(fiber.StatusOK, nil).Res()
 }
 
-func (h *oauthHandler) GetProfile(c *fiber.Ctx) error {
+func (h *usersHandler) GetProfile(c *fiber.Ctx) error {
 	// Set params
 	userId := strings.Trim(c.Params("user_id"), " ")
 
 	// Get profile
-	result, err := h.OauthUsecase.GetProfile(userId)
+	result, err := h.UsersUsecase.GetProfile(userId)
 	if err != nil {
 		switch err.Error() {
 		case "get user profile failed: sql: no rows in result set":

@@ -1,11 +1,11 @@
-package oauth_tests
+package users_tests
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/Rayato159/kawaii-shop/modules/oauth"
-	"github.com/Rayato159/kawaii-shop/modules/oauth/repositories"
+	"github.com/Rayato159/kawaii-shop/modules/users"
+	"github.com/Rayato159/kawaii-shop/modules/users/repositories"
 	"github.com/Rayato159/kawaii-shop/pkg/utils"
 	kawaiitests "github.com/Rayato159/kawaii-shop/tests"
 )
@@ -22,12 +22,12 @@ type testGetProfileFailed struct {
 
 func TestGetProfile(t *testing.T) {
 	db := kawaiitests.Setup().GetDb()
-	r := repositories.OauthRepository(db)
+	r := repositories.UsersRepository(db)
 
 	testsSuccess := testGetProfileSuccess{
 		userId: "U000001",
 		expect: func() string {
-			profile := &oauth.User{
+			profile := &users.User{
 				Id:       "U000001",
 				Email:    "customer001@kawaii.com",
 				Username: "customer001",

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Rayato159/kawaii-shop/modules/oauth"
+	"github.com/Rayato159/kawaii-shop/modules/users"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -14,7 +14,7 @@ type IInsertUser interface {
 	tokenDecode() int
 	Customer() (IInsertUser, error)
 	Admin() (IInsertUser, error)
-	Result() (*oauth.UserPassport, error)
+	Result() (*users.UserPassport, error)
 }
 
 func (f *userReq) tokenDecode() int {
@@ -90,7 +90,7 @@ func (f *userReq) Admin() (IInsertUser, error) {
 	return f, nil
 }
 
-func (f *userReq) Result() (*oauth.UserPassport, error) {
+func (f *userReq) Result() (*users.UserPassport, error) {
 	query := `
 	SELECT
 			json_build_object(
@@ -113,7 +113,7 @@ func (f *userReq) Result() (*oauth.UserPassport, error) {
 		return nil, fmt.Errorf("get users failed: %v", err)
 	}
 
-	user := new(oauth.UserPassport)
+	user := new(users.UserPassport)
 	if err := json.Unmarshal(data, &user); err != nil {
 		return nil, fmt.Errorf("unmarshal failed: %v", err)
 	}
@@ -122,7 +122,7 @@ func (f *userReq) Result() (*oauth.UserPassport, error) {
 
 type userReq struct {
 	id  string
-	req *oauth.UserRegisterReq
+	req *users.UserRegisterReq
 	db  *sqlx.DB
 }
 
@@ -134,7 +134,7 @@ type admin struct {
 	*userReq
 }
 
-func InsertUser(db *sqlx.DB, req *oauth.UserRegisterReq) IInsertUser {
+func InsertUser(db *sqlx.DB, req *users.UserRegisterReq) IInsertUser {
 	token := req.Token
 	_ = token
 	roleId := 0
@@ -147,7 +147,7 @@ func InsertUser(db *sqlx.DB, req *oauth.UserRegisterReq) IInsertUser {
 	}
 }
 
-func newAdmin(db *sqlx.DB, req *oauth.UserRegisterReq) IInsertUser {
+func newAdmin(db *sqlx.DB, req *users.UserRegisterReq) IInsertUser {
 	return &admin{
 		userReq: &userReq{
 			req: req,
@@ -156,7 +156,7 @@ func newAdmin(db *sqlx.DB, req *oauth.UserRegisterReq) IInsertUser {
 	}
 }
 
-func newCustomer(db *sqlx.DB, req *oauth.UserRegisterReq) IInsertUser {
+func newCustomer(db *sqlx.DB, req *users.UserRegisterReq) IInsertUser {
 	return &customer{
 		userReq: &userReq{
 			req: req,
