@@ -6,7 +6,7 @@ import (
 )
 
 type IAppinfoUsecase interface {
-	FindCategory() ([]*appinfo.Category, error)
+	FindCategory(req *appinfo.CategoryFilter) ([]*appinfo.Category, error)
 }
 
 type appinfoUsecase struct {
@@ -19,8 +19,8 @@ func AppinfoUsecase(repo repositories.IAppinfoRepository) IAppinfoUsecase {
 	}
 }
 
-func (u *appinfoUsecase) FindCategory() ([]*appinfo.Category, error) {
-	category, err := u.appinfoRepository.FindCategory()
+func (u *appinfoUsecase) FindCategory(req *appinfo.CategoryFilter) ([]*appinfo.Category, error) {
+	category, err := u.appinfoRepository.FindCategory(req)
 	if err != nil {
 		return nil, err
 	}

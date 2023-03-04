@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/Rayato159/kawaii-shop/config"
+	"github.com/Rayato159/kawaii-shop/modules/appinfo"
 	"github.com/Rayato159/kawaii-shop/modules/appinfo/usecases"
 	"github.com/Rayato159/kawaii-shop/modules/entities"
 	"github.com/Rayato159/kawaii-shop/pkg/kawaiiauth"
@@ -33,7 +34,16 @@ func AppinfoHandler(cfg config.IConfig, usecase usecases.IAppinfoUsecase) IAppin
 }
 
 func (h *appinfoHandler) FindCategory(c *fiber.Ctx) error {
-	category, err := h.appinfoUsecase.FindCategory()
+	req := new(appinfo.CategoryFilter)
+	if err := c.QueryParser(req); err != nil {
+		return entities.NewResponse(c).Error(
+			fiber.ErrInternalServerError.Code,
+			string(findCategoryErr),
+			err.Error(),
+		).Res()
+	}
+
+	category, err := h.appinfoUsecase.FindCategory(req)
 	if err != nil {
 		return entities.NewResponse(c).Error(
 			fiber.ErrInternalServerError.Code,
