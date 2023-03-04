@@ -1,9 +1,16 @@
 package repositories
 
-import "github.com/jmoiron/sqlx"
+import (
+	"fmt"
+
+	"github.com/Rayato159/kawaii-shop/modules/middlewares"
+
+	"github.com/jmoiron/sqlx"
+)
 
 type IMiddlewareRepository interface {
 	FindAccessToken(userId string, accessToken string) bool
+	FindRole() ([]*middlewares.Role, error)
 }
 
 type middlewareRepository struct {
@@ -29,4 +36,19 @@ func (r *middlewareRepository) FindAccessToken(userId string, accessToken string
 		return false
 	}
 	return check
+}
+
+func (r *middlewareRepository) FindRole() ([]*middlewares.Role, error) {
+	query := `
+	SELECT
+		"id",
+		"title"
+	FROM "roles"
+	ORDER BY "id" DESC;`
+
+	roles := make([]*middlewares.Role, 0)
+	if err := r.Db.Select(&roles, query); err != nil {
+		return nil, fmt.Errorf("roles are empty")
+	}
+	return roles, nil
 }

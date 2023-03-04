@@ -8,6 +8,7 @@ import (
 	"github.com/Rayato159/kawaii-shop/modules/entities"
 	"github.com/Rayato159/kawaii-shop/modules/middlewares/usecases"
 	"github.com/Rayato159/kawaii-shop/pkg/kawaiiauth"
+	"github.com/Rayato159/kawaii-shop/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -18,6 +19,7 @@ type middlewareHandlerErrCode string
 const (
 	jwtAuthErr     middlewareHandlerErrCode = "middleware-001"
 	paramsCheckErr middlewareHandlerErrCode = "middleware-002"
+	authorizeErr   middlewareHandlerErrCode = "middleware-003"
 )
 
 type IMiddlewareHandler interface {
@@ -27,7 +29,7 @@ type IMiddlewareHandler interface {
 	JwtAuth() fiber.Handler
 	ApiKeyAuth() fiber.Handler
 	ParamsCheck() fiber.Handler
-	Authorization(roleId ...int) fiber.Handler
+	Authorize(expectRoleId ...int) fiber.Handler
 }
 
 type middlewareHandler struct {
@@ -78,6 +80,7 @@ func (h *middlewareHandler) JwtAuth() fiber.Handler {
 
 		// Set userId
 		c.Locals("userId", claims.Id)
+		c.Locals("userRoleId", claims.RoleId)
 		return c.Next()
 	}
 }
@@ -110,10 +113,37 @@ func (h *middlewareHandler) ApiKeyAuth() fiber.Handler {
 	}
 }
 
-func (h *middlewareHandler) Authorization(roleId ...int) fiber.Handler {
+func (h *middlewareHandler) Authorize(expectRoleId ...int) fiber.Handler {
 	return func(c *fiber.Ctx) error {
+		// Must continue from JwtAuth()
+		userRoleId := c.Locals("userRoleId").(int)
+		roles, err := h.MiddlewareUsecase.FindRole()
+		if err != nil {
+			return entities.NewResponse(c).Error(
+				fiber.ErrInternalServerError.Code,
+				string(authorizeErr),
+				err.Error(),
+			).Res()
+		}
 
-		return nil
+		sum := 0
+		for _, v := range expectRoleId {
+			sum += v
+		}
+
+		expectValueBinary := utils.BinaryConverter(sum, len(roles))
+		userValueBinary := utils.BinaryConverter(userRoleId, len(roles))
+
+		for i := range userValueBinary {
+			if userValueBinary[i]&expectValueBinary[i] == 1 {
+				return c.Next()
+			}
+		}
+		return entities.NewResponse(c).Error(
+			fiber.ErrUnauthorized.Code,
+			string(authorizeErr),
+			"bad boys bad boys whatcha gonna do???",
+		).Res()
 	}
 }
 

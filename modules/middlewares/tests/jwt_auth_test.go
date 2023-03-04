@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/Rayato159/kawaii-shop/modules/middlewares/repositories"
+	"github.com/Rayato159/kawaii-shop/pkg/utils"
 	kawaiitests "github.com/Rayato159/kawaii-shop/tests"
 )
 
@@ -12,6 +13,12 @@ type testFindAccessToken struct {
 	accessToken string
 	isErr       bool
 	expect      bool
+}
+
+type testAuthorize struct {
+	userRole   int
+	expectRole int
+	expect     int
 }
 
 func TestFindAccessToken(t *testing.T) {
@@ -47,4 +54,60 @@ func TestFindAccessToken(t *testing.T) {
 		}
 	}
 
+}
+
+func TestBinaryConverter(t *testing.T) {
+	number := 1 + 2
+	bits := 3
+	expect := []int{1, 1}
+
+	binary := utils.BinaryConverter(number, bits)
+	for i := range binary {
+		if binary[i] != expect[i] {
+			t.Errorf("expect: %v, got: %v", expect, binary)
+		}
+	}
+}
+
+func TestFindRole(t *testing.T) {
+	db := kawaiitests.Setup().GetDb()
+
+	middlewareRepo := repositories.MiddlewareRepository(db)
+	roles, err := middlewareRepo.FindRole()
+	if err != nil {
+		t.Errorf("expect: %v, err: %v", nil, err)
+	}
+	utils.Debug(roles)
+}
+
+func TestAuthorize(t *testing.T) {
+	length := 2
+	tests := []testAuthorize{
+		{
+			userRole:   1,
+			expectRole: 2,
+			expect:     0,
+		},
+		{
+			userRole:   2,
+			expectRole: 2,
+			expect:     1,
+		},
+		{
+			userRole:   2,
+			expectRole: 3,
+			expect:     1,
+		},
+	}
+
+	for _, test := range tests {
+		expectValueBinary := utils.BinaryConverter(test.expectRole, length)
+		userValueBinary := utils.BinaryConverter(test.userRole, length)
+
+		for j := range userValueBinary {
+			if userValueBinary[j]&expectValueBinary[j] == 1 {
+				t.Errorf("expect: %v, got: %v", test.expect, userValueBinary[j]&expectValueBinary[j])
+			}
+		}
+	}
 }
