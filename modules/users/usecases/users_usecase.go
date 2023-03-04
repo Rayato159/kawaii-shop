@@ -20,13 +20,13 @@ type IUsersUsecase interface {
 
 type usersUsecase struct {
 	cfg             config.IConfig
-	UsersRepository repositories.IUsersRepository
+	usersRepository repositories.IUsersRepository
 }
 
 func UsersUsecase(repo repositories.IUsersRepository, cfg config.IConfig) IUsersUsecase {
 	return &usersUsecase{
 		cfg:             cfg,
-		UsersRepository: repo,
+		usersRepository: repo,
 	}
 }
 
@@ -37,7 +37,7 @@ func (u *usersUsecase) InsertCustomer(req *users.UserRegisterReq) (*users.UserPa
 	}
 
 	// Inserting user
-	result, err := u.UsersRepository.InsertCustomer(req)
+	result, err := u.usersRepository.InsertCustomer(req)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (u *usersUsecase) InsertCustomer(req *users.UserRegisterReq) (*users.UserPa
 }
 
 func (u *usersUsecase) GetProfile(userId string) (*users.User, error) {
-	profile, err := u.UsersRepository.GetProfile(userId)
+	profile, err := u.usersRepository.GetProfile(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func (u *usersUsecase) GetProfile(userId string) (*users.User, error) {
 
 func (u *usersUsecase) GetPassport(req *users.UserCredential) (*users.UserPassport, error) {
 	// Find user
-	user, err := u.UsersRepository.FindOneUserByEmail(req.Email)
+	user, err := u.usersRepository.FindOneUserByEmail(req.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -96,14 +96,14 @@ func (u *usersUsecase) GetPassport(req *users.UserCredential) (*users.UserPasspo
 	}
 
 	// Insert oauth table
-	if err := u.UsersRepository.InsertOauth(passport); err != nil {
+	if err := u.usersRepository.InsertOauth(passport); err != nil {
 		return nil, err
 	}
 	return passport, nil
 }
 
 func (u *usersUsecase) DeleteOauth(code string) error {
-	if err := u.UsersRepository.DeleteOauth(code); err != nil {
+	if err := u.usersRepository.DeleteOauth(code); err != nil {
 		return err
 	}
 	return nil
@@ -117,12 +117,12 @@ func (u *usersUsecase) RefreshPassport(req *users.UserRefreshCredential) (*users
 	}
 
 	// Find data and set claims
-	oauth, err := u.UsersRepository.FindOneOauth(req.RefreshToken)
+	oauth, err := u.usersRepository.FindOneOauth(req.RefreshToken)
 	if err != nil {
 		return nil, err
 	}
 
-	profile, err := u.UsersRepository.GetProfile(oauth.UserId)
+	profile, err := u.usersRepository.GetProfile(oauth.UserId)
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +159,7 @@ func (u *usersUsecase) RefreshPassport(req *users.UserRefreshCredential) (*users
 		},
 	}
 
-	if err := u.UsersRepository.UpdateOauth(passport.Token); err != nil {
+	if err := u.usersRepository.UpdateOauth(passport.Token); err != nil {
 		return nil, err
 	}
 	return passport, nil

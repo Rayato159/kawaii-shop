@@ -22,15 +22,15 @@ type IUsersRepository interface {
 }
 
 type usersRepository struct {
-	Db *sqlx.DB
+	db *sqlx.DB
 }
 
 func UsersRepository(db *sqlx.DB) IUsersRepository {
-	return &usersRepository{Db: db}
+	return &usersRepository{db: db}
 }
 
 func (r *usersRepository) GetTransaction() (*sqlx.Tx, error) {
-	tx, err := r.Db.BeginTxx(context.Background(), nil)
+	tx, err := r.db.BeginTxx(context.Background(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (r *usersRepository) GetTransaction() (*sqlx.Tx, error) {
 
 func (r *usersRepository) InsertCustomer(req *users.UserRegisterReq) (*users.UserPassport, error) {
 	// Inserting
-	result, err := patterns.InsertUser(r.Db, req, false).Customer()
+	result, err := patterns.InsertUser(r.db, req, false).Customer()
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (r *usersRepository) GetProfile(userId string) (*users.User, error) {
 	WHERE "id" = $1;`
 
 	profile := new(users.User)
-	if err := r.Db.Get(profile, query, userId); err != nil {
+	if err := r.db.Get(profile, query, userId); err != nil {
 		return nil, fmt.Errorf("get user profile failed: %v", err)
 	}
 	return profile, nil
@@ -81,7 +81,7 @@ func (r *usersRepository) FindOneUserByEmail(email string) (*users.UserCredentia
 	WHERE "email" = $1;`
 
 	user := new(users.UserCredentialCheck)
-	if err := r.Db.Get(user, query, email); err != nil {
+	if err := r.db.Get(user, query, email); err != nil {
 		return nil, fmt.Errorf("user not found")
 	}
 	return user, nil
@@ -97,7 +97,7 @@ func (r *usersRepository) InsertOauth(req *users.UserPassport) error {
 	VALUES ($1, $2, $3)
 		RETURNING "id";`
 
-	if err := r.Db.QueryRowxContext(
+	if err := r.db.QueryRowxContext(
 		context.Background(),
 		query,
 		req.User.Id,
@@ -114,7 +114,7 @@ func (r *usersRepository) DeleteOauth(code string) error {
 	DELETE FROM "oauth"
 		WHERE "id" = $1;`
 
-	if _, err := r.Db.ExecContext(context.Background(), query, code); err != nil {
+	if _, err := r.db.ExecContext(context.Background(), query, code); err != nil {
 		return fmt.Errorf("oauth not found")
 	}
 	return nil
@@ -129,7 +129,7 @@ func (r *usersRepository) FindOneOauth(refreshToken string) (*users.Oauth, error
 	WHERE "refresh_token" = $1;`
 
 	oauth := new(users.Oauth)
-	if err := r.Db.Get(oauth, query, refreshToken); err != nil {
+	if err := r.db.Get(oauth, query, refreshToken); err != nil {
 		return nil, fmt.Errorf("oauth not found")
 	}
 	return oauth, nil
@@ -142,7 +142,7 @@ func (r *usersRepository) UpdateOauth(req *users.UserToken) error {
 		"refresh_token" = :refresh_token
 	WHERE "id" = :id;`
 
-	if _, err := r.Db.NamedExecContext(context.Background(), query, req); err != nil {
+	if _, err := r.db.NamedExecContext(context.Background(), query, req); err != nil {
 		return fmt.Errorf("update oauth failed: %v", err)
 	}
 	return nil

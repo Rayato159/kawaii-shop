@@ -11,6 +11,10 @@ import (
 	_usersRepositories "github.com/Rayato159/kawaii-shop/modules/users/repositories"
 	_usersUsecases "github.com/Rayato159/kawaii-shop/modules/users/usecases"
 
+	_appinfoHandlers "github.com/Rayato159/kawaii-shop/modules/appinfo/handlers"
+	_appinfoRepositories "github.com/Rayato159/kawaii-shop/modules/appinfo/repositories"
+	_appinfoUsecases "github.com/Rayato159/kawaii-shop/modules/appinfo/usecases"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -26,6 +30,7 @@ func InitMiddleware(s *server) _middlewareHandlers.IMiddlewareHandler {
 type IModuleFactory interface {
 	MonitorModule()
 	UsersModule()
+	AppinfoModule()
 }
 
 type ModuleFactory struct {
@@ -60,4 +65,13 @@ func (f *ModuleFactory) UsersModule() {
 
 	router.Get("/secret", f.middleware.JwtAuth(), f.middleware.Authorize(2), handler.GenerateAdminToken)
 	router.Get("/:user_id", f.middleware.JwtAuth(), f.middleware.ParamsCheck(), handler.GetProfile)
+}
+
+func (f *ModuleFactory) AppinfoModule() {
+	repository := _appinfoRepositories.AppinfoRepository(f.server.Db())
+	usecase := _appinfoUsecases.AppinfoUsecase(repository)
+	handler := _appinfoHandlers.AppinfoHandler(f.server.cfg, usecase)
+
+	router := f.router.Group("/appinfo")
+	router.Get("/category", handler.FindCategory)
 }

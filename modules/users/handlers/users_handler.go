@@ -43,14 +43,14 @@ type IUsersHandler interface {
 }
 
 type usersHandler struct {
-	Cfg          config.IConfig
-	UsersUsecase usecases.IUsersUsecase
+	cfg           config.IConfig
+	usersUsecases usecases.IUsersUsecase
 }
 
 func UsersHandler(cfg config.IConfig, usecase usecases.IUsersUsecase) IUsersHandler {
 	return &usersHandler{
-		Cfg:          cfg,
-		UsersUsecase: usecase,
+		cfg:           cfg,
+		usersUsecases: usecase,
 	}
 }
 
@@ -75,7 +75,7 @@ func (h *usersHandler) SignUpCustomer(c *fiber.Ctx) error {
 	}
 
 	// Insert
-	result, err := h.UsersUsecase.InsertCustomer(req)
+	result, err := h.usersUsecases.InsertCustomer(req)
 	if err != nil {
 		switch err.Error() {
 		case "username have been used":
@@ -111,7 +111,7 @@ func (h *usersHandler) SignIn(c *fiber.Ctx) error {
 		).Res()
 	}
 
-	passport, err := h.UsersUsecase.GetPassport(req)
+	passport, err := h.usersUsecases.GetPassport(req)
 	if err != nil {
 		return entities.NewResponse(c).Error(
 			fiber.ErrBadRequest.Code,
@@ -133,7 +133,7 @@ func (h *usersHandler) RefreshPassport(c *fiber.Ctx) error {
 		).Res()
 	}
 
-	passport, err := h.UsersUsecase.RefreshPassport(req)
+	passport, err := h.usersUsecases.RefreshPassport(req)
 	if err != nil {
 		return entities.NewResponse(c).Error(
 			fiber.ErrBadRequest.Code,
@@ -154,7 +154,7 @@ func (h *usersHandler) SignOut(c *fiber.Ctx) error {
 		).Res()
 	}
 
-	if err := h.UsersUsecase.DeleteOauth(req.Code); err != nil {
+	if err := h.usersUsecases.DeleteOauth(req.Code); err != nil {
 		return entities.NewResponse(c).Error(
 			fiber.ErrBadRequest.Code,
 			string(signOutErr),
@@ -169,7 +169,7 @@ func (h *usersHandler) GetProfile(c *fiber.Ctx) error {
 	userId := strings.Trim(c.Params("user_id"), " ")
 
 	// Get profile
-	result, err := h.UsersUsecase.GetProfile(userId)
+	result, err := h.usersUsecases.GetProfile(userId)
 	if err != nil {
 		switch err.Error() {
 		case "get user profile failed: sql: no rows in result set":
@@ -192,7 +192,7 @@ func (h *usersHandler) GetProfile(c *fiber.Ctx) error {
 func (h *usersHandler) GenerateAdminToken(c *fiber.Ctx) error {
 	adminToken, err := kawaiiauth.NewKawaiiAuth(
 		kawaiiauth.Admin,
-		h.Cfg.Jwt(),
+		h.cfg.Jwt(),
 		nil,
 	)
 	if err != nil {

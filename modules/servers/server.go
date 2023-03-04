@@ -37,6 +37,7 @@ func (s *server) Start() {
 	module := InitModule(v1, s, middleware)
 	module.MonitorModule()
 	module.UsersModule()
+	module.AppinfoModule()
 
 	// If router not found
 	s.app.Use(middleware.RouterCheck())
