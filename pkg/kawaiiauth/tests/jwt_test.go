@@ -290,3 +290,26 @@ func TestRepeatToken(t *testing.T) {
 	}
 	fmt.Println(token)
 }
+
+func TestSignApiKey(t *testing.T) {
+	cfg := kawaiitests.Setup()
+	key, err := kawaiiauth.NewKawaiiAuth(kawaiiauth.ApiKey, cfg.GetConfig().Jwt(), nil)
+	if err != nil {
+		t.Errorf("expect: %v, got: %v", nil, err)
+	}
+	if key == nil {
+		t.Errorf("expect: %v, got: %v", "obj", key)
+	}
+	if key.SignToken() == "" {
+		t.Errorf("expect: %v, got: %v", "xxxxxxxxx", key.SignToken())
+	}
+	fmt.Println(key.SignToken())
+}
+
+func TestParseApiKey(t *testing.T) {
+	cfg := kawaiitests.Setup()
+	key := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOm51bGwsImlzcyI6Imthd2FpaXNob3AtYXBpIiwic3ViIjoiYXBpa2V5IiwiYXVkIjpbImN1c3RvbWVyIiwiYWRtaW4iXSwiZXhwIjoxNzQxMTA2NDY2LCJuYmYiOjE2Nzc5NDgwNjYsImlhdCI6MTY3Nzk0ODA2Nn0.TNfHFYM93nceW2rSBUlqB6mTm6v21xoJVE1W2V55iJk"
+	if _, err := kawaiiauth.ParseApiKey(cfg.GetConfig().Jwt(), key); err != nil {
+		t.Errorf("expect: %v, got %v", nil, err)
+	}
+}

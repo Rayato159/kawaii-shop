@@ -25,6 +25,7 @@ type IMiddlewareHandler interface {
 	RouterCheck() fiber.Handler
 	Logger() fiber.Handler
 	JwtAuth() fiber.Handler
+	ApiKeyAuth() fiber.Handler
 	ParamsCheck() fiber.Handler
 }
 
@@ -88,6 +89,20 @@ func (h *middlewareHandler) ParamsCheck() fiber.Handler {
 				fiber.ErrInternalServerError.Code,
 				string(jwtAuthErr),
 				"never gonna give you up",
+			).Res()
+		}
+		return c.Next()
+	}
+}
+
+func (h *middlewareHandler) ApiKeyAuth() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		key := c.Get("X-Api-Key")
+		if _, err := kawaiiauth.ParseApiKey(h.Cfg.Jwt(), key); err != nil {
+			return entities.NewResponse(c).Error(
+				fiber.ErrUnauthorized.Code,
+				string(jwtAuthErr),
+				"no permission to access",
 			).Res()
 		}
 		return c.Next()

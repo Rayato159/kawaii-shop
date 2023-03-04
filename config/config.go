@@ -39,7 +39,6 @@ type app struct {
 	readTimeout  time.Duration // Second
 	writeTimeout time.Duration // Second
 	bodyLimit    int           // Byte
-	apiKey       string
 	adminKey     string
 }
 
@@ -57,6 +56,7 @@ type db struct {
 type jwt struct {
 	adminKey         string
 	secretKey        string
+	apiKey           string
 	accessExpiresAt  int // Second
 	refreshExpiresAt int // Second
 }
@@ -65,7 +65,6 @@ type IAppConfig interface {
 	Url() string
 	Version() string
 	Name() string
-	ApiKey() string
 	AdminKey() string
 	BodyLimit() int
 	ReadTimeout() time.Duration
@@ -79,7 +78,6 @@ func (a *app) Name() string                { return a.name }
 func (a *app) BodyLimit() int              { return a.bodyLimit }
 func (a *app) ReadTimeout() time.Duration  { return a.readTimeout }
 func (a *app) WriteTimeout() time.Duration { return a.writeTimeout }
-func (a *app) ApiKey() string              { return a.apiKey }
 func (a *app) AdminKey() string            { return a.adminKey }
 
 type IDbConfig interface {
@@ -104,6 +102,7 @@ func (d *db) MaxOpenConns() int { return d.maxConnections }
 type IJwtConfig interface {
 	SecretKey() []byte
 	AdminKey() []byte
+	ApiKey() []byte
 	AccessTokenExpires() int
 	RefreshTokenExpires() int
 	SetJwtAccessExpires(t int)
@@ -113,6 +112,7 @@ type IJwtConfig interface {
 func (c *config) Jwt() IJwtConfig         { return c.jwt }
 func (j *jwt) SecretKey() []byte          { return []byte(j.secretKey) }
 func (j *jwt) AdminKey() []byte           { return []byte(j.adminKey) }
+func (j *jwt) ApiKey() []byte             { return []byte(j.apiKey) }
 func (j *jwt) AccessTokenExpires() int    { return j.accessExpiresAt }
 func (j *jwt) RefreshTokenExpires() int   { return j.refreshExpiresAt }
 func (j *jwt) SetJwtAccessExpires(t int)  { j.accessExpiresAt = t }
@@ -136,7 +136,6 @@ func LoadConfig(path string) IConfig {
 			}(),
 			name:     envMap["APP_NAME"],
 			version:  envMap["APP_VERSION"],
-			apiKey:   envMap["APP_API_KEY"],
 			adminKey: envMap["APP_ADMIN_KEY"],
 			bodyLimit: func() int {
 				s, err := strconv.Atoi(envMap["APP_BODY_LIMIT"])
@@ -185,8 +184,9 @@ func LoadConfig(path string) IConfig {
 		},
 		// Jwt
 		jwt: &jwt{
-			adminKey:  envMap["APP_ADMIN_KEY"],
 			secretKey: envMap["JWT_SECRET_KEY"],
+			adminKey:  envMap["APP_ADMIN_KEY"],
+			apiKey:    envMap["APP_API_KEY"],
 			accessExpiresAt: func() int {
 				exp, err := strconv.Atoi(envMap["JWT_ACCESS_EXPIRES"])
 				if err != nil {

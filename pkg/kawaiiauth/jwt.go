@@ -17,6 +17,7 @@ const (
 	Access  TokenType = "access"
 	Refresh TokenType = "refresh"
 	Admin   TokenType = "admin"
+	ApiKey  TokenType = "apikey"
 )
 
 type IKawaiiAuth interface {
@@ -27,14 +28,21 @@ type IKawaiiAdmin interface {
 	SignToken() string
 }
 
+type IKawaiiApiKey interface {
+	SignToken() string
+}
+
 type kawaiiAuth struct {
 	mapClaims *kawaiiMapClaims
 	cfg       config.IJwtConfig
 }
 
 type kawaiiAdmin struct {
-	mapClaims *kawaiiMapClaims
-	cfg       config.IJwtConfig
+	*kawaiiAuth
+}
+
+type kawaiiApiKey struct {
+	*kawaiiAuth
 }
 
 type kawaiiMapClaims struct {
@@ -59,6 +67,12 @@ func (a *kawaiiAuth) SignToken() string {
 func (a *kawaiiAdmin) SignToken() string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, a.mapClaims)
 	ss, _ := token.SignedString(a.cfg.AdminKey())
+	return ss
+}
+
+func (a *kawaiiApiKey) SignToken() string {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, a.mapClaims)
+	ss, _ := token.SignedString(a.cfg.ApiKey())
 	return ss
 }
 
@@ -114,6 +128,32 @@ func ParseAdminToken(cfg config.IJwtConfig, tokenString string) (*kawaiiMapClaim
 	}
 }
 
+func ParseApiKey(cfg config.IJwtConfig, tokenString string) (*kawaiiMapClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &kawaiiMapClaims{}, func(token *jwt.Token) (interface{}, error) {
+		// Check sign algorithm
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("signing method is invalid")
+		}
+		return cfg.ApiKey(), nil
+	})
+	if err != nil {
+		if errors.Is(err, jwt.ErrTokenMalformed) {
+			return nil, fmt.Errorf("token format is invalid")
+		} else if errors.Is(err, jwt.ErrTokenExpired) {
+			return nil, fmt.Errorf("token had expired")
+		} else {
+			return nil, fmt.Errorf("parse token error: %v", err)
+		}
+	}
+
+	// Check type and return
+	if claims, ok := token.Claims.(*kawaiiMapClaims); ok {
+		return claims, nil
+	} else {
+		return nil, fmt.Errorf("claims type is invalid")
+	}
+}
+
 func RepeatToken(cfg config.IJwtConfig, claims *users.UserClaims, exp int64) string {
 	obj := &kawaiiAuth{
 		cfg: cfg,
@@ -139,7 +179,9 @@ func NewKawaiiAuth(tokenType TokenType, cfg config.IJwtConfig, claims *users.Use
 	case Refresh:
 		return newRefreshToken(cfg, claims), nil
 	case Admin:
-		return newAdminToken(cfg, claims), nil
+		return newAdminToken(cfg), nil
+	case ApiKey:
+		return newApiKey(cfg), nil
 	default:
 		return nil, fmt.Errorf("unknown token type")
 	}
@@ -179,18 +221,39 @@ func newRefreshToken(cfg config.IJwtConfig, claims *users.UserClaims) IKawaiiAut
 	}
 }
 
-func newAdminToken(cfg config.IJwtConfig, claims any) IKawaiiAdmin {
+func newAdminToken(cfg config.IJwtConfig) IKawaiiAdmin {
 	return &kawaiiAdmin{
-		cfg: cfg,
-		mapClaims: &kawaiiMapClaims{
-			Claims: nil,
-			RegisteredClaims: jwt.RegisteredClaims{
-				Issuer:    "kawaiishop-api",
-				Subject:   "admin-token",
-				Audience:  []string{"admin"},
-				ExpiresAt: jwtTimeDurationCal(int(time.Second) * 300),
-				NotBefore: jwt.NewNumericDate(time.Now()),
-				IssuedAt:  jwt.NewNumericDate(time.Now()),
+		kawaiiAuth: &kawaiiAuth{
+			cfg: cfg,
+			mapClaims: &kawaiiMapClaims{
+				Claims: nil,
+				RegisteredClaims: jwt.RegisteredClaims{
+					Issuer:    "kawaiishop-api",
+					Subject:   "admin-token",
+					Audience:  []string{"admin"},
+					ExpiresAt: jwtTimeDurationCal(300),
+					NotBefore: jwt.NewNumericDate(time.Now()),
+					IssuedAt:  jwt.NewNumericDate(time.Now()),
+				},
+			},
+		},
+	}
+}
+
+func newApiKey(cfg config.IJwtConfig) IKawaiiApiKey {
+	return &kawaiiApiKey{
+		kawaiiAuth: &kawaiiAuth{
+			cfg: cfg,
+			mapClaims: &kawaiiMapClaims{
+				Claims: nil,
+				RegisteredClaims: jwt.RegisteredClaims{
+					Issuer:    "kawaiishop-api",
+					Subject:   "apikey",
+					Audience:  []string{"customer", "admin"},
+					ExpiresAt: jwt.NewNumericDate(time.Now().AddDate(2, 0, 0)),
+					NotBefore: jwt.NewNumericDate(time.Now()),
+					IssuedAt:  jwt.NewNumericDate(time.Now()),
+				},
 			},
 		},
 	}

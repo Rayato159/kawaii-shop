@@ -53,11 +53,11 @@ func (f *ModuleFactory) UsersModule() {
 
 	router := f.router.Group("/users")
 
-	router.Post("/signup", handler.SignUpCustomer)
-	router.Post("/signin", handler.SignIn)
-	router.Post("/signout", handler.SignOut)
-	router.Post("/refresh", handler.RefreshPassport)
+	router.Post("/signup", f.middleware.ApiKeyAuth(), handler.SignUpCustomer)
+	router.Post("/signin", f.middleware.ApiKeyAuth(), handler.SignIn)
+	router.Post("/signout", f.middleware.ApiKeyAuth(), handler.SignOut)
+	router.Post("/refresh", f.middleware.ApiKeyAuth(), handler.RefreshPassport)
 
-	router.Get("/secret", handler.GenerateAdminToken)
-	router.Get("/:user_id", f.middleware.JwtAuth(), handler.GetProfile)
+	router.Get("/secret", f.middleware.JwtAuth(), handler.GenerateAdminToken)
+	router.Get("/:user_id", f.middleware.JwtAuth(), f.middleware.ParamsCheck(), handler.GetProfile)
 }

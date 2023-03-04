@@ -37,3 +37,4 @@ vendor
 /tmp
 *.pem
 *.json
+apikey.txt
