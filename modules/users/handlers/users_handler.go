@@ -124,6 +124,22 @@ func (h *usersHandler) RefreshToken(c *fiber.Ctx) error {
 }
 
 func (h *usersHandler) SignOut(c *fiber.Ctx) error {
+	req := new(users.UserRemoveCredential)
+	if err := c.BodyParser(req); err != nil {
+		return entities.NewResponse(c).Error(
+			fiber.ErrBadRequest.Code,
+			string(bodyParserErr),
+			usersHandlerErrMsg[bodyParserErr],
+		).Res()
+	}
+
+	if err := h.UsersUsecase.DeleteOauth(req.Code); err != nil {
+		return entities.NewResponse(c).Error(
+			fiber.ErrBadRequest.Code,
+			string(signOutErr),
+			err.Error(),
+		).Res()
+	}
 	return entities.NewResponse(c).Success(fiber.StatusOK, nil).Res()
 }
 

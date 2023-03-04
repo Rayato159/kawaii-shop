@@ -116,3 +116,18 @@ func TestGetPassport(t *testing.T) {
 		}
 	}
 }
+
+func TestSignOut(t *testing.T) {
+	db := kawaiitests.Setup().GetDb()
+	codeSuccesss := "07533e6a-9c10-4233-a4c0-6496e5c48b90"
+	codeFailed := "07533e6a-9c10-4233-a4c0-xxxxxxxxxxxx"
+
+	usersRepo := repositories.UsersRepository(db)
+
+	if err := usersRepo.DeleteOauth(codeFailed); err == nil {
+		t.Errorf("expect: %v, got: %v", "oauth not found", err)
+	}
+	if err := usersRepo.DeleteOauth(codeSuccesss); err != nil {
+		t.Errorf("expect: %v, got: %v", nil, err)
+	}
+}

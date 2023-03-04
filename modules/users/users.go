@@ -20,6 +20,10 @@ type UserCredentialCheck struct {
 	Role     string `db:"role"`
 }
 
+type UserRemoveCredential struct {
+	Code string `json:"code" form:"code"`
+}
+
 type UserPassport struct {
 	User  *User      `json:"user"`
 	Token *UserToken `json:"token"`
