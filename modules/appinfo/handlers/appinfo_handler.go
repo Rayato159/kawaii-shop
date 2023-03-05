@@ -33,10 +33,10 @@ type appinfoHandler struct {
 	appinfoUsecase usecases.IAppinfoUsecase
 }
 
-func AppinfoHandler(cfg config.IConfig, usecase usecases.IAppinfoUsecase) IAppinfoHandler {
+func AppinfoHandler(cfg config.IConfig, appinfoUsecase usecases.IAppinfoUsecase) IAppinfoHandler {
 	return &appinfoHandler{
 		cfg:            cfg,
-		appinfoUsecase: usecase,
+		appinfoUsecase: appinfoUsecase,
 	}
 }
 

@@ -24,10 +24,10 @@ type usersUsecase struct {
 	usersRepository repositories.IUsersRepository
 }
 
-func UsersUsecase(repo repositories.IUsersRepository, cfg config.IConfig) IUsersUsecase {
+func UsersUsecase(usersRepo repositories.IUsersRepository, cfg config.IConfig) IUsersUsecase {
 	return &usersUsecase{
 		cfg:             cfg,
-		usersRepository: repo,
+		usersRepository: usersRepo,
 	}
 }
 

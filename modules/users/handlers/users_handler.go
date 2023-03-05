@@ -50,10 +50,10 @@ type usersHandler struct {
 	usersUsecases usecases.IUsersUsecase
 }
 
-func UsersHandler(cfg config.IConfig, usecase usecases.IUsersUsecase) IUsersHandler {
+func UsersHandler(cfg config.IConfig, usersUsecase usecases.IUsersUsecase) IUsersHandler {
 	return &usersHandler{
 		cfg:           cfg,
-		usersUsecases: usecase,
+		usersUsecases: usersUsecase,
 	}
 }
 

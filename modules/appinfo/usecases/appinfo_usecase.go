@@ -15,9 +15,9 @@ type appinfoUsecase struct {
 	appinfoRepository repositories.IAppinfoRepository
 }
 
-func AppinfoUsecase(repo repositories.IAppinfoRepository) IAppinfoUsecase {
+func AppinfoUsecase(appinfoRepo repositories.IAppinfoRepository) IAppinfoUsecase {
 	return &appinfoUsecase{
-		appinfoRepository: repo,
+		appinfoRepository: appinfoRepo,
 	}
 }
 
