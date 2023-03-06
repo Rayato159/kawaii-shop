@@ -7,6 +7,10 @@ import (
 
 	_monitorHandlers "github.com/Rayato159/kawaii-shop/modules/monitor/handlers"
 
+	_filesHandlers "github.com/Rayato159/kawaii-shop/modules/files/handlers"
+	_filesRepositories "github.com/Rayato159/kawaii-shop/modules/files/repositories"
+	_filesUsecases "github.com/Rayato159/kawaii-shop/modules/files/usecases"
+
 	_usersHandlers "github.com/Rayato159/kawaii-shop/modules/users/handlers"
 	_usersRepositories "github.com/Rayato159/kawaii-shop/modules/users/repositories"
 	_usersUsecases "github.com/Rayato159/kawaii-shop/modules/users/usecases"
@@ -54,6 +58,16 @@ func InitModule(r fiber.Router, s *server, m _middlewareHandlers.IMiddlewareHand
 
 func (f *ModuleFactory) MonitorModule() {
 	f.router.Get("/", _monitorHandlers.MonitorHandler(f.server.cfg).HealthCheck)
+}
+
+func (f *ModuleFactory) FilesModule() {
+	repository := _filesRepositories.FilesRepository(f.server.Db())
+	usecase := _filesUsecases.FilesUsecase(repository)
+	handler := _filesHandlers.FilesHandler(f.server.cfg, usecase)
+
+	router := f.router.Group("/files")
+	_ = router
+	_ = handler
 }
 
 func (f *ModuleFactory) UsersModule() {
