@@ -15,6 +15,10 @@ import (
 	_appinfoRepositories "github.com/Rayato159/kawaii-shop/modules/appinfo/repositories"
 	_appinfoUsecases "github.com/Rayato159/kawaii-shop/modules/appinfo/usecases"
 
+	_productsHandlers "github.com/Rayato159/kawaii-shop/modules/products/handlers"
+	_productsRepositories "github.com/Rayato159/kawaii-shop/modules/products/repositories"
+	_productsUsecases "github.com/Rayato159/kawaii-shop/modules/products/usecases"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -31,6 +35,7 @@ type IModuleFactory interface {
 	MonitorModule()
 	UsersModule()
 	AppinfoModule()
+	ProductsModule()
 }
 
 type ModuleFactory struct {
@@ -81,4 +86,15 @@ func (f *ModuleFactory) AppinfoModule() {
 	router.Get("/apikey", f.middleware.JwtAuth(), f.middleware.Authorize(2), handler.GenerateApiKey)
 
 	router.Delete("/categories", f.middleware.JwtAuth(), f.middleware.Authorize(2), handler.RemoveCategory)
+}
+
+func (f *ModuleFactory) ProductsModule() {
+	repository := _productsRepositories.ProductsRepository(f.server.Db())
+	usecase := _productsUsecases.ProductsUsecase(repository)
+	handler := _productsHandlers.ProductsHandler(f.server.cfg, usecase)
+
+	router := f.router.Group("/products")
+
+	router.Get("/", f.middleware.ApiKeyAuth(), handler.FindProduct)
+	router.Get("/:product_id", f.middleware.ApiKeyAuth(), handler.FindOneProduct)
 }

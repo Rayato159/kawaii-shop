@@ -17,7 +17,8 @@ type IInsertUser interface {
 }
 
 func (f *userReq) Customer() (IInsertUser, error) {
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	query := `
 	INSERT INTO "users" (

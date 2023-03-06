@@ -38,6 +38,7 @@ func (s *server) Start() {
 	module.MonitorModule()
 	module.UsersModule()
 	module.AppinfoModule()
+	module.ProductsModule()
 
 	// If router not found
 	s.app.Use(middleware.RouterCheck())
