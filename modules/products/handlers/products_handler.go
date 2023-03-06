@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/Rayato159/kawaii-shop/config"
+	"github.com/Rayato159/kawaii-shop/modules/appinfo"
 	"github.com/Rayato159/kawaii-shop/modules/entities"
 	"github.com/Rayato159/kawaii-shop/modules/products"
 	"github.com/Rayato159/kawaii-shop/modules/products/usecases"
@@ -15,11 +16,13 @@ type productsHandlerErrCode string
 const (
 	findProductErr    productsHandlerErrCode = "products-001"
 	findOneProductErr productsHandlerErrCode = "products-002"
+	addProductErr     productsHandlerErrCode = "products-003"
 )
 
 type IProductsHandler interface {
 	FindProduct(c *fiber.Ctx) error
 	FindOneProduct(c *fiber.Ctx) error
+	AddProduct(c *fiber.Ctx) error
 }
 
 type productsHandler struct {
@@ -80,4 +83,36 @@ func (h *productsHandler) FindOneProduct(c *fiber.Ctx) error {
 		).Res()
 	}
 	return entities.NewResponse(c).Success(fiber.StatusOK, product).Res()
+}
+
+func (h *productsHandler) AddProduct(c *fiber.Ctx) error {
+	req := &products.Product{
+		Category: &appinfo.Category{},
+		Images:   make([]*entities.Images, 0),
+	}
+
+	if err := c.BodyParser(req); err != nil {
+		return entities.NewResponse(c).Error(
+			fiber.ErrBadRequest.Code,
+			string(addProductErr),
+			err.Error(),
+		).Res()
+	}
+	if req.Category.Id <= 0 {
+		return entities.NewResponse(c).Error(
+			fiber.ErrBadRequest.Code,
+			string(addProductErr),
+			"category id is invalid",
+		).Res()
+	}
+
+	product, err := h.productsUsecase.AddProduct(req)
+	if err != nil {
+		return entities.NewResponse(c).Error(
+			fiber.ErrInternalServerError.Code,
+			string(addProductErr),
+			err.Error(),
+		).Res()
+	}
+	return entities.NewResponse(c).Success(fiber.StatusCreated, product).Res()
 }
