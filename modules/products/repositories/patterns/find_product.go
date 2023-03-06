@@ -47,6 +47,18 @@ func (b *findProductBuilder) initQuery() {
 			"p"."id",
 			"p"."title",
 			"p"."description",
+			(
+				SELECT
+					to_json("ct")
+				FROM (
+					SELECT
+						"c"."id",
+						"c"."title"
+					FROM "categories" "c"
+						LEFT JOIN "products_categories" "pc" ON "pc"."category_id" = "c"."id"
+					WHERE "pc"."product_id" = "p"."id"
+				) AS "ct"
+			) AS "category",
 			"p"."created_at",
 			"p"."updated_at",
 			(

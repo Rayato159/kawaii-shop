@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/Rayato159/kawaii-shop/modules/appinfo"
 	"github.com/Rayato159/kawaii-shop/modules/entities"
 	"github.com/Rayato159/kawaii-shop/modules/products"
 	"github.com/Rayato159/kawaii-shop/modules/products/repositories"
@@ -19,6 +20,9 @@ type testFindProduct struct {
 type testFindOneProduct struct {
 	id    string
 	isErr bool
+}
+
+type testAddProduct struct {
 }
 
 func TestFindProduct(t *testing.T) {
@@ -128,4 +132,35 @@ func TestFindOneProduct(t *testing.T) {
 			utils.Debug(product)
 		}
 	}
+}
+
+func TestAddProduct(t *testing.T) {
+	db := kawaiitests.Setup().GetDb()
+	productsRepo := repositories.ProductsRepository(db)
+
+	product, err := productsRepo.InsertProduct(&products.Product{
+		Title:       "air purifier",
+		Description: "something I don't know",
+		Category: &appinfo.Category{
+			Id: 3,
+		},
+		Images: []*entities.Images{
+			{
+				FileName: utils.RandomFileName("jpg"),
+				Url:      "https://i.pinimg.com/564x/b1/8e/1b/b18e1b87f50ef7ccd1e2c58c408fe35e.jpg",
+			},
+			{
+				FileName: utils.RandomFileName("jpg"),
+				Url:      "https://i.pinimg.com/564x/b1/8e/1b/b18e1b87f50ef7ccd1e2c58c408fe35e.jpg",
+			},
+			{
+				FileName: utils.RandomFileName("jpg"),
+				Url:      "https://i.pinimg.com/564x/b1/8e/1b/b18e1b87f50ef7ccd1e2c58c408fe35e.jpg",
+			},
+		},
+	})
+	if err != nil {
+		t.Errorf("expect: %v, got: %v", nil, err)
+	}
+	utils.Debug(product)
 }

@@ -14,6 +14,7 @@ import (
 type IProductsRepository interface {
 	FindProduct(req *products.ProductFilter) ([]*products.Product, int)
 	FindOneProduct(productId string) (*products.Product, error)
+	InsertProduct(req *products.Product) (*products.Product, error)
 }
 
 type productsRepository struct {
@@ -44,6 +45,18 @@ func (r *productsRepository) FindOneProduct(productId string) (*products.Product
 			"p"."id",
 			"p"."title",
 			"p"."description",
+			(
+				SELECT
+					to_json("ct")
+				FROM (
+					SELECT
+						"c"."id",
+						"c"."title"
+					FROM "categories" "c"
+						LEFT JOIN "products_categories" "pc" ON "pc"."category_id" = "c"."id"
+					WHERE "pc"."product_id" = "p"."id"
+				) AS "ct"
+			) AS "category",
 			"p"."created_at",
 			"p"."updated_at",
 			(
@@ -75,6 +88,20 @@ func (r *productsRepository) FindOneProduct(productId string) (*products.Product
 	// Parse bytes to json object
 	if err := json.Unmarshal(productBytes, &product); err != nil {
 		return nil, fmt.Errorf("unmarshal products failed: %v", err)
+	}
+	return product, nil
+}
+
+func (r *productsRepository) InsertProduct(req *products.Product) (*products.Product, error) {
+	builder := patterns.InsertProductBuilder(r.db, req)
+	productId, err := patterns.InsertProductEngineer(builder).InsertProduct()
+	if err != nil {
+		return nil, err
+	}
+
+	product, err := r.FindOneProduct(productId)
+	if err != nil {
+		return nil, err
 	}
 	return product, nil
 }
