@@ -41,6 +41,7 @@ type app struct {
 	bodyLimit    int           // Byte
 	adminKey     string
 	fileLimit    int
+	gcpbucket    string
 }
 
 type db struct {
@@ -71,6 +72,7 @@ type IAppConfig interface {
 	ReadTimeout() time.Duration
 	WriteTimeout() time.Duration
 	FileLimit() int
+	GCPBucket() string
 }
 
 func (c *config) App() IAppConfig          { return c.app }
@@ -82,6 +84,7 @@ func (a *app) ReadTimeout() time.Duration  { return a.readTimeout }
 func (a *app) WriteTimeout() time.Duration { return a.writeTimeout }
 func (a *app) AdminKey() string            { return a.adminKey }
 func (a *app) FileLimit() int              { return a.fileLimit }
+func (a *app) GCPBucket() string           { return a.gcpbucket }
 
 type IDbConfig interface {
 	Url() string
@@ -168,6 +171,7 @@ func LoadConfig(path string) IConfig {
 				}
 				return s
 			}(),
+			gcpbucket: envMap["APP_GCP_BUCKET"],
 		},
 		// Db
 		db: &db{

@@ -75,14 +75,23 @@ func (h *filesHandler) UploadFiles(c *fiber.Ctx) error {
 			).Res()
 		}
 
+		filename := utils.RandomFileName(ext)
 		req = append(req, &filespkg.FileReq{
 			File:        file,
-			Destination: destination,
-			FileName:    utils.RandomFileName(ext),
+			Destination: destination + "/" + filename,
+			FileName:    filename,
 			Extension:   ext,
 		})
 	}
-	utils.Debug(req)
 
-	return entities.NewResponse(c).Success(fiber.StatusOK, nil).Res()
+	// Upload
+	res, err := h.filesUsecase.UploadToGCP(req)
+	if err != nil {
+		return entities.NewResponse(c).Error(
+			fiber.ErrInternalServerError.Code,
+			string(uploadFileErr),
+			err.Error(),
+		).Res()
+	}
+	return entities.NewResponse(c).Success(fiber.StatusOK, res).Res()
 }

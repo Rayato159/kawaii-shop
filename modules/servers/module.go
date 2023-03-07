@@ -8,7 +8,6 @@ import (
 	_monitorHandlers "github.com/Rayato159/kawaii-shop/modules/monitor/handlers"
 
 	_filesHandlers "github.com/Rayato159/kawaii-shop/modules/files/handlers"
-	_filesRepositories "github.com/Rayato159/kawaii-shop/modules/files/repositories"
 	_filesUsecases "github.com/Rayato159/kawaii-shop/modules/files/usecases"
 
 	_usersHandlers "github.com/Rayato159/kawaii-shop/modules/users/handlers"
@@ -62,8 +61,7 @@ func (f *ModuleFactory) MonitorModule() {
 }
 
 func (f *ModuleFactory) FilesModule() {
-	repository := _filesRepositories.FilesRepository(f.server.Db())
-	usecase := _filesUsecases.FilesUsecase(repository)
+	usecase := _filesUsecases.FilesUsecase(f.server.cfg)
 	handler := _filesHandlers.FilesHandler(f.server.cfg, usecase)
 
 	router := f.router.Group("/files")
