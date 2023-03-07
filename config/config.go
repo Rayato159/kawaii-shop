@@ -40,6 +40,7 @@ type app struct {
 	writeTimeout time.Duration // Second
 	bodyLimit    int           // Byte
 	adminKey     string
+	fileLimit    int
 }
 
 type db struct {
@@ -69,6 +70,7 @@ type IAppConfig interface {
 	BodyLimit() int
 	ReadTimeout() time.Duration
 	WriteTimeout() time.Duration
+	FileLimit() int
 }
 
 func (c *config) App() IAppConfig          { return c.app }
@@ -79,6 +81,7 @@ func (a *app) BodyLimit() int              { return a.bodyLimit }
 func (a *app) ReadTimeout() time.Duration  { return a.readTimeout }
 func (a *app) WriteTimeout() time.Duration { return a.writeTimeout }
 func (a *app) AdminKey() string            { return a.adminKey }
+func (a *app) FileLimit() int              { return a.fileLimit }
 
 type IDbConfig interface {
 	Url() string
@@ -157,6 +160,13 @@ func LoadConfig(path string) IConfig {
 					return time.Second * 360
 				}
 				return time.Duration(int64(t) * int64(math.Pow10(9)))
+			}(),
+			fileLimit: func() int {
+				s, err := strconv.Atoi(envMap["APP_FILE_LIMIT"])
+				if err != nil {
+					return 2 * 1024 * 1024 // 8 MiB
+				}
+				return s
 			}(),
 		},
 		// Db

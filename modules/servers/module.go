@@ -37,6 +37,7 @@ func InitMiddleware(s *server) _middlewareHandlers.IMiddlewareHandler {
 // Module
 type IModuleFactory interface {
 	MonitorModule()
+	FilesModule()
 	UsersModule()
 	AppinfoModule()
 	ProductsModule()
@@ -66,8 +67,8 @@ func (f *ModuleFactory) FilesModule() {
 	handler := _filesHandlers.FilesHandler(f.server.cfg, usecase)
 
 	router := f.router.Group("/files")
-	_ = router
-	_ = handler
+
+	router.Post("/", f.middleware.JwtAuth(), handler.UploadFiles)
 }
 
 func (f *ModuleFactory) UsersModule() {

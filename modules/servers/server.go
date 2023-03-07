@@ -36,6 +36,7 @@ func (s *server) Start() {
 	// Import modules
 	module := InitModule(v1, s, middleware)
 	module.MonitorModule()
+	module.FilesModule()
 	module.UsersModule()
 	module.AppinfoModule()
 	module.ProductsModule()

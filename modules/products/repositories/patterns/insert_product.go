@@ -83,8 +83,6 @@ func (b *insertProductBuilder) insertAttachment() error {
 		index += 3
 	}
 
-	fmt.Println(query)
-
 	if _, err := b.tx.ExecContext(
 		ctx,
 		query,
