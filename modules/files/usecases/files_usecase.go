@@ -22,6 +22,12 @@ type filesUsecase struct {
 	cfg config.IConfig
 }
 
+type fileRes struct {
+	bucket      string
+	destination string
+	file        *filespkg.FileRes
+}
+
 func FilesUsecase(cfg config.IConfig) IFilesUsecase {
 	return &filesUsecase{
 		cfg: cfg,
@@ -63,10 +69,40 @@ func (u *filesUsecase) UploadToGCP(req []*filespkg.FileReq) ([]*filespkg.FileRes
 		}
 		log.Printf("%v uploaded to %v.\n", req[i].FileName, req[i].Destination)
 
-		res = append(res, &filespkg.FileRes{
-			Url:      fmt.Sprintf("https://storage.googleapis.com/%s/%s", u.cfg.App().GCPBucket(), req[i].Destination),
-			Filename: req[i].FileName,
-		})
+		newFile := &fileRes{
+			file: &filespkg.FileRes{
+				Url:      fmt.Sprintf("https://storage.googleapis.com/%s/%s", u.cfg.App().GCPBucket(), req[i].Destination),
+				Filename: req[i].FileName,
+			},
+			destination: req[i].Destination,
+			bucket:      u.cfg.App().GCPBucket(),
+		}
+
+		// Make obj to public access
+		if err := newFile.public(); err != nil {
+			return nil, err
+		}
+
+		res = append(res, newFile.file)
 	}
 	return res, nil
+}
+
+func (f *fileRes) public() error {
+	ctx := context.Background()
+	client, err := storage.NewClient(ctx)
+	if err != nil {
+		return fmt.Errorf("storage.NewClient: %v", err)
+	}
+	defer client.Close()
+
+	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
+	defer cancel()
+
+	acl := client.Bucket(f.bucket).Object(f.destination).ACL()
+	if err := acl.Set(ctx, storage.AllUsers, storage.RoleReader); err != nil {
+		return fmt.Errorf("ACLHandle.Set: %v", err)
+	}
+	fmt.Printf("blob %v is now publicly accessible.\n", f.destination)
+	return nil
 }

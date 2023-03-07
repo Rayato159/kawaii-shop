@@ -93,5 +93,5 @@ func (h *filesHandler) UploadFiles(c *fiber.Ctx) error {
 			err.Error(),
 		).Res()
 	}
-	return entities.NewResponse(c).Success(fiber.StatusOK, res).Res()
+	return entities.NewResponse(c).Success(fiber.StatusCreated, res).Res()
 }
