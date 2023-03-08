@@ -104,16 +104,19 @@ func (f *ModuleFactory) AppinfoModule() {
 }
 
 func (f *ModuleFactory) ProductsModule() {
-	repository := _productsRepositories.ProductsRepository(f.server.Db())
-	usecase := _productsUsecases.ProductsUsecase(repository)
-	handler := _productsHandlers.ProductsHandler(f.server.cfg, usecase)
+	// File Module
+	filesUsecase := _filesUsecases.FilesUsecase(f.server.cfg)
+
+	productsRepository := _productsRepositories.ProductsRepository(f.server.Db())
+	productsUsecase := _productsUsecases.ProductsUsecase(productsRepository)
+	productsHandler := _productsHandlers.ProductsHandler(f.server.cfg, productsUsecase, filesUsecase)
 
 	router := f.router.Group("/products")
 
-	router.Get("/", f.middleware.ApiKeyAuth(), handler.FindProduct)
-	router.Get("/:product_id", f.middleware.ApiKeyAuth(), handler.FindOneProduct)
+	router.Get("/", f.middleware.ApiKeyAuth(), productsHandler.FindProduct)
+	router.Get("/:product_id", f.middleware.ApiKeyAuth(), productsHandler.FindOneProduct)
 
-	router.Post("/", f.middleware.JwtAuth(), f.middleware.Authorize(2), handler.AddProduct)
+	router.Post("/", f.middleware.JwtAuth(), f.middleware.Authorize(2), productsHandler.AddProduct)
 
-	router.Delete("/:product_id", f.middleware.JwtAuth(), f.middleware.Authorize(2), handler.DeleteProduct)
+	router.Delete("/:product_id", f.middleware.JwtAuth(), f.middleware.Authorize(2), productsHandler.DeleteProduct)
 }

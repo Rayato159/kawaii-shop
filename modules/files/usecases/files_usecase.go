@@ -143,35 +143,20 @@ func (u *filesUsecase) DeleteFileInGCP(req []*filespkg.DeleteFileReq) error {
 	}
 	defer client.Close()
 
-	var wg sync.WaitGroup
-	wg.Add(len(req))
-	errChan := make(chan error)
 	for i := range req {
-		go func(i int) {
-			defer wg.Done()
 
-			o := client.Bucket(u.cfg.App().GCPBucket()).Object(req[i].Destination)
+		o := client.Bucket(u.cfg.App().GCPBucket()).Object(req[i].Destination)
 
-			attrs, err := o.Attrs(ctx)
-			if err != nil {
-				errChan <- fmt.Errorf("object.Attrs: %v", err)
-				return
-			}
-			o = o.If(storage.Conditions{GenerationMatch: attrs.Generation})
+		attrs, err := o.Attrs(ctx)
+		if err != nil {
+			return fmt.Errorf("object.Attrs: %v", err)
+		}
+		o = o.If(storage.Conditions{GenerationMatch: attrs.Generation})
 
-			if err := o.Delete(ctx); err != nil {
-				errChan <- fmt.Errorf("Object(%q).Delete: %v", req[i].Destination, err)
-				return
-			}
-			log.Printf("%v deleted.\n", req[i].Destination)
-		}(i)
-	}
-	wg.Wait()
-	close(errChan)
-
-	errDelete := <-errChan
-	if err != nil {
-		return errDelete
+		if err := o.Delete(ctx); err != nil {
+			return fmt.Errorf("Object(%q).Delete: %v", req[i].Destination, err)
+		}
+		log.Printf("%v deleted.\n", req[i].Destination)
 	}
 
 	return nil
