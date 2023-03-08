@@ -114,4 +114,6 @@ func (f *ModuleFactory) ProductsModule() {
 	router.Get("/:product_id", f.middleware.ApiKeyAuth(), handler.FindOneProduct)
 
 	router.Post("/", f.middleware.JwtAuth(), f.middleware.Authorize(2), handler.AddProduct)
+
+	router.Delete("/:product_id", f.middleware.JwtAuth(), f.middleware.Authorize(2), handler.DeleteProduct)
 }
