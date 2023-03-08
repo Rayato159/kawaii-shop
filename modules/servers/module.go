@@ -67,6 +67,8 @@ func (f *ModuleFactory) FilesModule() {
 	router := f.router.Group("/files")
 
 	router.Post("/", f.middleware.JwtAuth(), handler.UploadFiles)
+
+	router.Patch("/", f.middleware.JwtAuth(), handler.DeleteFile)
 }
 
 func (f *ModuleFactory) UsersModule() {

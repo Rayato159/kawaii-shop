@@ -13,3 +13,7 @@ type FileRes struct {
 	Filename string `json:"filename"`
 	Url      string `json:"url"`
 }
+
+type DeleteFileReq struct {
+	Destination string `json:"destination"`
+}
