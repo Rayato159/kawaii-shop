@@ -44,7 +44,7 @@ func (b *insertProductBuilder) insertProduct() error {
 		query,
 		b.req.Title,
 		b.req.Description,
-	).Scan(&b.productId); err != nil {
+	).Scan(&b.req.Id); err != nil {
 		b.tx.Rollback()
 		return fmt.Errorf("insert product failed: %v", err)
 	}
@@ -70,7 +70,7 @@ func (b *insertProductBuilder) insertAttachment() error {
 			valuesStack,
 			b.req.Images[i].FileName,
 			b.req.Images[i].Url,
-			b.productId,
+			b.req.Id,
 		)
 
 		if i != len(b.req.Images)-1 {
@@ -108,7 +108,7 @@ func (b *insertProductBuilder) insertCategory() error {
 	if _, err := b.tx.ExecContext(
 		ctx,
 		query,
-		b.productId,
+		b.req.Id,
 		b.req.Category.Id,
 	); err != nil {
 		b.tx.Rollback()
@@ -126,14 +126,13 @@ func (b *insertProductBuilder) commit() error {
 }
 
 func (b *insertProductBuilder) getProductId() string {
-	return b.productId
+	return b.req.Id
 }
 
 type insertProductBuilder struct {
-	db        *sqlx.DB
-	tx        *sqlx.Tx
-	req       *products.Product
-	productId string
+	db  *sqlx.DB
+	tx  *sqlx.Tx
+	req *products.Product
 }
 
 func InsertProductBuilder(db *sqlx.DB, req *products.Product) IInsertProductBuilder {

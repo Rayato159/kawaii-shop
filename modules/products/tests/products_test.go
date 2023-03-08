@@ -25,6 +25,10 @@ type testFindOneProduct struct {
 type testAddProduct struct {
 }
 
+type testUpdateProduct struct {
+	req *products.Product
+}
+
 func TestFindProduct(t *testing.T) {
 	db := kawaiitests.Setup().GetDb()
 
@@ -163,4 +167,38 @@ func TestAddProduct(t *testing.T) {
 		t.Errorf("expect: %v, got: %v", nil, err)
 	}
 	utils.Debug(product)
+}
+
+func TestUpdateProductRepo(t *testing.T) {
+	db := kawaiitests.Setup().GetDb()
+	productsRepo := repositories.ProductsRepository(db)
+
+	tests := []testUpdateProduct{
+		{
+			req: &products.Product{
+				Id:          "P000006",
+				Title:       "Disc",
+				Description: "Just a music disc",
+				Category:    &appinfo.Category{},
+				Images:      make([]*entities.Images, 0),
+			},
+		},
+		{
+			req: &products.Product{
+				Id:          "P000006",
+				Title:       "",
+				Description: "Hello World!",
+				Category:    &appinfo.Category{},
+				Images:      make([]*entities.Images, 0),
+			},
+		},
+	}
+
+	for _, test := range tests {
+		product, err := productsRepo.UpdateProduct(test.req)
+		if err != nil {
+			t.Errorf("expect: %v, got: %v", nil, err)
+		}
+		utils.Debug(product)
+	}
 }
