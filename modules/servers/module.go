@@ -107,7 +107,7 @@ func (f *ModuleFactory) ProductsModule() {
 	// File Module
 	filesUsecase := _filesUsecases.FilesUsecase(f.server.cfg)
 
-	productsRepository := _productsRepositories.ProductsRepository(f.server.Db())
+	productsRepository := _productsRepositories.ProductsRepository(f.server.Db(), f.server.cfg, filesUsecase)
 	productsUsecase := _productsUsecases.ProductsUsecase(productsRepository)
 	productsHandler := _productsHandlers.ProductsHandler(f.server.cfg, productsUsecase, filesUsecase)
 
@@ -117,6 +117,8 @@ func (f *ModuleFactory) ProductsModule() {
 	router.Get("/:product_id", f.middleware.ApiKeyAuth(), productsHandler.FindOneProduct)
 
 	router.Post("/", f.middleware.JwtAuth(), f.middleware.Authorize(2), productsHandler.AddProduct)
+
+	router.Patch("/:product_id", f.middleware.JwtAuth(), f.middleware.Authorize(2), productsHandler.UpdateProduct)
 
 	router.Delete("/:product_id", f.middleware.JwtAuth(), f.middleware.Authorize(2), productsHandler.DeleteProduct)
 }

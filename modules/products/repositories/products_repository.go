@@ -5,9 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/Rayato159/kawaii-shop/config"
 	"github.com/Rayato159/kawaii-shop/modules/entities"
 	"github.com/Rayato159/kawaii-shop/modules/products"
 	"github.com/Rayato159/kawaii-shop/modules/products/repositories/patterns"
+
+	_filesUsecases "github.com/Rayato159/kawaii-shop/modules/files/usecases"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -21,12 +24,16 @@ type IProductsRepository interface {
 }
 
 type productsRepository struct {
-	db *sqlx.DB
+	db           *sqlx.DB
+	cfg          config.IConfig
+	filesUsecase _filesUsecases.IFilesUsecase
 }
 
-func ProductsRepository(db *sqlx.DB) IProductsRepository {
+func ProductsRepository(db *sqlx.DB, cfg config.IConfig, filesUsecase _filesUsecases.IFilesUsecase) IProductsRepository {
 	return &productsRepository{
-		db: db,
+		db:           db,
+		cfg:          cfg,
+		filesUsecase: filesUsecase,
 	}
 }
 
@@ -110,7 +117,7 @@ func (r *productsRepository) InsertProduct(req *products.Product) (*products.Pro
 }
 
 func (r *productsRepository) UpdateProduct(req *products.Product) (*products.Product, error) {
-	builder := patterns.UpdateProductBuilder(r.db, req)
+	builder := patterns.UpdateProductBuilder(r.db, req, r.filesUsecase)
 	engineer := patterns.UpdateProductEngineer(builder)
 
 	if err := engineer.UpdateProduct(); err != nil {

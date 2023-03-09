@@ -144,7 +144,6 @@ func (u *filesUsecase) DeleteFileInGCP(req []*filespkg.DeleteFileReq) error {
 	defer client.Close()
 
 	for i := range req {
-
 		o := client.Bucket(u.cfg.App().GCPBucket()).Object(req[i].Destination)
 
 		attrs, err := o.Attrs(ctx)

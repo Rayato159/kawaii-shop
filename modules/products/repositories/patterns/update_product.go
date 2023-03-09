@@ -4,6 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/Rayato159/kawaii-shop/modules/entities"
+	filespkg "github.com/Rayato159/kawaii-shop/modules/files"
+	_filesUsecases "github.com/Rayato159/kawaii-shop/modules/files/usecases"
 	"github.com/Rayato159/kawaii-shop/modules/products"
 	"github.com/jmoiron/sqlx"
 )
@@ -13,16 +16,17 @@ type IUpdateProductBuilder interface {
 	initQuery()
 	updateTitleQuery()
 	updateDescriptionQuery()
-	updateCategoryQuery()
-	searchOldImagesQuery()
-	insertImagesQuery()
-	deleteOldImagesQuery()
+	updateCategory() error
+	insertImages() error
+	getOldImages() []*entities.Images
+	deleteOldImages() error
 	closeQuery()
 	updateProduct() error
 	getQueryFields() []string
 	getValues() []any
 	getQuery() string
 	setQuery(query string)
+	getImagesLen() int
 	commit() error
 }
 
@@ -75,24 +79,110 @@ func (b *updateProductBuilder) closeQuery() {
 	WHERE "id" = $%d`, b.lastStackIndex)
 }
 
-func (b *updateProductBuilder) updateCategoryQuery() {
-	b.query += `
-	`
+func (b *updateProductBuilder) updateCategory() error {
+	if b.req.Category == nil {
+		return nil
+	}
+	if b.req.Category.Id == 0 {
+		return nil
+	}
+
+	query := `
+	UPDATE "products_categories" SET
+		"category_id" = $1
+	WHERE "product_id" = $2;`
+
+	if _, err := b.tx.ExecContext(
+		context.Background(),
+		query,
+		b.req.Category.Id,
+		b.req.Id,
+	); err != nil {
+		b.tx.Rollback()
+		return fmt.Errorf("update products_categories failed: %v", err)
+	}
+	return nil
 }
 
-func (b *updateProductBuilder) searchOldImagesQuery() {
-	b.query += `
-	`
+func (b *updateProductBuilder) insertImages() error {
+	query := `
+	INSERT INTO "images" (
+		"filename",
+		"url",
+		"product_id"
+	)
+	VALUES`
+
+	values := make([]any, 0)
+	index := 0
+	for i := range b.req.Images {
+		values = append(values, b.req.Images[i].FileName, b.req.Images[i].Url, b.req.Id)
+		if i != len(b.req.Images)-1 {
+			query += fmt.Sprintf(`
+		($%d, $%d, $%d),`, index+1, index+2, index+3)
+		} else {
+			query += fmt.Sprintf(`
+		($%d, $%d, $%d);`, index+1, index+2, index+3)
+		}
+		index = len(values)
+	}
+
+	if _, err := b.tx.ExecContext(
+		context.Background(),
+		query,
+		values...,
+	); err != nil {
+		b.tx.Rollback()
+		return fmt.Errorf("insert images failed: %v", err)
+	}
+	return nil
 }
 
-func (b *updateProductBuilder) insertImagesQuery() {
-	b.query += `
-	`
+func (b *updateProductBuilder) getOldImages() []*entities.Images {
+	query := `
+	SELECT
+		"id",
+		"filename",
+		"url"
+	FROM "images"
+	WHERE "product_id" = $1;`
+
+	images := make([]*entities.Images, 0)
+	if err := b.db.Select(
+		&images,
+		query,
+		b.req.Id,
+	); err != nil {
+		return make([]*entities.Images, 0)
+	}
+	return images
 }
 
-func (b *updateProductBuilder) deleteOldImagesQuery() {
-	b.query += `
-	`
+func (b *updateProductBuilder) deleteOldImages() error {
+	query := `
+	DELETE FROM "images"
+	WHERE "product_id" = $1;`
+
+	images := b.getOldImages()
+	if len(images) > 0 {
+		deleteFilesReq := make([]*filespkg.DeleteFileReq, 0)
+		for _, image := range images {
+			deleteFilesReq = append(deleteFilesReq, &filespkg.DeleteFileReq{
+				Destination: fmt.Sprintf("images/products/%s/%s", b.req.Id, image.FileName),
+			})
+		}
+		b.filesUsecase.DeleteFileInGCP(deleteFilesReq)
+	}
+
+	if _, err := b.tx.ExecContext(
+		context.Background(),
+		query,
+		b.req.Id,
+	); err != nil {
+		b.tx.Rollback()
+		return fmt.Errorf("delete images failed: %v", err)
+	}
+	return nil
 }
 
 func (b *updateProductBuilder) updateProduct() error {
@@ -101,6 +191,10 @@ func (b *updateProductBuilder) updateProduct() error {
 		return fmt.Errorf("update products failed: %v", err)
 	}
 	return nil
+}
+
+func (b *updateProductBuilder) getImagesLen() int {
+	return len(b.req.Images)
 }
 
 func (b *updateProductBuilder) initTransaction() error {
@@ -124,16 +218,18 @@ type updateProductBuilder struct {
 	db             *sqlx.DB
 	tx             *sqlx.Tx
 	req            *products.Product
+	filesUsecase   _filesUsecases.IFilesUsecase
 	query          string
 	queryFields    []string
 	lastStackIndex int
 	values         []any
 }
 
-func UpdateProductBuilder(db *sqlx.DB, req *products.Product) IUpdateProductBuilder {
+func UpdateProductBuilder(db *sqlx.DB, req *products.Product, filesUsecase _filesUsecases.IFilesUsecase) IUpdateProductBuilder {
 	return &updateProductBuilder{
 		db:             db,
 		req:            req,
+		filesUsecase:   filesUsecase,
 		queryFields:    make([]string, 0),
 		values:         make([]any, 0),
 		lastStackIndex: 0,
@@ -171,12 +267,27 @@ func (en *updateProductEngineer) UpdateProduct() error {
 	en.sumQueryFieldsProducts()
 	en.builder.closeQuery()
 
-	fmt.Println(en.builder.getQuery())
-
-	// Commit
+	// Update product
 	if err := en.builder.updateProduct(); err != nil {
 		return err
 	}
+
+	// Update category
+	if err := en.builder.updateCategory(); err != nil {
+		return err
+	}
+
+	// Update images
+	if en.builder.getImagesLen() > 0 {
+		if err := en.builder.deleteOldImages(); err != nil {
+			return err
+		}
+		if err := en.builder.insertImages(); err != nil {
+			return err
+		}
+	}
+
+	// Commit
 	if err := en.builder.commit(); err != nil {
 		return err
 	}
