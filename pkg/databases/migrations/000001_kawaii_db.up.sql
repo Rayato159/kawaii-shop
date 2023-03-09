@@ -95,8 +95,7 @@ CREATE TABLE "products_orders" (
   "id" uuid NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
   "order_id" VARCHAR NOT NULL,
   "product" jsonb,
-  "qty" INT NOT NULL DEFAULT 1,
-  "price" DOUBLE PRECISION
+  "qty" INT NOT NULL DEFAULT 1
 );
 
 --Set foreign key
