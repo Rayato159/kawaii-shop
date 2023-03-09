@@ -4,6 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/Rayato159/kawaii-shop/modules/entities"
+	filespkg "github.com/Rayato159/kawaii-shop/modules/files"
+	_filesUsecases "github.com/Rayato159/kawaii-shop/modules/files/usecases"
 	"github.com/Rayato159/kawaii-shop/modules/products"
 	"github.com/jmoiron/sqlx"
 )
@@ -15,7 +18,8 @@ type IUpdateProductBuilder interface {
 	updateDescriptionQuery()
 	updateCategory() error
 	insertImages() error
-	deleteOldImagesQuery() error
+	getOldImages() []*entities.Images
+	deleteOldImages() error
 	closeQuery()
 	updateProduct() error
 	getQueryFields() []string
@@ -134,10 +138,41 @@ func (b *updateProductBuilder) insertImages() error {
 	return nil
 }
 
-func (b *updateProductBuilder) deleteOldImagesQuery() error {
+func (b *updateProductBuilder) getOldImages() []*entities.Images {
+	query := `
+	SELECT
+		"id",
+		"filename",
+		"url"
+	FROM "images"
+	WHERE "product_id" = $1;`
+
+	images := make([]*entities.Images, 0)
+	if err := b.db.Select(
+		&images,
+		query,
+		b.req.Id,
+	); err != nil {
+		return make([]*entities.Images, 0)
+	}
+	return images
+}
+
+func (b *updateProductBuilder) deleteOldImages() error {
 	query := `
 	DELETE FROM "images"
 	WHERE "product_id" = $1;`
+
+	images := b.getOldImages()
+	if len(images) > 0 {
+		deleteFilesReq := make([]*filespkg.DeleteFileReq, 0)
+		for _, image := range images {
+			deleteFilesReq = append(deleteFilesReq, &filespkg.DeleteFileReq{
+				Destination: fmt.Sprintf("images/products/%s/%s", b.req.Id, image.FileName),
+			})
+		}
+		b.filesUsecase.DeleteFileInGCP(deleteFilesReq)
+	}
 
 	if _, err := b.tx.ExecContext(
 		context.Background(),
@@ -183,16 +218,18 @@ type updateProductBuilder struct {
 	db             *sqlx.DB
 	tx             *sqlx.Tx
 	req            *products.Product
+	filesUsecase   _filesUsecases.IFilesUsecase
 	query          string
 	queryFields    []string
 	lastStackIndex int
 	values         []any
 }
 
-func UpdateProductBuilder(db *sqlx.DB, req *products.Product) IUpdateProductBuilder {
+func UpdateProductBuilder(db *sqlx.DB, req *products.Product, filesUsecase _filesUsecases.IFilesUsecase) IUpdateProductBuilder {
 	return &updateProductBuilder{
 		db:             db,
 		req:            req,
+		filesUsecase:   filesUsecase,
 		queryFields:    make([]string, 0),
 		values:         make([]any, 0),
 		lastStackIndex: 0,
@@ -242,7 +279,7 @@ func (en *updateProductEngineer) UpdateProduct() error {
 
 	// Update images
 	if en.builder.getImagesLen() > 0 {
-		if err := en.builder.deleteOldImagesQuery(); err != nil {
+		if err := en.builder.deleteOldImages(); err != nil {
 			return err
 		}
 		if err := en.builder.insertImages(); err != nil {
