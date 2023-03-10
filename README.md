@@ -24,3 +24,13 @@ migrate -database 'postgres://kawaii:123456@0.0.0.0:4444/kawaii_db_test?sslmode=
 # Migrate down
 migrate -database 'postgres://kawaii:123456@0.0.0.0:4444/kawaii_db_test?sslmode=disable' -source file://D:/path-to-migrate -verbose down
 ```
+
+<h2>Build and Push to GCP</h2>
+
+```bash
+# Build
+docker build -t asia.gcr.io/prject-id/container-bucket .
+
+# Push
+docker push asia.gcr.io/prject-id/container-bucket
+```
