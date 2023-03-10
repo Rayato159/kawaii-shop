@@ -47,6 +47,7 @@ func (b *findProductBuilder) initQuery() {
 			"p"."id",
 			"p"."title",
 			"p"."description",
+			"p"."price",
 			(
 				SELECT
 					to_json("ct")
@@ -125,6 +126,7 @@ func (b *findProductBuilder) sort() {
 	orderByMap := map[string]string{
 		"id":    "\"p\".\"id\"",
 		"title": "\"p\".\"title\"",
+		"price": "\"p\".\"price\"",
 	}
 	if orderByMap[b.req.OrderBy] == "" {
 		b.req.OrderBy = orderByMap["title"]

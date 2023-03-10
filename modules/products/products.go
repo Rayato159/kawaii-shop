@@ -20,4 +20,5 @@ type Product struct {
 	CreatedAt   string             `json:"created_at"`
 	UpdatedAt   string             `json:"updated_at"`
 	Images      []*entities.Images `json:"images"`
+	Price       float64            `json:"price"`
 }

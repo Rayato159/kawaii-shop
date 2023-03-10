@@ -56,6 +56,7 @@ CREATE TABLE "products" (
   "id" VARCHAR(7) PRIMARY KEY DEFAULT CONCAT('P', LPAD(NEXTVAL('products_id_seq')::TEXT, 6, '0')),
   "title" VARCHAR NOT NULL,
   "description" VARCHAR NOT NULL DEFAULT '',
+  "price" FLOAT NOT NULL DEFAULT 0,
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP NOT NULL DEFAULT now()
 );

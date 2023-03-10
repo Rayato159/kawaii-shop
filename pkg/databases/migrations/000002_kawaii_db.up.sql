@@ -30,15 +30,16 @@ VALUES
 INSERT INTO "products"
     (
         "title",
-        "description"
+        "description",
+        "price"
     )
 VALUES
-    ('Coffee', 'Just a food & beverage product'),
-    ('Steak', 'Just a food & beverage product'),
-    ('Shirt', 'Just a fashion product'),
-    ('Touser', 'Just a fashion product'),
-    ('Phone', 'Just a gadget product'),
-    ('Computer', 'Just a gadget product');
+    ('Coffee', 'Just a food & beverage product', 150),
+    ('Steak', 'Just a food & beverage product', 200),
+    ('Shirt', 'Just a fashion product', 590),
+    ('Touser', 'Just a fashion product', 1490),
+    ('Phone', 'Just a gadget product', 33400),
+    ('Computer', 'Just a gadget product', 49000);
 
 INSERT INTO "images"
     (
@@ -99,9 +100,9 @@ INSERT INTO "products_orders"
         "product"
     )
 VALUES
-    ('O000001', 1, '{"id":"P000001","title":"Coffee","description":"Just a food & beverage product","category":{"id":1,"title":"food & beverage"},"created_at":"2023-03-10T00:03:59.677167","updated_at":"2023-03-10T00:03:59.677167","images":[{"id":"c580fe73-afb3-47d1-a9df-eed24fdaea9b","filename":"fb1_1.jpg","url":"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg"},{"id":"43bcd3fa-6f7f-4251-b196-f30ad4ea625e","filename":"fb1_2.jpg","url":"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg"},{"id":"77d9e690-b722-4039-b0fe-5f7d9af0e6b4","filename":"fb1_3.jpg","url":"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg"}]}'::jsonb),
-    ('O000001', 2, '{"id":"P000002","title":"Steak","description":"Just a food & beverage product","category":{"id":1,"title":"food & beverage"},"created_at":"2023-03-10T00:03:59.677167","updated_at":"2023-03-10T00:03:59.677167","images":[{"id":"1d1eed38-3568-4e3e-9322-4c902b94c5b8","filename":"fb2_1.jpg","url":"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg"},{"id":"f56c212a-16fd-4f8a-9091-03d2943c7f22","filename":"fb2_2.jpg","url":"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg"},{"id":"6dfe9af7-1c48-4280-9805-60e7342ce2f7","filename":"fb2_3.jpg","url":"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg"}]}'::jsonb),
-    ('O000002', 1, '{"id":"P000001","title":"Coffee","description":"Just a food & beverage product","category":{"id":1,"title":"food & beverage"},"created_at":"2023-03-10T00:03:59.677167","updated_at":"2023-03-10T00:03:59.677167","images":[{"id":"c580fe73-afb3-47d1-a9df-eed24fdaea9b","filename":"fb1_1.jpg","url":"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg"},{"id":"43bcd3fa-6f7f-4251-b196-f30ad4ea625e","filename":"fb1_2.jpg","url":"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg"},{"id":"77d9e690-b722-4039-b0fe-5f7d9af0e6b4","filename":"fb1_3.jpg","url":"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg"}]}'::jsonb),
-    ('O000002', 1, '{"id":"P000002","title":"Steak","description":"Just a food & beverage product","category":{"id":1,"title":"food & beverage"},"created_at":"2023-03-10T00:03:59.677167","updated_at":"2023-03-10T00:03:59.677167","images":[{"id":"1d1eed38-3568-4e3e-9322-4c902b94c5b8","filename":"fb2_1.jpg","url":"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg"},{"id":"f56c212a-16fd-4f8a-9091-03d2943c7f22","filename":"fb2_2.jpg","url":"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg"},{"id":"6dfe9af7-1c48-4280-9805-60e7342ce2f7","filename":"fb2_3.jpg","url":"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg"}]}'::jsonb);
+    ('O000001', 1, '{"id":"P000001","title":"Coffee", "price":150, "description":"Just a food & beverage product","category":{"id":1,"title":"food & beverage"},"created_at":"2023-03-10T00:03:59.677167","updated_at":"2023-03-10T00:03:59.677167","images":[{"id":"c580fe73-afb3-47d1-a9df-eed24fdaea9b","filename":"fb1_1.jpg","url":"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg"},{"id":"43bcd3fa-6f7f-4251-b196-f30ad4ea625e","filename":"fb1_2.jpg","url":"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg"},{"id":"77d9e690-b722-4039-b0fe-5f7d9af0e6b4","filename":"fb1_3.jpg","url":"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg"}]}'::jsonb),
+    ('O000001', 2, '{"id":"P000002","title":"Steak", "price":200, "description":"Just a food & beverage product","category":{"id":1,"title":"food & beverage"},"created_at":"2023-03-10T00:03:59.677167","updated_at":"2023-03-10T00:03:59.677167","images":[{"id":"1d1eed38-3568-4e3e-9322-4c902b94c5b8","filename":"fb2_1.jpg","url":"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg"},{"id":"f56c212a-16fd-4f8a-9091-03d2943c7f22","filename":"fb2_2.jpg","url":"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg"},{"id":"6dfe9af7-1c48-4280-9805-60e7342ce2f7","filename":"fb2_3.jpg","url":"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg"}]}'::jsonb),
+    ('O000002', 1, '{"id":"P000001","title":"Coffee", "price":150, "description":"Just a food & beverage product","category":{"id":1,"title":"food & beverage"},"created_at":"2023-03-10T00:03:59.677167","updated_at":"2023-03-10T00:03:59.677167","images":[{"id":"c580fe73-afb3-47d1-a9df-eed24fdaea9b","filename":"fb1_1.jpg","url":"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg"},{"id":"43bcd3fa-6f7f-4251-b196-f30ad4ea625e","filename":"fb1_2.jpg","url":"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg"},{"id":"77d9e690-b722-4039-b0fe-5f7d9af0e6b4","filename":"fb1_3.jpg","url":"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg"}]}'::jsonb),
+    ('O000002', 1, '{"id":"P000002","title":"Steak", "price":200, "description":"Just a food & beverage product","category":{"id":1,"title":"food & beverage"},"created_at":"2023-03-10T00:03:59.677167","updated_at":"2023-03-10T00:03:59.677167","images":[{"id":"1d1eed38-3568-4e3e-9322-4c902b94c5b8","filename":"fb2_1.jpg","url":"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg"},{"id":"f56c212a-16fd-4f8a-9091-03d2943c7f22","filename":"fb2_2.jpg","url":"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg"},{"id":"6dfe9af7-1c48-4280-9805-60e7342ce2f7","filename":"fb2_3.jpg","url":"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg"}]}'::jsonb);
 
 COMMIT;

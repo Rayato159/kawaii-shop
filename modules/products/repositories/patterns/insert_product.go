@@ -34,9 +34,10 @@ func (b *insertProductBuilder) insertProduct() error {
 	query := `
 	INSERT INTO "products" (
 		"title",
-		"description"
+		"description",
+		"price"
 	)
-	VALUES ($1, $2)
+	VALUES ($1, $2, $3)
 		RETURNING "id";`
 
 	if err := b.tx.QueryRowxContext(
@@ -44,6 +45,7 @@ func (b *insertProductBuilder) insertProduct() error {
 		query,
 		b.req.Title,
 		b.req.Description,
+		b.req.Price,
 	).Scan(&b.req.Id); err != nil {
 		b.tx.Rollback()
 		return fmt.Errorf("insert product failed: %v", err)

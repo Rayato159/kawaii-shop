@@ -16,6 +16,7 @@ type IUpdateProductBuilder interface {
 	initQuery()
 	updateTitleQuery()
 	updateDescriptionQuery()
+	updatePriceQuery()
 	updateCategory() error
 	insertImages() error
 	getOldImages() []*entities.Images
@@ -68,6 +69,16 @@ func (b *updateProductBuilder) updateDescriptionQuery() {
 
 		b.queryFields = append(b.queryFields, fmt.Sprintf(`
 		"description" = $%d`, b.lastStackIndex))
+	}
+}
+
+func (b *updateProductBuilder) updatePriceQuery() {
+	if b.req.Price != 0 {
+		b.values = append(b.values, b.req.Price)
+		b.lastStackIndex = len(b.values)
+
+		b.queryFields = append(b.queryFields, fmt.Sprintf(`
+		"price" = $%d`, b.lastStackIndex))
 	}
 }
 
@@ -247,6 +258,7 @@ func UpdateProductEngineer(b IUpdateProductBuilder) *updateProductEngineer {
 func (en *updateProductEngineer) sumQueryFieldsProducts() {
 	en.builder.updateTitleQuery()
 	en.builder.updateDescriptionQuery()
+	en.builder.updatePriceQuery()
 
 	fields := en.builder.getQueryFields()
 
