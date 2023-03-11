@@ -1,12 +1,11 @@
 package repositories
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/Rayato159/kawaii-shop/modules/orders"
+	"github.com/Rayato159/kawaii-shop/modules/orders/repositories/patterns"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -62,75 +61,8 @@ func OrdersRepository(db *sqlx.DB) IOrdersRepository {
 }
 
 func (r *ordersRepository) FindOrders(req *orders.OrderFilter) ([]*orders.Order, error) {
-	queryWhereStack := make([]string, 0)
-	values := make([]any, 0)
-
-	if req.Search != "" {
-		values = append(
-			values,
-			"%"+strings.ToLower(req.Search)+"%",
-		)
-		queryWhereStack = append(queryWhereStack, fmt.Sprintf(`
-		AND (
-				LOWER("o"."user_id") LIKE $? AND
-				LOWER("o"."address") LIKE $? AND
-				LOWER("o"."contract") LIKE $?
-			)`))
-	}
-
-	query := `
-	SELECT
-		to_jsonb("t")
-	FROM (
-		SELECT
-			"o"."id",
-			"o"."user_id",
-			(
-				SELECT
-					array_to_json(array_agg("pt"))
-				FROM (
-					SELECT
-						"spo"."id",
-						"spo"."qty",
-						"spo"."product"
-					FROM "products_orders" "spo"
-					WHERE "spo"."order_id" = "o"."id"
-				) AS "pt"
-			) AS "products",
-			"o"."transfer_slip",
-			"o"."contact",
-			"o"."address",
-			"o"."status",
-			(
-				SELECT
-					SUM(COALESCE(("po"."product"->>'price')::FLOAT*("po"."qty")::FLOAT, 0))
-				FROM "products_orders" "po"
-				WHERE "po"."order_id" = "o"."id"
-			) AS "total_paid",
-			"o"."created_at",
-			"o"."updated_at"
-		FROM "orders" "o"
-		WHERE 1 = 1`
-
-	for i := range queryWhereStack {
-		query += queryWhereStack[i]
-	}
-	query += `
-	) AS "t"`
-
-	rows, err := r.db.QueryxContext(
-		context.Background(),
-		query,
-		values...,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	orders, err := newOrderRows(rows).scan()
-	if err != nil {
-		return nil, err
-	}
-	return orders, nil
+	builder := patterns.FindOrdersBuilder(r.db, req)
+	engineer := patterns.FindOrdersEngineer(builder)
+	engineer.FindOrders()
+	return nil, nil
 }

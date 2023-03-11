@@ -6,7 +6,7 @@ import (
 )
 
 type OrderFilter struct {
-	Search    string `query:"search"` // user_id, address, contract, products {id, title, description, category: {title}}
+	Search    string `query:"search"` // user_id, address, contract, products {id, title, description}
 	StartDate string `query:"start_date"`
 	EndDate   string `query:"end_date"`
 	*entities.PaginateReq
