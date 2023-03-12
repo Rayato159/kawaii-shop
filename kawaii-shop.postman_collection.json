@@ -1,0 +1,2200 @@
+{
+	"info": {
+		"_postman_id": "e7fe09ae-fe1a-4be4-9a82-e47ad9df79d7",
+		"name": "kawaii-shop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18192292"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "admin",
+					"item": [
+						{
+							"name": "token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let res = pm.response.json()\r",
+											"let admin_token = res.token\r",
+											"pm.environment.set(\"admin_token\", admin_token)"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local_url}}/users/secret",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"users",
+										"secret"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "add admin",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"admin002@kawaii.com\",\r\n    \"password\": \"123456\",\r\n    \"username\": \"adminkawaii\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{local_url}}/users/admin",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"users",
+										"admin"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "201 - created",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"admin002@kawaii.com\",\r\n    \"password\": \"123456\",\r\n    \"username\": \"adminkawaii\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{local_url}}/users/admin",
+											"host": [
+												"{{local_url}}"
+											],
+											"path": [
+												"users",
+												"admin"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Sat, 04 Mar 2023 20:50:18 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "107"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"user\": {\n        \"id\": \"U00003\",\n        \"email\": \"admin002@gmail.com\",\n        \"username\": \"adminkawaii\",\n        \"role_id\": 2\n    },\n    \"token\": null\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "signup customer",
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{api_key}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-Api-Key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"customer001@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"username\": \"hellokawaii\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local_url}}/users/signup",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"users",
+								"signup"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\":\"customer001@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"username\": \"hellokawaii\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{local_url}}/users/signup",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"users",
+										"signup"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 04 Mar 2023 17:04:03 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "107"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": \"U000003\",\n        \"email\": \"customer001@gmail.com\",\n        \"username\": \"hellokawaii\",\n        \"role_id\": 1\n    },\n    \"token\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "sign in",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let res = pm.response.json()\r",
+									"let access_token = res.token.access_token\r",
+									"let refresh_token = res.token.refresh_token\r",
+									"let code = res.token.id\r",
+									"pm.environment.set(\"access_token\", access_token)\r",
+									"pm.environment.set(\"refresh_token\", refresh_token)\r",
+									"pm.environment.set(\"code\", code)"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{api_key}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-Api-Key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "admin001@kawaii.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local_url}}/users/signin",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"users",
+								"signin"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "email",
+											"value": "customer001@kawaii.com",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "123456",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{local_url}}/users/signin",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"users",
+										"signin"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 04 Mar 2023 17:03:01 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "771"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": \"U000001\",\n        \"email\": \"customer001@kawaii.com\",\n        \"username\": \"customer001\",\n        \"role_id\": 1\n    },\n    \"token\": {\n        \"id\": \"a724711b-ba72-47ad-9859-2455565bd821\",\n        \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOnsiaWQiOiJVMDAwMDAxIiwicm9sZSI6MX0sImlzcyI6Imthd2FpaXNob3AtYXBpIiwic3ViIjoiYWNjZXNzLXRva2VuIiwiYXVkIjpbImN1c3RvbWVyIiwiYWRtaW4iXSwiZXhwIjoxNjc4MDM1NzgyLCJuYmYiOjE2Nzc5NDkzODIsImlhdCI6MTY3Nzk0OTM4Mn0.-2Wky4k8ROGgKQKUzfJTU4fP3EKTP7XE4x83C3ZwJbE\",\n        \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOnsiaWQiOiJVMDAwMDAxIiwicm9sZSI6MX0sImlzcyI6Imthd2FpaXNob3AtYXBpIiwic3ViIjoicmVmcmVzaC10b2tlbiIsImF1ZCI6WyJjdXN0b21lciIsImFkbWluIl0sImV4cCI6MTY3ODU1NDE4MiwibmJmIjoxNjc3OTQ5MzgyLCJpYXQiOjE2Nzc5NDkzODJ9.1FAUMXLTzQ-_Wm5Zzji2LKIX3awSAwAv8kUeOLcj5aQ\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "refresh passport",
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{api_key}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-Api-Key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "refresh_token",
+									"value": "{{refresh_token}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local_url}}/users/refresh",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"users",
+								"refresh"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "refresh_token",
+											"value": "{{refresh_token}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{local_url}}/users/refresh",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"users",
+										"refresh"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 04 Mar 2023 17:01:42 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "771"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": \"U000001\",\n        \"email\": \"customer001@kawaii.com\",\n        \"username\": \"customer001\",\n        \"role_id\": 1\n    },\n    \"token\": {\n        \"id\": \"479f8893-302d-45ea-b318-8b854df1e2b5\",\n        \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOnsiaWQiOiJVMDAwMDAxIiwicm9sZSI6MX0sImlzcyI6Imthd2FpaXNob3AtYXBpIiwic3ViIjoiYWNjZXNzLXRva2VuIiwiYXVkIjpbImN1c3RvbWVyIiwiYWRtaW4iXSwiZXhwIjoxNjc4MDM1NzAzLCJuYmYiOjE2Nzc5NDkzMDMsImlhdCI6MTY3Nzk0OTMwM30.qwK2sknIRAVWZ57EBaluYoJD65F7eJK_4HgAticimO0\",\n        \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOnsiaWQiOiJVMDAwMDAxIiwicm9sZSI6MX0sImlzcyI6Imthd2FpaXNob3AtYXBpIiwic3ViIjoicmVmcmVzaC10b2tlbiIsImF1ZCI6WyJjdXN0b21lciIsImFkbWluIl0sImV4cCI6MTY3ODU1NDA5NywibmJmIjoxNjc3OTQ5MzAzLCJpYXQiOjE2Nzc5NDkzMDN9.f6NHbWT2cpUbuK40GaPmRQre2IlbGiljtBOcTzJpsSM\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "sign out",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{api_key}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-Api-Key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "code",
+									"value": "{{code}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local_url}}/users/signout",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"users",
+								"signout"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "code",
+											"value": "{{code}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{local_url}}/users/signout",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"users",
+										"signout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 04 Mar 2023 16:48:02 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "4"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "null"
+						}
+					]
+				},
+				{
+					"name": "profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local_url}}/users/:user_id",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"users",
+								":user_id"
+							],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "U000001"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local_url}}/users/:user_id",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"users",
+										":user_id"
+									],
+									"variable": [
+										{
+											"key": "user_id",
+											"value": "U000001"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sat, 04 Mar 2023 17:01:46 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "86"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"U000001\",\n    \"email\": \"customer001@kawaii.com\",\n    \"username\": \"customer001\",\n    \"role_id\": 1\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "appinfo",
+			"item": [
+				{
+					"name": "categories",
+					"item": [
+						{
+							"name": "find category",
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "value",
+											"value": "{{api_key}}",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "X-Api-Key",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local_url}}/appinfo/categories?title=food",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"appinfo",
+										"categories"
+									],
+									"query": [
+										{
+											"key": "title",
+											"value": "food"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "200 - ok",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{local_url}}/appinfo/category",
+											"host": [
+												"{{local_url}}"
+											],
+											"path": [
+												"appinfo",
+												"category"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Sat, 04 Mar 2023 19:19:19 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "94"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": 1,\n        \"title\": \"food & beverage\"\n    },\n    {\n        \"id\": 2,\n        \"title\": \"fashion\"\n    },\n    {\n        \"id\": 3,\n        \"title\": \"gadget\"\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "add category",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n    {\r\n        \"title\": \"anmime\"\r\n    },\r\n    {\r\n        \"title\": \"comics\"\r\n    }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{local_url}}/appinfo/categories",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"appinfo",
+										"categories"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "201 - created",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "[\r\n    {\r\n        \"title\": \"anmime\"\r\n    },\r\n    {\r\n        \"title\": \"comics\"\r\n    }\r\n]",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{local_url}}/appinfo/categories",
+											"host": [
+												"{{local_url}}"
+											],
+											"path": [
+												"appinfo",
+												"categories"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Sat, 04 Mar 2023 20:27:15 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "305"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": 1,\n        \"title\": \"food & beverage\"\n    },\n    {\n        \"id\": 2,\n        \"title\": \"fashion\"\n    },\n    {\n        \"id\": 3,\n        \"title\": \"gadget\"\n    },\n    {\n        \"id\": 4,\n        \"title\": \"gundam\"\n    },\n    {\n        \"id\": 5,\n        \"title\": \"vehicle\"\n    },\n    {\n        \"id\": 6,\n        \"title\": \"game\"\n    },\n    {\n        \"id\": 7,\n        \"title\": \"gundamx\"\n    },\n    {\n        \"id\": 8,\n        \"title\": \"vehiclex\"\n    },\n    {\n        \"id\": 9,\n        \"title\": \"gamex\"\n    },\n    {\n        \"id\": 10,\n        \"title\": \"anmime\"\n    },\n    {\n        \"id\": 11,\n        \"title\": \"comics\"\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "remove category",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{local_url}}/appinfo/categories?id=10",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"appinfo",
+										"categories"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "204 - no content",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{local_url}}/appinfo/categories?id=10",
+											"host": [
+												"{{local_url}}"
+											],
+											"path": [
+												"appinfo",
+												"categories"
+											],
+											"query": [
+												{
+													"key": "id",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"status": "No Content",
+									"code": 204,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Sat, 04 Mar 2023 20:31:35 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										}
+									],
+									"cookie": [],
+									"body": null
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "app",
+					"item": [
+						{
+							"name": "generate api key",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let res = pm.response.json()\r",
+											"if(!res.ket) {\r",
+											"    pm.environment.set(\"api_key\", \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOm51bGwsImlzcyI6Imthd2FpaXNob3AtYXBpIiwic3ViIjoiYXBpa2V5IiwiYXVkIjpbImN1c3RvbWVyIiwiYWRtaW4iXSwiZXhwIjoxNzQxMTA2NDY2LCJuYmYiOjE2Nzc5NDgwNjYsImlhdCI6MTY3Nzk0ODA2Nn0.TNfHFYM93nceW2rSBUlqB6mTm6v21xoJVE1W2V55iJk\")\r",
+											"} else {\r",
+											"    let api_key = res.key\r",
+											"    pm.environment.set(\"api_key\", api_key)\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local_url}}/appinfo/apikey",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"appinfo",
+										"apikey"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "200 - ok",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{local_url}}/appinfo/apikey",
+											"host": [
+												"{{local_url}}"
+											],
+											"path": [
+												"appinfo",
+												"apikey"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Sat, 04 Mar 2023 19:27:57 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "266"
+										},
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"key\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOm51bGwsImlzcyI6Imthd2FpaXNob3AtYXBpIiwic3ViIjoiYXBpa2V5IiwiYXVkIjpbImN1c3RvbWVyIiwiYWRtaW4iXSwiZXhwIjoxNzQxMTE2NDc3LCJuYmYiOjE2Nzc5NTgwNzcsImlhdCI6MTY3Nzk1ODA3N30.5SUgQA3dYzLEefuTJN-CAvEAjfbZnddXMsxSfZhJFD4\"\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "products",
+			"item": [
+				{
+					"name": "find products",
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{api_key}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-Api-Key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local_url}}/products?page=1&limit=10&order_by=price&sort=asc",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "P00001",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "food",
+									"description": "title or description",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "order_by",
+									"value": "price",
+									"description": "title | id | price"
+								},
+								{
+									"key": "sort",
+									"value": "asc",
+									"description": "DESC | ASC | desc | asc"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local_url}}/products?search=food&page=1&limit=10&order_by=title&sort=asc",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"products"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "P00001",
+											"disabled": true
+										},
+										{
+											"key": "search",
+											"value": "food",
+											"description": "title or description"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										},
+										{
+											"key": "order_by",
+											"value": "title",
+											"description": "title | id"
+										},
+										{
+											"key": "sort",
+											"value": "asc",
+											"description": "DESC | ASC | desc | asc"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Fri, 10 Mar 2023 20:00:12 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1441"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": [\n        {\n            \"id\": \"P000001\",\n            \"title\": \"Coffee\",\n            \"description\": \"Just a food & beverage product\",\n            \"category\": {\n                \"id\": 1,\n                \"title\": \"food & beverage\"\n            },\n            \"created_at\": \"2023-03-11T02:55:49.382736\",\n            \"updated_at\": \"2023-03-11T02:55:49.382736\",\n            \"images\": [\n                {\n                    \"id\": \"c580fe73-afb3-47d1-a9df-eed24fdaea9b\",\n                    \"filename\": \"fb1_1.jpg\",\n                    \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                },\n                {\n                    \"id\": \"43bcd3fa-6f7f-4251-b196-f30ad4ea625e\",\n                    \"filename\": \"fb1_2.jpg\",\n                    \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                },\n                {\n                    \"id\": \"77d9e690-b722-4039-b0fe-5f7d9af0e6b4\",\n                    \"filename\": \"fb1_3.jpg\",\n                    \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                }\n            ],\n            \"price\": 150\n        },\n        {\n            \"id\": \"P000002\",\n            \"title\": \"Steak\",\n            \"description\": \"Just a food & beverage product\",\n            \"category\": {\n                \"id\": 1,\n                \"title\": \"food & beverage\"\n            },\n            \"created_at\": \"2023-03-11T02:55:49.382736\",\n            \"updated_at\": \"2023-03-11T02:55:49.382736\",\n            \"images\": [\n                {\n                    \"id\": \"1d1eed38-3568-4e3e-9322-4c902b94c5b8\",\n                    \"filename\": \"fb2_1.jpg\",\n                    \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                },\n                {\n                    \"id\": \"f56c212a-16fd-4f8a-9091-03d2943c7f22\",\n                    \"filename\": \"fb2_2.jpg\",\n                    \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                },\n                {\n                    \"id\": \"6dfe9af7-1c48-4280-9805-60e7342ce2f7\",\n                    \"filename\": \"fb2_3.jpg\",\n                    \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                }\n            ],\n            \"price\": 200\n        }\n    ],\n    \"page\": 1,\n    \"limit\": 10,\n    \"total_page\": 1,\n    \"total_item\": 2\n}"
+						}
+					]
+				},
+				{
+					"name": "find one product",
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{api_key}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "X-Api-Key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local_url}}/products/:product_id",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"products",
+								":product_id"
+							],
+							"variable": [
+								{
+									"key": "product_id",
+									"value": "P000001"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local_url}}/products/:product_id",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"products",
+										":product_id"
+									],
+									"variable": [
+										{
+											"key": "product_id",
+											"value": "P000001"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Fri, 10 Mar 2023 19:59:58 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "690"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"P000001\",\n    \"title\": \"Coffee\",\n    \"description\": \"Just a food & beverage product\",\n    \"category\": {\n        \"id\": 1,\n        \"title\": \"food & beverage\"\n    },\n    \"created_at\": \"2023-03-11T02:55:49.382736\",\n    \"updated_at\": \"2023-03-11T02:55:49.382736\",\n    \"images\": [\n        {\n            \"id\": \"c580fe73-afb3-47d1-a9df-eed24fdaea9b\",\n            \"filename\": \"fb1_1.jpg\",\n            \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n        },\n        {\n            \"id\": \"43bcd3fa-6f7f-4251-b196-f30ad4ea625e\",\n            \"filename\": \"fb1_2.jpg\",\n            \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n        },\n        {\n            \"id\": \"77d9e690-b722-4039-b0fe-5f7d9af0e6b4\",\n            \"filename\": \"fb1_3.jpg\",\n            \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n        }\n    ],\n    \"price\": 150\n}"
+						}
+					]
+				},
+				{
+					"name": "add product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Air Purifier\",\r\n    \"description\": \"something I don't know\",\r\n    \"price\": 3600,\r\n    \"category\": {\r\n        \"id\": 3\r\n    },\r\n    \"images\": [\r\n        {\r\n            \"filename\": \"4d5ecf_1678374760431.jpg\",\r\n            \"url\": \"https://storage.googleapis.com/kawaii-shop-dev-bucket/images/products/P000007/4d5ecf_1678374760431.jpg\"\r\n        },\r\n        {\r\n            \"filename\": \"a90eb5_1678374760431.jpg\",\r\n            \"url\": \"https://storage.googleapis.com/kawaii-shop-dev-bucket/images/products/P000007/a90eb5_1678374760431.jpg\"\r\n        },\r\n        {\r\n            \"filename\": \"c624af_1678374760431.jpg\",\r\n            \"url\": \"https://storage.googleapis.com/kawaii-shop-dev-bucket/images/products/P000007/c624af_1678374760431.jpg\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local_url}}/products",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n        \"title\": \"air purifier\",\r\n        \"description\": \"something I don't know\",\r\n        \"category\": {\r\n                \"id\": 3\r\n        },\r\n        \"images\": [\r\n                {\r\n                        \"url\": \"https://i.pinimg.com/564x/b1/8e/1b/b18e1b87f50ef7ccd1e2c58c408fe35e.jpg\"\r\n                },\r\n                {\r\n                        \"url\": \"https://i.pinimg.com/564x/b1/8e/1b/b18e1b87f50ef7ccd1e2c58c408fe35e.jpg\"\r\n                },\r\n                {\r\n                        \"url\": \"https://i.pinimg.com/564x/b1/8e/1b/b18e1b87f50ef7ccd1e2c58c408fe35e.jpg\"\r\n                }\r\n        ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{local_url}}/products",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"products"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 08 Mar 2023 15:28:23 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "630"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"P000007\",\n    \"title\": \"Air Purifier\",\n    \"description\": \"something I don't know\",\n    \"price\": 3600,\n    \"category\": {\n        \"id\": 3,\n        \"title\": \"gadget\"\n    },\n    \"created_at\": \"2023-03-08T15:28:23.638511\",\n    \"updated_at\": \"2023-03-08T15:28:23.638511\",\n    \"images\": [\n        {\n            \"id\": \"3702802d-d221-4461-8834-35ec89b997ee\",\n            \"filename\": \"\",\n            \"url\": \"https://i.pinimg.com/564x/b1/8e/1b/b18e1b87f50ef7ccd1e2c58c408fe35e.jpg\"\n        },\n        {\n            \"id\": \"3383428e-a672-4dc1-9144-fc1f56716fc1\",\n            \"filename\": \"\",\n            \"url\": \"https://i.pinimg.com/564x/b1/8e/1b/b18e1b87f50ef7ccd1e2c58c408fe35e.jpg\"\n        },\n        {\n            \"id\": \"2de210a4-e7d5-48d1-9ba1-df2970d01a75\",\n            \"filename\": \"\",\n            \"url\": \"https://i.pinimg.com/564x/b1/8e/1b/b18e1b87f50ef7ccd1e2c58c408fe35e.jpg\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "delete product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local_url}}/products/:product_id",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"products",
+								":product_id"
+							],
+							"variable": [
+								{
+									"key": "product_id",
+									"value": "P000009"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "204 - no content",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{local_url}}/products/:product_id",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"products",
+										":product_id"
+									],
+									"variable": [
+										{
+											"key": "product_id",
+											"value": "P000007"
+										}
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 08 Mar 2023 15:31:18 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "update product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Air Purifier\",\r\n    \"description\": \"something I don't know\",\r\n    \"category\": {\r\n        \"id\": 3\r\n    },\r\n    \"images\": [\r\n        {\r\n            \"filename\": \"a5fe2e_1678374806137.jpg\",\r\n            \"url\": \"https://storage.googleapis.com/kawaii-shop-dev-bucket/images/products/P000007/a5fe2e_1678374806137.jpg\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local_url}}/products/:product_id",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"products",
+								":product_id"
+							],
+							"variable": [
+								{
+									"key": "product_id",
+									"value": "P000007"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - ok",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Air Purifier\",\r\n    \"description\": \"something I don't know\",\r\n    \"price\": 2500,\r\n    \"category\": {\r\n        \"id\": 3\r\n    },\r\n    \"images\": [\r\n        {\r\n            \"filename\": \"a5fe2e_1678374806137.jpg\",\r\n            \"url\": \"https://storage.googleapis.com/kawaii-shop-dev-bucket/images/products/P000007/a5fe2e_1678374806137.jpg\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{local_url}}/products/:product_id",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"products",
+										":product_id"
+									],
+									"variable": [
+										{
+											"key": "product_id",
+											"value": "P000007"
+										}
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Fri, 10 Mar 2023 20:06:33 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "418"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"P000007\",\n    \"title\": \"Air Purifier\",\n    \"description\": \"something I don't know\",\n    \"category\": {\n        \"id\": 3,\n        \"title\": \"gadget\"\n    },\n    \"created_at\": \"2023-03-10T20:02:13.594992\",\n    \"updated_at\": \"2023-03-10T20:06:33.164607\",\n    \"images\": [\n        {\n            \"id\": \"1371b915-40d1-44b5-98be-fb20e4694068\",\n            \"filename\": \"a5fe2e_1678374806137.jpg\",\n            \"url\": \"https://storage.googleapis.com/kawaii-shop-dev-bucket/images/products/P000007/a5fe2e_1678374806137.jpg\"\n        }\n    ],\n    \"price\": 2500\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "files",
+			"item": [
+				{
+					"name": "upload files",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": [
+										"/D:/Rayato159/Anime Picture/86/797060777fbc46e061ac63c780d9ac40.jpg",
+										"/D:/Rayato159/Anime Picture/86/3566030107abb8193bfe646ee53ba3a0.jpg"
+									]
+								},
+								{
+									"key": "destination",
+									"value": "images/products/P000007",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local_url}}/files",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"files"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "files",
+											"type": "file",
+											"src": [
+												"/D:/Rayato159/Anime Picture/86/797060777fbc46e061ac63c780d9ac40.jpg",
+												"/D:/Rayato159/Anime Picture/86/3566030107abb8193bfe646ee53ba3a0.jpg"
+											]
+										},
+										{
+											"key": "destination",
+											"value": "images/products/P000007",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{local_url}}/files",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"files"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 09 Mar 2023 15:13:26 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "303"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"filename\": \"a5fe2e_1678374806137.jpg\",\n        \"url\": \"https://storage.googleapis.com/kawaii-shop-dev-bucket/images/products/P000007/a5fe2e_1678374806137.jpg\"\n    },\n    {\n        \"filename\": \"55c51b_1678374806137.jpg\",\n        \"url\": \"https://storage.googleapis.com/kawaii-shop-dev-bucket/images/products/P000007/55c51b_1678374806137.jpg\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "delete files",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"destination\": \"images/products/P000001/9634bb_1678288548876.jpg\"\r\n    },\r\n    {\r\n        \"destination\": \"images/products/P000001/4efb9d_1678288548876.png\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local_url}}/files",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"files"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "orders",
+			"item": [
+				{
+					"name": "find orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local_url}}/orders?search&start_date&end_date&status&page=1&limit=10&order_by&sort",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": null,
+									"description": "user_id | "
+								},
+								{
+									"key": "start_date",
+									"value": null,
+									"description": "yyyy-mm-dd"
+								},
+								{
+									"key": "end_date",
+									"value": null,
+									"description": "yyyy-mm-dd"
+								},
+								{
+									"key": "status",
+									"value": null,
+									"description": "waiting | shipping | completed | cancel"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "order_by",
+									"value": null,
+									"description": "id, created_at"
+								},
+								{
+									"key": "sort",
+									"value": null,
+									"description": "DESC | ASC | desc | asc"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local_url}}/orders?search&start_date&end_date&status&page=1&limit=10&order_by&sort",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"orders"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": null,
+											"description": "user_id | "
+										},
+										{
+											"key": "start_date",
+											"value": null,
+											"description": "yyyy-mm-dd"
+										},
+										{
+											"key": "end_date",
+											"value": null,
+											"description": "yyyy-mm-dd"
+										},
+										{
+											"key": "status",
+											"value": null,
+											"description": "waiting | shipping | completed | cancel"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										},
+										{
+											"key": "order_by",
+											"value": null,
+											"description": "id, created_at"
+										},
+										{
+											"key": "sort",
+											"value": null,
+											"description": "DESC | ASC | desc | asc"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sun, 12 Mar 2023 10:41:14 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3843"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": [\n        {\n            \"id\": \"O000001\",\n            \"user_id\": \"U000002\",\n            \"transfer_slip\": {\n                \"id\": \"4bd7a0f5-c41f-4c1a-a997-0d965352fbb2\",\n                \"filename\": \"slip.jpg\",\n                \"url\": \"https://i.pinimg.com/564x/a8/d4/f5/a8d4f5a620d22128c2b6d1a42c847560.jpg\",\n                \"created_at\": \"2023-03-01 23:21:00\"\n            },\n            \"products\": [\n                {\n                    \"id\": \"2870d126-e1b4-48a9-b6e0-0b35bef947e6\",\n                    \"qty\": 1,\n                    \"product\": {\n                        \"id\": \"P000001\",\n                        \"title\": \"Coffee\",\n                        \"description\": \"Just a food & beverage product\",\n                        \"category\": {\n                            \"id\": 1,\n                            \"title\": \"food & beverage\"\n                        },\n                        \"created_at\": \"2023-03-10T00:03:59.677167\",\n                        \"updated_at\": \"2023-03-10T00:03:59.677167\",\n                        \"images\": [\n                            {\n                                \"id\": \"c580fe73-afb3-47d1-a9df-eed24fdaea9b\",\n                                \"filename\": \"fb1_1.jpg\",\n                                \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                            },\n                            {\n                                \"id\": \"43bcd3fa-6f7f-4251-b196-f30ad4ea625e\",\n                                \"filename\": \"fb1_2.jpg\",\n                                \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                            },\n                            {\n                                \"id\": \"77d9e690-b722-4039-b0fe-5f7d9af0e6b4\",\n                                \"filename\": \"fb1_3.jpg\",\n                                \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                            }\n                        ],\n                        \"price\": 150\n                    }\n                },\n                {\n                    \"id\": \"1d362a08-94b9-4c8e-a937-9570695638d4\",\n                    \"qty\": 2,\n                    \"product\": {\n                        \"id\": \"P000002\",\n                        \"title\": \"Steak\",\n                        \"description\": \"Just a food & beverage product\",\n                        \"category\": {\n                            \"id\": 1,\n                            \"title\": \"food & beverage\"\n                        },\n                        \"created_at\": \"2023-03-10T00:03:59.677167\",\n                        \"updated_at\": \"2023-03-10T00:03:59.677167\",\n                        \"images\": [\n                            {\n                                \"id\": \"1d1eed38-3568-4e3e-9322-4c902b94c5b8\",\n                                \"filename\": \"fb2_1.jpg\",\n                                \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                            },\n                            {\n                                \"id\": \"f56c212a-16fd-4f8a-9091-03d2943c7f22\",\n                                \"filename\": \"fb2_2.jpg\",\n                                \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                            },\n                            {\n                                \"id\": \"6dfe9af7-1c48-4280-9805-60e7342ce2f7\",\n                                \"filename\": \"fb2_3.jpg\",\n                                \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                            }\n                        ],\n                        \"price\": 200\n                    }\n                }\n            ],\n            \"address\": \"(330) 546-7713 5180 Richville Dr SW Navarre, Ohio(OH), 44662\",\n            \"contact\": \"kawaii customer\",\n            \"status\": \"completed\",\n            \"total_paid\": 550,\n            \"created_at\": \"2023-03-11T02:55:49.382736\",\n            \"updated_at\": \"2023-03-11T02:55:49.382736\"\n        },\n        {\n            \"id\": \"O000002\",\n            \"user_id\": \"U000002\",\n            \"transfer_slip\": null,\n            \"products\": [\n                {\n                    \"id\": \"5479b46d-2d1c-43f3-a813-eb44d4985c9d\",\n                    \"qty\": 1,\n                    \"product\": {\n                        \"id\": \"P000001\",\n                        \"title\": \"Coffee\",\n                        \"description\": \"Just a food & beverage product\",\n                        \"category\": {\n                            \"id\": 1,\n                            \"title\": \"food & beverage\"\n                        },\n                        \"created_at\": \"2023-03-10T00:03:59.677167\",\n                        \"updated_at\": \"2023-03-10T00:03:59.677167\",\n                        \"images\": [\n                            {\n                                \"id\": \"c580fe73-afb3-47d1-a9df-eed24fdaea9b\",\n                                \"filename\": \"fb1_1.jpg\",\n                                \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                            },\n                            {\n                                \"id\": \"43bcd3fa-6f7f-4251-b196-f30ad4ea625e\",\n                                \"filename\": \"fb1_2.jpg\",\n                                \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                            },\n                            {\n                                \"id\": \"77d9e690-b722-4039-b0fe-5f7d9af0e6b4\",\n                                \"filename\": \"fb1_3.jpg\",\n                                \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                            }\n                        ],\n                        \"price\": 150\n                    }\n                },\n                {\n                    \"id\": \"c9c2db16-59b8-42da-a56c-abb3b4e42087\",\n                    \"qty\": 1,\n                    \"product\": {\n                        \"id\": \"P000002\",\n                        \"title\": \"Steak\",\n                        \"description\": \"Just a food & beverage product\",\n                        \"category\": {\n                            \"id\": 1,\n                            \"title\": \"food & beverage\"\n                        },\n                        \"created_at\": \"2023-03-10T00:03:59.677167\",\n                        \"updated_at\": \"2023-03-10T00:03:59.677167\",\n                        \"images\": [\n                            {\n                                \"id\": \"1d1eed38-3568-4e3e-9322-4c902b94c5b8\",\n                                \"filename\": \"fb2_1.jpg\",\n                                \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                            },\n                            {\n                                \"id\": \"f56c212a-16fd-4f8a-9091-03d2943c7f22\",\n                                \"filename\": \"fb2_2.jpg\",\n                                \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                            },\n                            {\n                                \"id\": \"6dfe9af7-1c48-4280-9805-60e7342ce2f7\",\n                                \"filename\": \"fb2_3.jpg\",\n                                \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                            }\n                        ],\n                        \"price\": 200\n                    }\n                }\n            ],\n            \"address\": \"(410) 256-8192 2260 Brimstone Pl Hanover, Maryland(MD), 21076\",\n            \"contact\": \"kawaii customer\",\n            \"status\": \"waiting\",\n            \"total_paid\": 350,\n            \"created_at\": \"2023-03-11T02:55:49.382736\",\n            \"updated_at\": \"2023-03-11T02:55:49.382736\"\n        }\n    ],\n    \"page\": 1,\n    \"limit\": 10,\n    \"total_page\": 1,\n    \"total_item\": 2\n}"
+						}
+					]
+				},
+				{
+					"name": "find one order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local_url}}/orders/:order_id",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"orders",
+								":order_id"
+							],
+							"variable": [
+								{
+									"key": "order_id",
+									"value": "O000001"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local_url}}/orders/:order_id",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"orders",
+										":order_id"
+									],
+									"variable": [
+										{
+											"key": "order_id",
+											"value": "O000001"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sun, 12 Mar 2023 12:31:16 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1980"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"O000001\",\n    \"user_id\": \"U000002\",\n    \"transfer_slip\": {\n        \"id\": \"4bd7a0f5-c41f-4c1a-a997-0d965352fbb2\",\n        \"filename\": \"slip.jpg\",\n        \"url\": \"https://i.pinimg.com/564x/a8/d4/f5/a8d4f5a620d22128c2b6d1a42c847560.jpg\",\n        \"created_at\": \"2023-03-01 23:21:00\"\n    },\n    \"products\": [\n        {\n            \"id\": \"2870d126-e1b4-48a9-b6e0-0b35bef947e6\",\n            \"qty\": 1,\n            \"product\": {\n                \"id\": \"P000001\",\n                \"title\": \"Coffee\",\n                \"description\": \"Just a food & beverage product\",\n                \"category\": {\n                    \"id\": 1,\n                    \"title\": \"food & beverage\"\n                },\n                \"created_at\": \"2023-03-10T00:03:59.677167\",\n                \"updated_at\": \"2023-03-10T00:03:59.677167\",\n                \"images\": [\n                    {\n                        \"id\": \"c580fe73-afb3-47d1-a9df-eed24fdaea9b\",\n                        \"filename\": \"fb1_1.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                    },\n                    {\n                        \"id\": \"43bcd3fa-6f7f-4251-b196-f30ad4ea625e\",\n                        \"filename\": \"fb1_2.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                    },\n                    {\n                        \"id\": \"77d9e690-b722-4039-b0fe-5f7d9af0e6b4\",\n                        \"filename\": \"fb1_3.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                    }\n                ],\n                \"price\": 150\n            }\n        },\n        {\n            \"id\": \"1d362a08-94b9-4c8e-a937-9570695638d4\",\n            \"qty\": 2,\n            \"product\": {\n                \"id\": \"P000002\",\n                \"title\": \"Steak\",\n                \"description\": \"Just a food & beverage product\",\n                \"category\": {\n                    \"id\": 1,\n                    \"title\": \"food & beverage\"\n                },\n                \"created_at\": \"2023-03-10T00:03:59.677167\",\n                \"updated_at\": \"2023-03-10T00:03:59.677167\",\n                \"images\": [\n                    {\n                        \"id\": \"1d1eed38-3568-4e3e-9322-4c902b94c5b8\",\n                        \"filename\": \"fb2_1.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                    },\n                    {\n                        \"id\": \"f56c212a-16fd-4f8a-9091-03d2943c7f22\",\n                        \"filename\": \"fb2_2.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                    },\n                    {\n                        \"id\": \"6dfe9af7-1c48-4280-9805-60e7342ce2f7\",\n                        \"filename\": \"fb2_3.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                    }\n                ],\n                \"price\": 200\n            }\n        }\n    ],\n    \"address\": \"(330) 546-7713 5180 Richville Dr SW Navarre, Ohio(OH), 44662\",\n    \"contact\": \"kawaii customer\",\n    \"status\": \"completed\",\n    \"total_paid\": 550,\n    \"created_at\": \"2023-03-11T02:55:49.382736\",\n    \"updated_at\": \"2023-03-11T02:55:49.382736\"\n}"
+						}
+					]
+				},
+				{
+					"name": "create order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"U000002\",\r\n    \"transfer_slip\": null,\r\n    \"products\": [\r\n        {\r\n            \"qty\": 1,\r\n            \"product\": {\r\n                \"id\": \"P000001\"\r\n            }\r\n        },\r\n        {\r\n            \"qty\": 2,\r\n            \"product\": {\r\n                \"id\": \"P000002\"\r\n            }\r\n        }\r\n    ],\r\n    \"address\": \"(330) 546-7713 5180 Richville Dr SW Navarre, Ohio(OH), 44662\",\r\n    \"contact\": \"kawaii customer\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local_url}}/orders",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_id\": \"U000002\",\r\n    \"transfer_slip\": null,\r\n    \"products\": [\r\n        {\r\n            \"qty\": 1,\r\n            \"product\": {\r\n                \"id\": \"P000001\"\r\n            }\r\n        },\r\n        {\r\n            \"qty\": 2,\r\n            \"product\": {\r\n                \"id\": \"P000002\"\r\n            }\r\n        }\r\n    ],\r\n    \"address\": \"(330) 546-7713 5180 Richville Dr SW Navarre, Ohio(OH), 44662\",\r\n    \"contact\": \"kawaii customer\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{local_url}}/orders",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sun, 12 Mar 2023 15:06:07 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1800"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"O000003\",\n    \"user_id\": \"U000002\",\n    \"transfer_slip\": null,\n    \"products\": [\n        {\n            \"id\": \"244b7218-6aba-4d90-8568-c26f0508f91d\",\n            \"qty\": 1,\n            \"product\": {\n                \"id\": \"P000001\",\n                \"title\": \"Coffee\",\n                \"description\": \"Just a food & beverage product\",\n                \"category\": {\n                    \"id\": 1,\n                    \"title\": \"food & beverage\"\n                },\n                \"created_at\": \"2023-03-11T02:55:49.382736\",\n                \"updated_at\": \"2023-03-11T02:55:49.382736\",\n                \"images\": [\n                    {\n                        \"id\": \"c580fe73-afb3-47d1-a9df-eed24fdaea9b\",\n                        \"filename\": \"fb1_1.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                    },\n                    {\n                        \"id\": \"43bcd3fa-6f7f-4251-b196-f30ad4ea625e\",\n                        \"filename\": \"fb1_2.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                    },\n                    {\n                        \"id\": \"77d9e690-b722-4039-b0fe-5f7d9af0e6b4\",\n                        \"filename\": \"fb1_3.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                    }\n                ],\n                \"price\": 150\n            }\n        },\n        {\n            \"id\": \"93a1832c-6587-4641-90d1-b7b99bdf94d4\",\n            \"qty\": 2,\n            \"product\": {\n                \"id\": \"P000002\",\n                \"title\": \"Steak\",\n                \"description\": \"Just a food & beverage product\",\n                \"category\": {\n                    \"id\": 1,\n                    \"title\": \"food & beverage\"\n                },\n                \"created_at\": \"2023-03-11T02:55:49.382736\",\n                \"updated_at\": \"2023-03-11T02:55:49.382736\",\n                \"images\": [\n                    {\n                        \"id\": \"1d1eed38-3568-4e3e-9322-4c902b94c5b8\",\n                        \"filename\": \"fb2_1.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                    },\n                    {\n                        \"id\": \"f56c212a-16fd-4f8a-9091-03d2943c7f22\",\n                        \"filename\": \"fb2_2.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                    },\n                    {\n                        \"id\": \"6dfe9af7-1c48-4280-9805-60e7342ce2f7\",\n                        \"filename\": \"fb2_3.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                    }\n                ],\n                \"price\": 200\n            }\n        }\n    ],\n    \"address\": \"(330) 546-7713 5180 Richville Dr SW Navarre, Ohio(OH), 44662\",\n    \"contact\": \"kawaii customer\",\n    \"status\": \"waiting\",\n    \"total_paid\": 550,\n    \"created_at\": \"2023-03-12T15:06:07.534902\",\n    \"updated_at\": \"2023-03-12T15:06:07.534902\"\n}"
+						}
+					]
+				},
+				{
+					"name": "update order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transfer_slip\": {\r\n        \"id\": \"4bd7a0f5-c41f-4c1a-a997-0d965352fbb2\",\r\n        \"filename\": \"slip.jpg\",\r\n        \"url\": \"https://i.pinimg.com/564x/a8/d4/f5/a8d4f5a620d22128c2b6d1a42c847560.jpg\",\r\n        \"created_at\": \"2023-03-01 23:21:00\"\r\n    },\r\n    \"status\": \"completed\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local_url}}/orders/:order_id",
+							"host": [
+								"{{local_url}}"
+							],
+							"path": [
+								"orders",
+								":order_id"
+							],
+							"variable": [
+								{
+									"key": "order_id",
+									"value": "O000001"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - ok",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"transfer_slip\": {\r\n        \"id\": \"4bd7a0f5-c41f-4c1a-a997-0d965352fbb2\",\r\n        \"filename\": \"slip.jpg\",\r\n        \"url\": \"https://i.pinimg.com/564x/a8/d4/f5/a8d4f5a620d22128c2b6d1a42c847560.jpg\",\r\n        \"created_at\": \"2023-03-01 23:21:00\"\r\n    },\r\n    \"status\": \"completed\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{local_url}}/orders/:order_id",
+									"host": [
+										"{{local_url}}"
+									],
+									"path": [
+										"orders",
+										":order_id"
+									],
+									"variable": [
+										{
+											"key": "order_id",
+											"value": "O000001"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sun, 12 Mar 2023 15:12:55 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1980"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"O000001\",\n    \"user_id\": \"U000002\",\n    \"transfer_slip\": {\n        \"id\": \"4bd7a0f5-c41f-4c1a-a997-0d965352fbb2\",\n        \"filename\": \"slip.jpg\",\n        \"url\": \"https://i.pinimg.com/564x/a8/d4/f5/a8d4f5a620d22128c2b6d1a42c847560.jpg\",\n        \"created_at\": \"2023-03-01 23:21:00\"\n    },\n    \"products\": [\n        {\n            \"id\": \"2870d126-e1b4-48a9-b6e0-0b35bef947e6\",\n            \"qty\": 1,\n            \"product\": {\n                \"id\": \"P000001\",\n                \"title\": \"Coffee\",\n                \"description\": \"Just a food & beverage product\",\n                \"category\": {\n                    \"id\": 1,\n                    \"title\": \"food & beverage\"\n                },\n                \"created_at\": \"2023-03-10T00:03:59.677167\",\n                \"updated_at\": \"2023-03-10T00:03:59.677167\",\n                \"images\": [\n                    {\n                        \"id\": \"c580fe73-afb3-47d1-a9df-eed24fdaea9b\",\n                        \"filename\": \"fb1_1.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                    },\n                    {\n                        \"id\": \"43bcd3fa-6f7f-4251-b196-f30ad4ea625e\",\n                        \"filename\": \"fb1_2.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                    },\n                    {\n                        \"id\": \"77d9e690-b722-4039-b0fe-5f7d9af0e6b4\",\n                        \"filename\": \"fb1_3.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/4a/1c/4a/4a1c4a9755e4d3bdfcb45a1c3a58712f.jpg\"\n                    }\n                ],\n                \"price\": 150\n            }\n        },\n        {\n            \"id\": \"1d362a08-94b9-4c8e-a937-9570695638d4\",\n            \"qty\": 2,\n            \"product\": {\n                \"id\": \"P000002\",\n                \"title\": \"Steak\",\n                \"description\": \"Just a food & beverage product\",\n                \"category\": {\n                    \"id\": 1,\n                    \"title\": \"food & beverage\"\n                },\n                \"created_at\": \"2023-03-10T00:03:59.677167\",\n                \"updated_at\": \"2023-03-10T00:03:59.677167\",\n                \"images\": [\n                    {\n                        \"id\": \"1d1eed38-3568-4e3e-9322-4c902b94c5b8\",\n                        \"filename\": \"fb2_1.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                    },\n                    {\n                        \"id\": \"f56c212a-16fd-4f8a-9091-03d2943c7f22\",\n                        \"filename\": \"fb2_2.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                    },\n                    {\n                        \"id\": \"6dfe9af7-1c48-4280-9805-60e7342ce2f7\",\n                        \"filename\": \"fb2_3.jpg\",\n                        \"url\": \"https://i.pinimg.com/564x/6d/ba/91/6dba91c1fdb5d4939c7e9d65420cbd4c.jpg\"\n                    }\n                ],\n                \"price\": 200\n            }\n        }\n    ],\n    \"address\": \"(330) 546-7713 5180 Richville Dr SW Navarre, Ohio(OH), 44662\",\n    \"contact\": \"kawaii customer\",\n    \"status\": \"completed\",\n    \"total_paid\": 550,\n    \"created_at\": \"2023-03-11T02:55:49.382736\",\n    \"updated_at\": \"2023-03-12T15:12:55.331075\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "health check",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{api_key}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Api-Key",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{local_url}}",
+					"host": [
+						"{{local_url}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "200 - ok",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local_url}}",
+							"host": [
+								"{{local_url}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 04 Mar 2023 17:02:03 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "41"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"name\": \"kawaii-shop\",\n    \"version\": \"v1.0.0\"\n}"
+				}
+			]
+		}
+	]
+}
