@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"strings"
+
 	"github.com/Rayato159/kawaii-shop/config"
 	"github.com/Rayato159/kawaii-shop/modules/entities"
 	"github.com/Rayato159/kawaii-shop/modules/orders"
@@ -11,11 +13,13 @@ import (
 type ordersHandlerErrCode string
 
 const (
-	findOrdersErr ordersHandlerErrCode = "orders-001"
+	findOrderErr    ordersHandlerErrCode = "orders-001"
+	findOneOrderErr ordersHandlerErrCode = "orders-002"
 )
 
 type IOrdersHandler interface {
-	FindOrders(c *fiber.Ctx) error
+	FindOrder(c *fiber.Ctx) error
+	FindOneOrder(c *fiber.Ctx) error
 }
 
 type ordersHandler struct {
@@ -30,7 +34,7 @@ func OrdersHandler(cfg config.IConfig, ordersUsecase _ordersUsecases.IOrdersUsec
 	}
 }
 
-func (h *ordersHandler) FindOrders(c *fiber.Ctx) error {
+func (h *ordersHandler) FindOrder(c *fiber.Ctx) error {
 	req := &orders.OrderFilter{
 		SortReq:     &entities.SortReq{},
 		PaginateReq: &entities.PaginateReq{},
@@ -38,7 +42,7 @@ func (h *ordersHandler) FindOrders(c *fiber.Ctx) error {
 	if err := c.QueryParser(req); err != nil {
 		return entities.NewResponse(c).Error(
 			fiber.ErrBadRequest.Code,
-			string(findOrdersErr),
+			string(findOrderErr),
 			err.Error(),
 		).Res()
 	}
@@ -58,6 +62,21 @@ func (h *ordersHandler) FindOrders(c *fiber.Ctx) error {
 		req.Sort = "DESC"
 	}
 
-	orders := h.ordersUsecase.FindOrders(req)
+	orders := h.ordersUsecase.FindOrder(req)
 	return entities.NewResponse(c).Success(fiber.StatusOK, orders).Res()
+}
+
+func (h *ordersHandler) FindOneOrder(c *fiber.Ctx) error {
+	orderId := strings.Trim(c.Params("order_id"), " ")
+
+	order, err := h.ordersUsecase.FindOneOrder(orderId)
+	if err != nil {
+		return entities.NewResponse(c).Error(
+			fiber.ErrBadRequest.Code,
+			string(findOneOrderErr),
+			err.Error(),
+		).Res()
+	}
+
+	return entities.NewResponse(c).Success(fiber.StatusOK, order).Res()
 }

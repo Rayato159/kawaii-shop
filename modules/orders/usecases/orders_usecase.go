@@ -9,7 +9,8 @@ import (
 )
 
 type IOrdersUsecase interface {
-	FindOrders(req *orders.OrderFilter) *entities.PaginateRes
+	FindOrder(req *orders.OrderFilter) *entities.PaginateRes
+	FindOneOrder(orderId string) (*orders.Order, error)
 }
 
 type ordersUsecase struct {
@@ -22,8 +23,8 @@ func OrdersUsecase(ordersRepsotiory _ordersRepositories.IOrdersRepository) IOrde
 	}
 }
 
-func (u *ordersUsecase) FindOrders(req *orders.OrderFilter) *entities.PaginateRes {
-	orders, count := u.ordersRepsotiory.FindOrders(req)
+func (u *ordersUsecase) FindOrder(req *orders.OrderFilter) *entities.PaginateRes {
+	orders, count := u.ordersRepsotiory.FindOrder(req)
 
 	return &entities.PaginateRes{
 		Data:      orders,
@@ -32,4 +33,12 @@ func (u *ordersUsecase) FindOrders(req *orders.OrderFilter) *entities.PaginateRe
 		TotalItem: count,
 		TotalPage: int(math.Ceil(float64(count) / float64(req.Limit))),
 	}
+}
+
+func (u *ordersUsecase) FindOneOrder(orderId string) (*orders.Order, error) {
+	order, err := u.ordersRepsotiory.FindOneOrder(orderId)
+	if err != nil {
+		return nil, err
+	}
+	return order, nil
 }

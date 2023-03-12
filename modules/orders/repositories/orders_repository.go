@@ -10,7 +10,7 @@ import (
 )
 
 type IOrdersRepository interface {
-	FindOrders(req *orders.OrderFilter) ([]*orders.Order, int)
+	FindOrder(req *orders.OrderFilter) ([]*orders.Order, int)
 	FindOneOrder(orderId string) (*orders.Order, error)
 }
 
@@ -24,7 +24,7 @@ func OrdersRepository(db *sqlx.DB) IOrdersRepository {
 	}
 }
 
-func (r *ordersRepository) FindOrders(req *orders.OrderFilter) ([]*orders.Order, int) {
+func (r *ordersRepository) FindOrder(req *orders.OrderFilter) ([]*orders.Order, int) {
 	builder := patterns.FindOrdersBuilder(r.db, req)
 	engineer := patterns.FindOrdersEngineer(builder)
 
