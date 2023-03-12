@@ -6,7 +6,8 @@ import (
 )
 
 type OrderFilter struct {
-	Search    string `query:"search"` // user_id, address, contract, products {id, title, description}
+	Search    string `query:"search"` // user_id, address, contract
+	Status    string `query:"status"`
 	StartDate string `query:"start_date"`
 	EndDate   string `query:"end_date"`
 	*entities.PaginateReq
@@ -16,10 +17,10 @@ type OrderFilter struct {
 type Order struct {
 	Id           string           `json:"id"`
 	UserId       string           `json:"user_id"`
-	TransterSlip *TransterSlip    `json:"image"`
+	TransterSlip *TransterSlip    `json:"transfer_slip"`
 	Products     []*ProductsOrder `json:"products"`
 	Address      string           `json:"address"`
-	Contract     string           `json:"contract"`
+	Contract     string           `json:"contact"`
 	Status       string           `json:"status"`
 	TotalPaid    float64          `json:"total_paid"`
 	CreatedAt    string           `json:"created_at"`

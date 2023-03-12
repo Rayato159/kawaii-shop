@@ -22,6 +22,10 @@ import (
 	_productsRepositories "github.com/Rayato159/kawaii-shop/modules/products/repositories"
 	_productsUsecases "github.com/Rayato159/kawaii-shop/modules/products/usecases"
 
+	_ordersHandlers "github.com/Rayato159/kawaii-shop/modules/orders/handlers"
+	_ordersRepositories "github.com/Rayato159/kawaii-shop/modules/orders/repositories"
+	_ordersUsecases "github.com/Rayato159/kawaii-shop/modules/orders/usecases"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -40,6 +44,7 @@ type IModuleFactory interface {
 	UsersModule()
 	AppinfoModule()
 	ProductsModule()
+	OrdersModule()
 }
 
 type ModuleFactory struct {
@@ -121,4 +126,14 @@ func (f *ModuleFactory) ProductsModule() {
 	router.Patch("/:product_id", f.middleware.JwtAuth(), f.middleware.Authorize(2), productsHandler.UpdateProduct)
 
 	router.Delete("/:product_id", f.middleware.JwtAuth(), f.middleware.Authorize(2), productsHandler.DeleteProduct)
+}
+
+func (f *ModuleFactory) OrdersModule() {
+	ordersRepository := _ordersRepositories.OrdersRepository(f.server.Db())
+	ordersUsecase := _ordersUsecases.OrdersUsecase(ordersRepository)
+	ordersHandler := _ordersHandlers.OrdersHandler(f.server.cfg, ordersUsecase)
+
+	router := f.router.Group("/orders")
+
+	router.Get("/", f.middleware.JwtAuth(), f.middleware.Authorize(2), ordersHandler.FindOrders)
 }
