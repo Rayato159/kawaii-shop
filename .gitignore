@@ -36,6 +36,5 @@ vendor
 .air*
 /tmp
 *.pem
-*.json
 apikey.txt
 *_test.go
