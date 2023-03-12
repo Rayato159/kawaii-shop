@@ -1,8 +1,10 @@
 package repositories
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/Rayato159/kawaii-shop/modules/orders"
 	"github.com/Rayato159/kawaii-shop/modules/orders/repositories/patterns"
@@ -12,6 +14,8 @@ import (
 type IOrdersRepository interface {
 	FindOrder(req *orders.OrderFilter) ([]*orders.Order, int)
 	FindOneOrder(orderId string) (*orders.Order, error)
+	InsertOrder(req *orders.Order) (string, error)
+	UpdateOrder(req *orders.UpdateOrderReq) error
 }
 
 type ordersRepository struct {
@@ -81,4 +85,59 @@ func (r *ordersRepository) FindOneOrder(orderId string) (*orders.Order, error) {
 		return nil, fmt.Errorf("unmarshal order failed: %v", err)
 	}
 	return order, nil
+}
+
+func (r *ordersRepository) InsertOrder(req *orders.Order) (string, error) {
+	builder := patterns.InsertOrderBuilder(r.db, req)
+	orderId, err := patterns.InsertOrderEngineer(builder).InsertOrder()
+	if err != nil {
+		return "", err
+	}
+	return orderId, nil
+}
+
+func (r *ordersRepository) UpdateOrder(req *orders.UpdateOrderReq) error {
+	query := `
+	UPDATE "orders" SET`
+
+	queryWhereStack := make([]string, 0)
+	valueStack := make([]any, 0)
+	lastIndex := 1
+
+	if req.Status != "" {
+		valueStack = append(valueStack, req.Status)
+
+		queryWhereStack = append(queryWhereStack, fmt.Sprintf(`
+		"status" = $%d?`, lastIndex))
+
+		lastIndex++
+	}
+
+	if req.TransterSlip != nil {
+		valueStack = append(valueStack, req.TransterSlip)
+
+		queryWhereStack = append(queryWhereStack, fmt.Sprintf(`
+		"transfer_slip" = $%d?`, lastIndex))
+
+		lastIndex++
+	}
+
+	valueStack = append(valueStack, req.OrderId)
+
+	queryClose := fmt.Sprintf(`
+	WHERE "id" = $%d;`, lastIndex)
+
+	for i := range queryWhereStack {
+		if i != len(queryWhereStack)-1 {
+			query += strings.Replace(queryWhereStack[i], "?", ",", 1)
+		} else {
+			query += strings.Replace(queryWhereStack[i], "?", "", 1)
+		}
+	}
+	query += queryClose
+
+	if _, err := r.db.ExecContext(context.Background(), query, valueStack...); err != nil {
+		return fmt.Errorf("update order failed: %v", err)
+	}
+	return nil
 }

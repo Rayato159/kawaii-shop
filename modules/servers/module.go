@@ -129,12 +129,19 @@ func (f *ModuleFactory) ProductsModule() {
 }
 
 func (f *ModuleFactory) OrdersModule() {
+	filesUsecase := _filesUsecases.FilesUsecase(f.server.cfg)
+	productsRepository := _productsRepositories.ProductsRepository(f.server.Db(), f.server.cfg, filesUsecase)
+
 	ordersRepository := _ordersRepositories.OrdersRepository(f.server.Db())
-	ordersUsecase := _ordersUsecases.OrdersUsecase(ordersRepository)
+	ordersUsecase := _ordersUsecases.OrdersUsecase(ordersRepository, productsRepository)
 	ordersHandler := _ordersHandlers.OrdersHandler(f.server.cfg, ordersUsecase)
 
 	router := f.router.Group("/orders")
 
 	router.Get("/", f.middleware.JwtAuth(), f.middleware.Authorize(2), ordersHandler.FindOrder)
 	router.Get("/:order_id", f.middleware.JwtAuth(), f.middleware.Authorize(2), ordersHandler.FindOneOrder)
+
+	router.Post("/", f.middleware.JwtAuth(), ordersHandler.CreateOrder)
+
+	router.Patch("/:order_id", f.middleware.JwtAuth(), ordersHandler.UpdateOrder)
 }

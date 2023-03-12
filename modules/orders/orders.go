@@ -15,13 +15,13 @@ type OrderFilter struct {
 }
 
 type Order struct {
-	Id           string           `json:"id"`
-	UserId       string           `json:"user_id"`
-	TransterSlip *TransterSlip    `json:"transfer_slip"`
+	Id           string           `db:"id" json:"id"`
+	UserId       string           `db:"user_id" json:"user_id"`
+	TransterSlip *TransterSlip    `db:"transfer_slip" json:"transfer_slip"`
 	Products     []*ProductsOrder `json:"products"`
-	Address      string           `json:"address"`
-	Contract     string           `json:"contact"`
-	Status       string           `json:"status"`
+	Address      string           `db:"address" json:"address"`
+	Contact      string           `db:"contact" json:"contact"`
+	Status       string           `db:"status" json:"status"`
 	TotalPaid    float64          `json:"total_paid"`
 	CreatedAt    string           `json:"created_at"`
 	UpdatedAt    string           `json:"updated_at"`
@@ -35,7 +35,13 @@ type TransterSlip struct {
 }
 
 type ProductsOrder struct {
-	Id      string            `json:"id"`
-	Qty     int               `json:"qty"`
-	Product *products.Product `json:"product"`
+	Id      string            `db:"id" json:"id"`
+	Qty     int               `db:"qty" json:"qty"`
+	Product *products.Product `db:"product" json:"product"`
+}
+
+type UpdateOrderReq struct {
+	OrderId      string        `db:"order_id" json:"order_id"`
+	Status       string        `db:"status" json:"status"`
+	TransterSlip *TransterSlip `db:"transfer_slip" json:"transfer_slip"`
 }
