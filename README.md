@@ -1,4 +1,13 @@
 <h1>Kawaii Shop</h1>
+Kawaii shop is a mini REST API e-commerce project that made by Golang
+
+<h2>Required</h2>
+<ul>
+    <li><a href="https://www.docker.com/">Docker</a></li>
+    <li><a href="https://www.postman.com/">Postman</a></li>
+    <li><a href="https://code.visualstudio.com/">IDE (Vscode)</a></li>
+    <li><a href="https://cloud.google.com/sdk/docs/install">GCP CLI</a></li>
+</ul>
 
 <h2>Start PostgreSQLon Docker 🐋</h2>
 
@@ -34,3 +43,40 @@ docker build -t asia.gcr.io/prject-id/container-bucket .
 # Push
 docker push asia.gcr.io/prject-id/container-bucket
 ```
+
+<h2>.env Exmaple</h2>
+
+```bash
+APP_HOST=
+APP_PORT=
+APP_NAME=
+APP_VERSION=
+APP_BODY_LIMIT=
+APP_READ_TIMEOUT=
+APP_WRTIE_TIMEOUT=
+APP_API_KEY=
+APP_ADMIN_KEY=
+APP_FILE_LIMIT=
+APP_GCP_BUCKET=
+
+JWT_SECRET_KEY=
+JWT_ACCESS_EXPIRES=
+JWT_REFRESH_EXPIRES=
+
+DB_HOST=
+DB_PORT=
+DB_PROTOCOL=
+DB_USERNAME=
+DB_PASSWORD=
+DB_DATABASE=
+DB_SSL_MODE=
+DB_MAX_CONNECTIONS=
+
+FILE_LOG_PATH=
+```
+
+<h2>Postman</h2>
+<ul>
+    <li><a href="./kawaii-shop.postman_collection.json">Collection</a></li>
+    <li><a href="./kawaii-shop.postman_environment.json">Environment</a></li>
+</ul>
