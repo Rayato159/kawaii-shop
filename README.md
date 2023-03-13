@@ -9,6 +9,10 @@ Kawaii shop is a mini REST API e-commerce project that made by Golang
     <li><a href="https://cloud.google.com/sdk/docs/install">GCP CLI</a></li>
 </ul>
 
+<h2>Database Schema</h2>
+
+<img alt="schema" href="./screenshots/schema0.0.2.png"/>
+
 <h2>Start PostgreSQLon Docker 🐋</h2>
 
 ```bash
