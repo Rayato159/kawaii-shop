@@ -30,9 +30,9 @@ CREATE TYPE "order_status" AS ENUM (
 --Create table
 CREATE TABLE "users" (
   "id" VARCHAR(7) PRIMARY KEY DEFAULT CONCAT('U', LPAD(NEXTVAL('users_id_seq')::TEXT, 6, '0')),
-  "username" VARCHAR UNIQUE,
+  "username" VARCHAR UNIQUE NOT NULL,
   "password" VARCHAR NOT NULL,
-  "email" VARCHAR UNIQUE,
+  "email" VARCHAR UNIQUE NOT NULL,
   "role_id" INT NOT NULL,
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP NOT NULL DEFAULT now()
@@ -49,7 +49,7 @@ CREATE TABLE "oauth" (
 
 CREATE TABLE "roles" (
   "id" SERIAL PRIMARY KEY,
-  "title" VARCHAR
+  "title" VARCHAR NOT NULL UNIQUE
 );
 
 CREATE TABLE "products" (
@@ -63,7 +63,7 @@ CREATE TABLE "products" (
 
 CREATE TABLE "categories" (
   "id" SERIAL PRIMARY KEY,
-  "title" VARCHAR NOT NULL
+  "title" VARCHAR NOT NULL UNIQUE
 );
 
 CREATE TABLE "products_categories" (
