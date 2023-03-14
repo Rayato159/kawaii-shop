@@ -11,7 +11,7 @@ Kawaii shop is a mini REST API e-commerce project that made by Golang
 
 <h2>Database Schema</h2>
 
-<img alt="schema" href="./screenshots/schema0.0.2.png"/>
+<img alt="schema" src="./screenshots/schema0.0.3.png"/>
 
 <h2>Start PostgreSQLon Docker 🐋</h2>
 
