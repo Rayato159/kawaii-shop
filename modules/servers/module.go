@@ -77,7 +77,7 @@ func (f *ModuleFactory) FilesModule() {
 }
 
 func (f *ModuleFactory) UsersModule() {
-	repository := _usersRepositories.UsersRepository(f.server.Db())
+	repository := _usersRepositories.UsersRepository(f.server.db)
 	usecase := _usersUsecases.UsersUsecase(repository, f.server.cfg)
 	handler := _usersHandlers.UsersHandler(f.server.cfg, usecase)
 
@@ -94,7 +94,7 @@ func (f *ModuleFactory) UsersModule() {
 }
 
 func (f *ModuleFactory) AppinfoModule() {
-	repository := _appinfoRepositories.AppinfoRepository(f.server.Db())
+	repository := _appinfoRepositories.AppinfoRepository(f.server.db)
 	usecase := _appinfoUsecases.AppinfoUsecase(repository)
 	handler := _appinfoHandlers.AppinfoHandler(f.server.cfg, usecase)
 
@@ -112,7 +112,7 @@ func (f *ModuleFactory) ProductsModule() {
 	// File Module
 	filesUsecase := _filesUsecases.FilesUsecase(f.server.cfg)
 
-	productsRepository := _productsRepositories.ProductsRepository(f.server.Db(), f.server.cfg, filesUsecase)
+	productsRepository := _productsRepositories.ProductsRepository(f.server.db, f.server.cfg, filesUsecase)
 	productsUsecase := _productsUsecases.ProductsUsecase(productsRepository)
 	productsHandler := _productsHandlers.ProductsHandler(f.server.cfg, productsUsecase, filesUsecase)
 
@@ -130,9 +130,9 @@ func (f *ModuleFactory) ProductsModule() {
 
 func (f *ModuleFactory) OrdersModule() {
 	filesUsecase := _filesUsecases.FilesUsecase(f.server.cfg)
-	productsRepository := _productsRepositories.ProductsRepository(f.server.Db(), f.server.cfg, filesUsecase)
+	productsRepository := _productsRepositories.ProductsRepository(f.server.db, f.server.cfg, filesUsecase)
 
-	ordersRepository := _ordersRepositories.OrdersRepository(f.server.Db())
+	ordersRepository := _ordersRepositories.OrdersRepository(f.server.db)
 	ordersUsecase := _ordersUsecases.OrdersUsecase(ordersRepository, productsRepository)
 	ordersHandler := _ordersHandlers.OrdersHandler(f.server.cfg, ordersUsecase)
 

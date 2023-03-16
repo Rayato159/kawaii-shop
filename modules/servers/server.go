@@ -19,10 +19,7 @@ type server struct {
 
 type IServer interface {
 	Start()
-	Db() *sqlx.DB
 }
-
-func (s *server) Db() *sqlx.DB { return s.db }
 
 func (s *server) Start() {
 	// Init Middleware
