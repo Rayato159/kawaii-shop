@@ -87,18 +87,18 @@ func (f *userReq) Admin() (IInsertUser, error) {
 func (f *userReq) Result() (*users.UserPassport, error) {
 	query := `
 	SELECT
-			json_build_object(
-				'user', "t",
-				'token', NULL
-			) 
-		FROM (
-			SELECT
-				"u"."id",
-				"u"."email",
-				"u"."username",
-				"u"."role_id"
-			FROM "users" "u"
-			WHERE "u"."id" = $1
+		json_build_object(
+			'user', "t",
+			'token', NULL
+		)
+	FROM (
+		SELECT
+			"u"."id",
+			"u"."email",
+			"u"."username",
+			"u"."role_id"
+		FROM "users" "u"
+		WHERE "u"."id" = $1
 	) AS "t";`
 
 	data := make([]byte, 0)
