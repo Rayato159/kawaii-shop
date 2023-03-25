@@ -99,6 +99,7 @@ func (u *filesUsecase) uploadWorkers(ctx context.Context, client *storage.Client
 		}
 
 		// Assign result
+		errChan <- nil
 		results <- newFile.file
 	}
 }
@@ -132,6 +133,11 @@ func (u *filesUsecase) UploadToGCP(req []*filespkg.FileReq) ([]*filespkg.FileRes
 	}
 
 	for a := 0; a < len(req); a++ {
+		err := <-errsCh
+		if err != nil {
+			return nil, err
+		}
+
 		result := <-resultsCh
 		res = append(res, result)
 	}
