@@ -124,6 +124,7 @@ func (u *filesUsecase) UploadToGCP(req []*filespkg.FileReq) ([]*filespkg.FileRes
 	for _, f := range req {
 		jobsCh <- f
 	}
+	close(jobsCh)
 
 	numWorkers := 5
 	for i := 0; i < numWorkers; i++ {
